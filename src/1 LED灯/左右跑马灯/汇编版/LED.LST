@@ -1,0 +1,66 @@
+A51 MACRO ASSEMBLER  LED                                                                  10/28/2009 23:41:07 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN LED.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE LED.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;*                                                                                  *
+                       3     ;                                                                                          
+                                                                                                  *
+                       4     ;     延时实现LED流水灯效果   p2口八个灯作跑马灯。采用了寄存器存中间数          *
+                       5     ;     连接方法： JP11（P2）和JP1(LED灯) 用8PIN排线连接起来                                 
+                                      *
+                       6     ;********************************************************************************
+                       7     
+                       8     
+0000                   9             ORG     0000h
+0000 0130             10             AJMP    start
+0030                  11             ORG     0030h
+0030                  12     start:
+0030 74FF             13             MOV A,#0ffh     
+0032 C3               14             CLR C           
+0033 7A08             15             MOV R2,#08h     ;循环八次。
+0035 33               16     loop:   RLC A           ;带进位左移。
+0036 F5A0             17             MOV P2,A        ;输出到P1口。
+0038 1147             18             CALL delay      ;延时一段时间
+003A DAF9             19             DJNZ R2,loop    ;反复循环
+003C 7A07             20             MOV R2,#07h     ;再往回循环。
+003E 13               21     loop1:  RRC a           ;带进位右移
+003F F5A0             22             MOV P2,a        ;输出到P1口。
+0041 1147             23             CALL delay      ;延时一段时间
+0043 DAF9             24             DJNZ R2,loop1   ;反复循环
+0045 80E9             25             JMP start       ;重新开始
+0047 7B14             26     delay:  MOV R3,#20      ;延时子程序
+0049 7C14             27     d1:     MOV R4,#20
+004B 7DF8             28     d2:     MOV R5,#248
+004D DDFE             29             DJNZ R5,$
+004F DCFA             30             DJNZ R4,d2
+0051 DBF6             31             DJNZ R3,d1
+0053 22               32             RET
+                      33     END
+                             
+A51 MACRO ASSEMBLER  LED                                                                  10/28/2009 23:41:07 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+D1 . . . . . . . .  C ADDR   0049H   A   
+D2 . . . . . . . .  C ADDR   004BH   A   
+DELAY. . . . . . .  C ADDR   0047H   A   
+LOOP . . . . . . .  C ADDR   0035H   A   
+LOOP1. . . . . . .  C ADDR   003EH   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+START. . . . . . .  C ADDR   0030H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,66 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        10/28/2009  23:41:07  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE LED.obj TO led RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  LED.obj (LED)
+
+
+LINK MAP OF MODULE:  led (LED)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0056H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  led (LED)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        LED
+  C:0049H         SYMBOL        D1
+  C:004BH         SYMBOL        D2
+  C:0047H         SYMBOL        DELAY
+  C:0035H         SYMBOL        LOOP
+  C:003EH         SYMBOL        LOOP1
+  D:00A0H         SYMBOL        P2
+  C:0030H         SYMBOL        START
+  C:0000H         LINE#         10
+  C:0030H         LINE#         13
+  C:0032H         LINE#         14
+  C:0033H         LINE#         15
+  C:0035H         LINE#         16
+  C:0036H         LINE#         17
+  C:0038H         LINE#         18
+  C:003AH         LINE#         19
+  C:003CH         LINE#         20
+  C:003EH         LINE#         21
+  C:003FH         LINE#         22
+  C:0041H         LINE#         23
+  C:0043H         LINE#         24
+  C:0045H         LINE#         25
+  C:0047H         LINE#         26
+  C:0049H         LINE#         27
+  C:004BH         LINE#         28
+  C:004DH         LINE#         29
+  C:004FH         LINE#         30
+  C:0051H         LINE#         31
+  C:0053H         LINE#         32
+  -------         ENDMOD        LED
+
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/28/2009  23:41:07  PAGE 2
+
+
+Program Size: data=8.0 xdata=0 code=86
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

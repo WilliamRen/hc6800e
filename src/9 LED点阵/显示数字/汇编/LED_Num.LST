@@ -1,0 +1,184 @@
+A51 MACRO ASSEMBLER  LED_NUM                                                              11/25/2009 23:58:59 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN LED_Num.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE LED_Num.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;/*****************************************************************************************
+                       2     ;*                                                                                         
+                                                                                           *
+                       3     ;*                       LED点阵实验                                                       
+                                                           *
+                       4     ;*      说明 通过P0 和 P2 作为点阵接口                                                     
+                                                           *
+                       5     ;*要求学员掌握 LED点阵的工作原理和 各点阵脚的定义及接法，具体接线请参考接线说明            
+                               *
+                       6     ;*我们采用的LED点阵式是低功耗，在做实验时可以用单片机脚直接驱动                          *
+                       7     ;******************************************************************************************
+                             /    
+                       8     
+  0030                 9             TIM EQU 30H
+                      10             
+  0031                11             CNTA EQU 31H
+                      12             
+  0032                13             CNTB EQU 32H
+                      14             
+0000                  15             ORG 0000H
+                      16             
+0000 020030           17             LJMP START
+                      18     ;       
+000B                  19             ORG 0BH        ;//定时中断0 中断向量地址
+                      20     ;       
+000B 02004A           21             LJMP T0_Inter;
+                      22             
+0030                  23             ORG 30H
+                      24             
+0030 753000           25     START: MOV TIM,#00H
+                      26             
+0033 753100           27             MOV CNTA,#00H
+                      28             
+0036 753200           29             MOV CNTB,#00H
+                      30             
+0039 758901           31             MOV TMOD,#01H
+                      32             
+003C 758CF0           33             MOV TH0,#(65536-4000)/256
+                      34             
+003F 758A60           35             MOV TL0,#(65536-4000) MOD 256
+                      36             
+0042 D28C             37             SETB TR0
+                      38                                         ;开启T0中断
+0044 D2A9             39             SETB ET0                ; 允许T0中断
+                      40             
+0046 D2AF             41             SETB EA                 ;开总中断
+                      42             
+0048 80FE             43             SJMP $                  ;原地踏步
+                      44     
+                      45     ;*****************定时中断服务程序*******************   
+004A                  46     T0_Inter:
+                      47             
+004A 758CF0           48             MOV TH0,#(65536-4000)/256
+                      49             
+004D 758A60           50             MOV TL0,#(65536-4000) MOD 256
+                      51             
+0050 900085           52             MOV DPTR,#TAB
+                      53             
+A51 MACRO ASSEMBLER  LED_NUM                                                              11/25/2009 23:58:59 PAGE     2
+
+0053 E531             54             MOV A,CNTA
+                      55             
+0055 93               56             MOVC A,@A+DPTR
+                      57             
+0056 F5A0             58             MOV P2,A
+                      59             
+0058 90008D           60             MOV DPTR,#DIGIT
+                      61             
+005B E532             62             MOV A,CNTB
+                      63             
+005D 75F008           64             MOV B,#8
+                      65             
+0060 A4               66             MUL AB
+                      67             
+0061 2531             68             ADD A,CNTA
+                      69             
+0063 93               70             MOVC A,@A+DPTR
+                      71             
+0064 F580             72             MOV P0,A
+                      73             
+0066 0531             74             INC CNTA
+                      75             
+0068 E531             76             MOV A,CNTA
+                      77             
+006A B40803           78             CJNE A,#8,NEXT
+                      79             
+006D 753100           80             MOV CNTA,#00H
+                      81             
+0070 0530             82             NEXT: INC TIM
+                      83             
+0072 E530             84             MOV A,TIM
+                      85             
+0074 B4FA0D           86             CJNE A,#250,NEX
+                      87             
+0077 753000           88             MOV TIM,#00H
+                      89             
+007A 0532             90             INC CNTB
+                      91             
+007C E532             92             MOV A,CNTB
+                      93             
+007E B40A03           94             CJNE A,#10,NEX
+                      95             
+0081 753200           96             MOV CNTB,#00H
+                      97             
+0084 32               98             NEX: RETI 
+                      99             
+0085 FEFDFBF7        100             TAB: DB 0FEH,0FDH,0FBH,0F7H,0EFH,0DFH,0BFH,07FH
+0089 EFDFBF7F                
+                     101             
+008D 00003E41        102             DIGIT: DB 00H,00H,3EH,41H,41H,41H,3EH,00H
+0091 41413E00                
+                     103             
+0095 00000000        104             DB 00H,00H,00H,00H,21H,7FH,01H,00H
+0099 217F0100                
+                     105             
+009D 00002745        106             DB 00H,00H,27H,45H,45H,45H,39H,00H
+00A1 45453900                
+                     107             
+00A5 00002249        108             DB 00H,00H,22H,49H,49H,49H,36H,00H
+00A9 49493600                
+                     109             
+00AD 00000C14        110             DB 00H,00H,0CH,14H,24H,7FH,04H,00H
+00B1 247F0400                
+                     111             
+00B5 00007251        112             DB 00H,00H,72H,51H,51H,51H,4EH,00H
+00B9 51514E00                
+A51 MACRO ASSEMBLER  LED_NUM                                                              11/25/2009 23:58:59 PAGE     3
+
+                     113             
+00BD 00003E49        114             DB 00H,00H,3EH,49H,49H,49H,26H,00H
+00C1 49492600                
+                     115             
+00C5 00004040        116             DB 00H,00H,40H,40H,40H,4FH,70H,00H
+00C9 404F7000                
+                     117             
+00CD 00003649        118             DB 00H,00H,36H,49H,49H,49H,36H,00H
+00D1 49493600                
+                     119             
+00D5 00003249        120             DB 00H,00H,32H,49H,49H,49H,3EH,00H
+00D9 49493E00                
+                     121             
+                     122             END
+                                     
+A51 MACRO ASSEMBLER  LED_NUM                                                              11/25/2009 23:58:59 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+B. . . . . . . . .  D ADDR   00F0H   A   
+CNTA . . . . . . .  N NUMB   0031H   A   
+CNTB . . . . . . .  N NUMB   0032H   A   
+DIGIT. . . . . . .  C ADDR   008DH   A   
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+NEX. . . . . . . .  C ADDR   0084H   A   
+NEXT . . . . . . .  C ADDR   0070H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+START. . . . . . .  C ADDR   0030H   A   
+T0_INTER . . . . .  C ADDR   004AH   A   
+TAB. . . . . . . .  C ADDR   0085H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIM. . . . . . . .  N NUMB   0030H   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

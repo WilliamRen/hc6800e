@@ -1,0 +1,170 @@
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:04 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************************************************************
+   2          *                                                                        *
+   3          *                 读取SD卡类型和容量高程序                               *
+   4          *                       （普中科技）                                     *
+   5          *                                                                        *
+   6          *                                                                        *
+   7          * 实验目的：1.更一步的掌握液晶屏的驱动程序                                                               *
+   8          *           2.学习SD卡的驱动程序。                                                   *
+   9          *                       3.掌握如何计算容量和操作SD卡CSD、CID寄存器                   *
+  10          * 注意：关于SD卡相关知识 请看“SD卡相关资料”                            *
+  11          * 实验现象: 彩屏中显示卡的类型名字和容量                                 *
+  12          **************************************************************************/
+  13          
+  14          #include <reg52.h>
+  15          #include <intrins.h>
+  16          
+  17          #include "lcd.h"
+  18          #include "MMC.h"
+  19          
+  20          uchar  csd_data[16];
+  21          uchar  cid_data[16];
+  22          
+  23          unsigned char by;
+  24          unsigned int c_size, c_size_mult, read_bl_len;
+  25          unsigned long drive_size;
+  26          unsigned long   size_mb;
+  27          
+  28          
+  29          
+  30          /**********************************************************
+  31          
+  32           延时子函数
+  33          
+  34          **********************************************************/
+  35          void delayms(uint ms)
+  36          {
+  37   1        unsigned char k;
+  38   1      
+  39   1        while (ms--)
+  40   1        {
+  41   2          for (k = 0; k < 228; k++)
+  42   2            ;
+  43   2        }
+  44   1      }
+  45          
+  46          
+  47          /**********************************************************
+  48          
+  49            主函数
+  50          
+  51          **********************************************************/
+  52          void main(void)
+  53          {  
+  54   1         P2 = 0xff;
+  55   1         P0 = 0xff;
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:04 PAGE 2   
+
+  56   1      
+  57   1         LCD_init();
+  58   1         LCD_clear(5);
+  59   1      
+  60   1          LCD_ShowString(38,5,colors[4],colors[7],"SD/MMC");
+  61   1          ChineseChar(32,22,0,colors[2],colors[7],1); //程
+  62   1          ChineseChar(48,22,0,colors[2],colors[7],2); //序
+  63   1          ChineseChar(64,22,0,colors[2],colors[7],3); //测
+  64   1          ChineseChar(80,22,0,colors[2],colors[7],4); //试
+  65   1      
+  66   1      
+  67   1              MMC_Init(); //初始化SD卡
+  68   1          if(Init_Flag == 0)
+  69   1         {
+  70   2               LCD_ShowString(12,50,colors[0],colors[7],"INIT SUCCESS");
+  71   2               LCD_ShowString(2,75,colors[0],colors[7],"TYPE:");
+  72   2           if(card_type)
+  73   2           {  LCD_ShowString(52,75,colors[2],colors[7],"SD");
+  74   3              ChineseChar(68,75,1,colors[2],colors[7],1);     //卡
+  75   3           }       
+  76   2            else
+  77   2           { LCD_ShowString(52,75,colors[2],colors[7],"MMC");
+  78   3             ChineseChar(68,75,1,colors[2],colors[7],1);      //卡
+  79   3           }
+  80   2         
+  81   2           Read_CID_MMC(cid_data);
+  82   2      
+  83   2           LCD_ShowString(2,95,colors[0],colors[7],"NAME:");
+  84   2           LCD_ShowChar(50,95,colors[2],colors[7],cid_data[3]);
+  85   2           LCD_ShowChar(58,95,colors[2],colors[7],cid_data[4]);
+  86   2           LCD_ShowChar(66,95,colors[2],colors[7],cid_data[5]);
+  87   2           LCD_ShowChar(74,95,colors[2],colors[7],cid_data[6]);
+  88   2           LCD_ShowChar(82,95,colors[2],colors[7],cid_data[7]);         
+  89   2      
+  90   2           
+  91   2           Read_CSD_MMC(csd_data);
+  92   2               
+  93   2               //C_SIZE为CSD[73:62]
+  94   2           c_size=csd_data[6] & 0x03; //bits 1..0
+  95   2           c_size<<=10;
+  96   2           c_size+=(unsigned int)csd_data[7]<<2;
+  97   2           c_size+=csd_data[8]>>6;
+  98   2               
+  99   2               //READ_BL_LEN为CSD[83:80]
+ 100   2           by= csd_data[5] & 0x0F;
+ 101   2           read_bl_len=1;
+ 102   2           read_bl_len<<=by;    //2^by
+ 103   2      
+ 104   2               //C_SIZE_MULT为CSD[49:47]
+ 105   2           by=csd_data[9] & 0x03;      //获取multiply
+ 106   2           by<<=1;
+ 107   2           by+=csd_data[10] >> 7;
+ 108   2      
+ 109   2           c_size_mult=1;
+ 110   2           c_size_mult<<=(2+by);        //2^(c_size_mult+2)
+ 111   2               //存储器容量＝BLOCKNR*BLOCK_LEN  
+ 112   2               //BLOCKNR = (C_SIZE+1) * MULT  MULT = (C_SIZE_MULT) * 2^(C_SIZE_MULT + 2)  BLOCK_LEN = (READ_BL_LEN < 12
+             -) * 2^(READ_BL_LEN)
+ 113   2      
+ 114   2           drive_size=(ulong)(c_size+1) * (ulong)c_size_mult * (ulong)read_bl_len;
+ 115   2      
+ 116   2           size_mb= drive_size>>20;    //1024*1024=1048576=2^20; 
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:04 PAGE 3   
+
+ 117   2           LCD_ShowString(2,115,colors[0],colors[7],"SIZE:");
+ 118   2      
+ 119   2           LCD_ShowChar(52,115,colors[2],colors[7],size_mb/1000|0x30); 
+ 120   2           LCD_ShowChar(60,115,colors[2],colors[7],size_mb%1000/100|0x30);
+ 121   2           LCD_ShowChar(68,115,colors[2],colors[7],size_mb%100/10|0x30); 
+ 122   2           LCD_ShowChar(76,115,colors[2],colors[7],size_mb%10|0x30); 
+ 123   2           LCD_ShowChar(84,115,colors[2],colors[7],'M');
+ 124   2           LCD_ShowChar(92,115,colors[2],colors[7],'B');
+ 125   2         }
+ 126   1         else
+ 127   1         {
+ 128   2           LCD_ShowString(12,50,colors[0],colors[7],"INIT FAILURE");   //初始化失败
+ 129   2           while(1)
+ 130   2           {
+ 131   3             LCD_ShowString(8,75,colors[2],colors[7],"CARD CHECK-UP"); //卡检查提示闪动显示
+ 132   3             delayms(1000);
+ 133   3             LCD_ShowString(8,75,colors[2],colors[7],"              ");        
+ 134   3             delayms(1000);
+ 135   3           } 
+ 136   2         }
+ 137   1        
+ 138   1      
+ 139   1         while(1)     ;
+ 140   1      }
+ 141          
+ 142          /*********************************************************/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1012    ----
+   CONSTANT SIZE    =     87    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     47    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

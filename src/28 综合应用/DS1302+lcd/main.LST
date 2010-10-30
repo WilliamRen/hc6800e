@@ -1,0 +1,124 @@
+C51 COMPILER V7.10   MAIN                                                                  03/28/2010 12:46:57 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**************************************************************************************
+   2          *                                                                                                                                                                         *
+   3          *  将P1口和JP5(独立按键)排线连接                                                                                                          *
+   4          *                                                                                                                                                                         *
+   5          ****************************************************************************************/
+   6          
+   7          #include "SYSTEM.H"
+   8          
+   9          /*--------------------------------------------------------------*/
+  10          SYSTEMTIME CurrentTime;
+  11          
+  12          unsigned char k = 0;    //键值
+  13          unsigned char K1,K2,K3,M1,M2,M3,K1J,K2J,K3J,K4J;        //键值
+  14          unsigned char Set;      //调整值
+  15          char Set_Mode = 0;
+  16          
+  17          void Keysan(void);
+  18          void delay200ms(void);
+  19          
+  20          
+  21          //主函数
+  22          void main(void)
+  23          {       
+  24   1              lcd_init();
+  25   1              //lcd_sef_chr();                                                //写入自定义字符号
+  26   1              DS1302_Initial();
+  27   1      
+  28   1               lcd_pos(0,0);
+  29   1               prints("Date:");
+  30   1               lcd_pos(0,1);
+  31   1               prints("Time:");
+  32   1              k = 6;  //不改变时间  
+  33   1          while(1)
+  34   1              {
+  35   2                Keysan();
+  36   2              
+  37   2               
+  38   2                  DS1302_GetTime(&CurrentTime);
+  39   2                      DateToStr(&CurrentTime);
+  40   2                      TimeToStr(&CurrentTime);
+  41   2                
+  42   2                
+  43   2                      lcd_pos(6,0);
+  44   2                      prints(CurrentTime.DateString);
+  45   2                      lcd_pos(6,1);
+  46   2                      prints(CurrentTime.TimeString);
+  47   2      
+  48   2                      //lcd_pos(7,0);
+  49   2                  //lcd_wcmd(0x0E);
+  50   2      
+  51   2                      delay200ms();
+  52   2                      
+  53   2              }
+  54   1      }
+  55          
+C51 COMPILER V7.10   MAIN                                                                  03/28/2010 12:46:57 PAGE 2   
+
+  56          
+  57          /*--------------------------------------------------------------*/
+  58          //键盘扫描
+  59          void Keysan(void)
+  60          {
+  61   1              
+  62   1          if(~P1_2&K1J)   { k++;  }
+  63   1               K1J=~(~P1_2);
+  64   1      
+  65   1          if(~P1_3&K2J)    { Set++; }
+  66   1                K2J=~(~P1_3);
+  67   1      
+  68   1              if(~P1_4&K3J)    { Set--; }
+  69   1               K3J=~(~P1_4);
+  70   1              
+  71   1              if(k == 7)      {k = 0; }
+  72   1      
+  73   1              switch(k)
+  74   1              {
+  75   2                              case 0: DS1302_SetTime(DS1302_SECOND, Set&0x3f); break;
+  76   2                              case 1: DS1302_SetTime(DS1302_MINUTE, Set&0x3f); break;
+  77   2                              case 2: DS1302_SetTime(DS1302_HOUR  , Set&0x1f); break;
+  78   2                              case 3: DS1302_SetTime(DS1302_DAY   , Set&0x0f); break;
+  79   2                              case 4: DS1302_SetTime(DS1302_MONTH , Set&0x0f); break;
+  80   2                              case 5: DS1302_SetTime(DS1302_YEAR  , Set&0x7f); break;
+  81   2                              default: break;
+  82   2              }
+  83   1      }
+  84          
+  85          
+  86          /*--------------------------------------------------------------*/
+  87          //延时200000+0us 函数定义
+  88          void delay200ms(void)
+  89          {
+  90   1              unsigned char i,j,k;
+  91   1              for(i=201;i>0;i--)
+  92   1              for(j=32;j>0;j--)
+  93   1              for(k=14;k>0;k--);
+  94   1      }
+  95          
+  96          
+  97          /*--------------------------------------------------------------*/
+  98          
+  99          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    263    ----
+   CONSTANT SIZE    =     12    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     38    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

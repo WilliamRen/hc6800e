@@ -1,0 +1,568 @@
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 1   
+
+
+C51 COMPILER V6.12, COMPILATION OF MODULE LED
+OBJECT MODULE PLACED IN led.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led.c BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          /***********************************************************************************
+   2          *  标题:                 硫酸铜建浴设备控制系统                                    *
+   3          *																			       *
+   4          *  连接方法：P1与J12 用8PIN排线连接											       *
+   5          *            P3与JP5按钮连接                                                       *
+   6                       P0与JP1(LED灯连接)												       *
+   7          			 P3.4为 + 按钮   P3.5为 - 按钮    P3.7为光标按钮				       *
+   8          			 P3.0 搅拌机开关 P3.1 水泵快关    P3.2 报警解除					       *
+   9          具体控制要求: 1.按下 P3.4和P3.5不放 按下 P3.7 即可进入设置模式，再次按下退出设置模式 			
+  10          			  左边四位数码管最左边的开始闪烁，后面的四位数码管不属于此控制系统     *
+  11          			  按下加或减 有 A b C 三档 分别代表三个参数。					       *
+  12          			  第一个参数(A)：搅拌机运行时间									       *
+  13          			  第二个参数(b)：液位信号保持时间								       *
+  14          			  第三个参数(C): 为定义											       *
+  15          																			       *
+  16          	         各参数保存在STC89C52单片机的内部EEPROM中						       *
+  17          																			       *
+  18          更详细控制要求参考 <<控制功能表>>											       *			
+  19          ************************************************************************************/
+  20          
+  21          #include "system.h"
+  22          
+  23          //此表为 LED 的字模, 共阴数码管 0-9  - 
+  24          unsigned char code Disp_Tab[] = {~0x3f,~0x06,~0x5b,~0x4f,~0x66,~0x6d,~0x7d,~0x07,~0x7f,~0x6f,~0x40}; 
+  25          
+  26          
+  27          							   //
+  28          unsigned char code Disp_alph[] ={~0x88,~0x83,~0xC6,~0xA1,~0x86,~0xbf,~0xc7,~0x8c,~0xc1};
+  29          								//P     R/A	  E	    S
+  30          unsigned char code alarm_Tab[] ={~0x0c ,~0x88 ,~0x86 ,~0x92 }; 
+  31          
+  32          unsigned int  D[10] , LedOut[8] , LedNumVal , user_T1 , temp_val;
+  33          unsigned char user_T , pos,val  , pos_alph , monitor_Number;
+  34          unsigned int temp,Tick_10ms,Tick1_10ms,Tick_1min,Tick2_10ms ;
+  35          bit M0, M1,M3,M4,SET_J ,Jiao_ban_J, shui_beng_J,Flag_Tim,Flag_C,Flag_set,alarm_flag,liq_alarm;
+  36          char val2;
+  37          void delay(unsigned int i);      //函数声名
+  38          void Display();
+  39          void set_mode();
+  40          void Act_Contrl();
+  41          void Run_mode(unsigned char run_monitor);
+  42          unsigned int distribute_Data(unsigned char pos_alph );
+  43          void Data_Change(unsigned int lednmval, unsigned char position);
+  44          void MUL_display(unsigned char one ,unsigned char two,unsigned char three,unsigned char four);
+  45          
+  46          
+  47          main()
+  48          {   TMOD|= 0x11;
+  49   1          TH1=0xD8;   //12.000M
+  50   1          TL1=0xF0;	
+  51   1      	IE = 0x88;	
+  52   1          TR1  = 1; 
+  53   1      	
+  54   1       	rdData(0x0000, 10);
+  55   1      
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 2   
+
+  56   1      	pos = 0;
+  57   1      	val = 0;
+  58   1      	Flag_set = 0;
+  59   1        
+  60   1        while(1)
+  61   1        {	 
+  62   2         	char i;
+  63   2          
+  64   2      	  //实现脉冲输入
+  65   2          if(~SET&SET_J)  
+  66   2      	{   
+  67   3         	  if (!ADD & !SUB) { M0 =~M0 ; pos = 1;}   //同时按下 加 、减、按钮SET按钮进入设置模式 
+  68   3      	   
+  69   3      	  if (Flag_set == 1 & ADD & SUB ) pos ++;
+  70   3         	} 
+  71   2        	SET_J=~(~SET);
+  72   2      
+  73   2          if (pos > 4) pos = 1; 	 //控制光标循环移动
+  74   2      
+  75   2      	 if (M0) { 	set_mode();	  Flag_set = 1;	}  //进入设置模式
+  76   2      	 
+  77   2           if (Flag_set & ~M0)   //退出设置模式
+  78   2      	 {
+  79   3      	   Flag_set = 0; //清除设置标志位
+  80   3      	   pos = 0; 	 //清除光标位置
+  81   3      	   val = 0;		 //清除改变参数设置变量
+  82   3      	   temp = 0 ;
+  83   3      	   for (i = 0 ; i<4; i++) W_buffer[i] = D[i];
+  84   3      	   earseSector(0x0000);            //擦除EEPROM
+  85   3      	   wrData(0x0000, 10);             //写入EEPROM
+  86   3      
+  87   3      	 }
+  88   2      
+  89   2         	Act_Contrl();  //调用动作控制程序
+  90   2         	Display();	   //调用显示程序
+  91   2        }	 
+  92   1      
+  93   1      }
+  94          
+  95          /*************************************************************************************
+  96          *          各动作控制程序															 *				 
+  97          *																					 *
+  98          **************************************************************************************/
+  99          void Act_Contrl()
+ 100          {
+ 101   1          
+ 102   1      	P0 = 0xff;
+ 103   1      	P2 = 0xff;
+ 104   1      	monitor_Number = 9;
+ 105   1         
+ 106   1      	if(~liq_level_low)
+ 107   1      	{
+ 108   2      		if(Tick2_10ms >= D[1]*100)	{liq_alarm = 1;}
+ 109   2      	}
+ 110   1      	else
+ 111   1      	{Tick2_10ms = 0;
+ 112   2      	liq_alarm = 0;
+ 113   2      	}
+ 114   1         
+ 115   1      
+ 116   1         //搅拌脉冲处理
+ 117   1         if(~Jiao_ban&Jiao_ban_J)  
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 3   
+
+ 118   1      	{   
+ 119   2         		 M3 = ~M3;
+ 120   2         	} 
+ 121   1        	Jiao_ban_J=~(~Jiao_ban);
+ 122   1      
+ 123   1      
+ 124   1      	//水泵脉冲处理 
+ 125   1      	 if(~shui_beng&shui_beng_J)  
+ 126   1      	{   
+ 127   2         	     M4 = ~M4;
+ 128   2         	} 
+ 129   1        	shui_beng_J=~(~shui_beng);
+ 130   1      
+ 131   1      
+ 132   1      		//系统待机
+ 133   1      	if(jiao_relay & shui_relay) {monitor_Number =9;}
+ 134   1      
+ 135   1      
+ 136   1      	 //搅拌机运行
+ 137   1      	if(M3) {jiao_relay = 0; monitor_Number =1; }
+ 138   1      
+ 139   1      	
+ 140   1      
+ 141   1      	 //搅拌机故障
+ 142   1      	if(~jiao_ban_Err) {alarm_flag = 1; M3 = 0; monitor_Number =2; }
+ 143   1      		
+ 144   1           //水泵运行
+ 145   1      	if(M4) {shui_relay = 0; monitor_Number =3;}
+ 146   1      
+ 147   1      	  //水泵故障
+ 148   1      	if(~shui_beng_Err) {alarm_flag = 1; M4 = 0; monitor_Number =4;}
+ 149   1         	
+ 150   1      	//搅拌机和水泵同时运行
+ 151   1      	if(M3 & M4 ) {monitor_Number =5;}
+ 152   1      
+ 153   1      	//搅拌机和水泵同时故障
+ 154   1      	if(~jiao_ban_Err & ~shui_beng_Err)	{monitor_Number =6;}
+ 155   1      
+ 156   1      	 //储罐液位低
+ 157   1      	if(liq_alarm ) {alarm_flag = 1; M4 = 0; monitor_Number =7;}
+ 158   1      
+ 159   1      	 //电源故障
+ 160   1      	if(~power_Err)	{alarm_flag = 1; monitor_Number =8;}
+ 161   1        
+ 162   1      	 //搅拌机及水泵同时动作 并显示当前时间
+ 163   1      	 if(M3)
+ 164   1      	 { if (Tick_10ms >= 6000 )  {Tick_1min++;Tick_10ms = 0;}
+ 165   2      		   if (D[0]!=0)
+ 166   2      		   { if (Tick_1min == D[0])  {M3 = 0;Tick_1min = 0;Tick_10ms = 0;}
+ 167   3      			 if (M3&~M4) monitor_Number =10;
+ 168   3      		     if (M3&M4)  monitor_Number =11;
+ 169   3      		   }
+ 170   2      		   else{// 以防工作时改变参数
+ 171   3      		    Tick_1min = 0;
+ 172   3      		    Tick_10ms = 0;
+ 173   3      		   }
+ 174   2      	 }
+ 175   1      	 else
+ 176   1      	 {
+ 177   2      	   Tick_10ms = 0;
+ 178   2      	   Tick_1min = 0;
+ 179   2      	 }
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 4   
+
+ 180   1      
+ 181   1      	  // 报警解除
+ 182   1      	  if(!alarm_remove & alarm_flag) alarm_flag = 0;
+ 183   1         	  if(jiao_ban_Err & shui_beng_Err & power_Err & liq_level_low & alarm_flag)
+ 184   1      	  {
+ 185   2      	    alarm_flag = 0;
+ 186   2      	  }
+ 187   1      	  if(alarm_flag)	beep = 0;
+ 188   1      
+ 189   1      	  //测试报警器
+ 190   1      	  if(!alarm_remove) beep = 0; 
+ 191   1      
+ 192   1      	 if (~Flag_set) Run_mode(monitor_Number);   //调用运行监视显示
+ 193   1      	 
+ 194   1      
+ 195   1      }
+ 196          
+ 197          /*************************************************************************************
+ 198          *          运行模式（显示当前运行情况												 *				 
+ 199          *																					 *
+ 200          **************************************************************************************/
+ 201          void Run_mode(unsigned char run_monitor)	 //运行监视显示
+ 202          {
+ 203   1      
+ 204   1           switch (run_monitor)
+ 205   1      	{
+ 206   2      	  case 1:  //搅拌机运行中  PR01
+ 207   2      	  {MUL_display(alarm_Tab[0] , alarm_Tab[1] , Disp_Tab[0] , Disp_Tab[1]) ;
+ 208   3      	   break;
+ 209   3      	  }
+ 210   2      
+ 211   2      	  case 2:  //搅拌机故障	   PE01
+ 212   2      	  {MUL_display(alarm_Tab[0] , alarm_Tab[2] , Disp_Tab[0] , Disp_Tab[1]) ;
+ 213   3      	   break;
+ 214   3      	  }
+ 215   2       
+ 216   2      	  case 3:  //搅拌水泵运行中	 PR02
+ 217   2      	  {MUL_display(alarm_Tab[0] , alarm_Tab[1] , Disp_Tab[0] , Disp_Tab[2]) ;
+ 218   3      	   break;
+ 219   3      	  }
+ 220   2      
+ 221   2      	  case 4:  //搅拌水泵故障	 PE02
+ 222   2      	  {MUL_display(alarm_Tab[0] , alarm_Tab[2] , Disp_Tab[0] , Disp_Tab[2]) ;
+ 223   3      	   break;
+ 224   3      	  }
+ 225   2      
+ 226   2      	  case 5:  //搅拌机和水泵同时在运行	   PR12
+ 227   2      	  {MUL_display(alarm_Tab[0] , alarm_Tab[1] , Disp_Tab[1] , Disp_Tab[2]) ;
+ 228   3      	   break;
+ 229   3      	  }
+ 230   2      										  
+ 231   2      	  case 6:  //搅拌机和水泵同时故障  PE12
+ 232   2      	  {MUL_display(alarm_Tab[0] , alarm_Tab[2] , Disp_Tab[1] , Disp_Tab[1]) ;
+ 233   3      	   break;
+ 234   3      	  }
+ 235   2      
+ 236   2      	  case 7:  //储罐低液位		 E001
+ 237   2      	  {MUL_display(alarm_Tab[2] , Disp_Tab[0] , Disp_Tab[0] , Disp_Tab[1]) ;
+ 238   3      	   break;
+ 239   3      	  }
+ 240   2      
+ 241   2      	  case 8:  //电源故障	   E002
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 5   
+
+ 242   2      	  {MUL_display(alarm_Tab[2] , Disp_Tab[0] , Disp_Tab[0] , Disp_Tab[2]) ;
+ 243   3      	   break;
+ 244   3      	  }
+ 245   2      
+ 246   2      	  case 9:  //系统待机状态 S000
+ 247   2      	  {MUL_display(alarm_Tab[3] ,Disp_Tab[0] , Disp_Tab[0] , Disp_Tab[0]) ;
+ 248   3      	   break;
+ 249   3      	  }
+ 250   2      
+ 251   2      	  case 10:  //搅拌机运行中 显示当前时间
+ 252   2      	  {MUL_display(alarm_Tab[0], Disp_Tab[(D[0]-Tick_1min)%1000/100], Disp_Tab[(D[0]-Tick_1min)%100/10], Disp
+             -_Tab[(D[0]-Tick_1min)%10]);
+ 253   3      	   break;
+ 254   3      	  }
+ 255   2      
+ 256   2      	  case 11:  //搅拌机和水泵在运行，并启动定时搅拌
+ 257   2      	  {MUL_display(alarm_Tab[1], Disp_Tab[(D[0]-Tick_1min)%1000/100], Disp_Tab[(D[0]-Tick_1min)%100/10], Disp
+             -_Tab[(D[0]-Tick_1min)%10]);
+ 258   3      	   break;
+ 259   3      	  }
+ 260   2      
+ 261   2      	}  
+ 262   1      }
+ 263          
+ 264          
+ 265          /*************************************************************************************
+ 266          *          设定模式																	 *				 
+ 267          *																					 *
+ 268          **************************************************************************************/
+ 269          void set_mode()		//设定模式
+ 270          {   
+ 271   1         switch (pos)
+ 272   1      	{
+ 273   2      	   case 1:
+ 274   2      	   {pos_alph = val;  
+ 275   3      	    temp_val = distribute_Data (pos_alph);	   //分发数据
+ 276   3      	   	LedNumVal = temp_val ;
+ 277   3      	    break;
+ 278   3      	    }
+ 279   2      	 	    
+ 280   2      	   case 2:
+ 281   2      	   {LedNumVal = temp_val + (val2*100); 
+ 282   3      	    Data_Change(LedNumVal , pos_alph);
+ 283   3              break;
+ 284   3      	   }
+ 285   2      
+ 286   2      	   case 3:
+ 287   2      	   {LedNumVal = temp_val + (val2*10);    
+ 288   3      	   	Data_Change(LedNumVal , pos_alph);
+ 289   3      		break;
+ 290   3      	   }
+ 291   2      
+ 292   2      	   case 4:
+ 293   2      	   {LedNumVal = temp_val + val2;
+ 294   3      	    Data_Change(LedNumVal , pos_alph);
+ 295   3      	   break;
+ 296   3      	   }
+ 297   2      	}
+ 298   1      
+ 299   1         MUL_display(0, 0, 0, 0);
+ 300   1      }
+ 301          
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 6   
+
+ 302          void Data_Change(unsigned int lednmval, unsigned char position)
+ 303          {
+ 304   1      	 if(lednmval >= 999) lednmval = 999;
+ 305   1           D[position] = lednmval;
+ 306   1      	 temp_val = lednmval;
+ 307   1      	 val2 = 0;
+ 308   1      	 
+ 309   1      
+ 310   1      }
+ 311          
+ 312          unsigned int distribute_Data(unsigned char pos_alph )
+ 313          {
+ 314   1        unsigned int temp_val;	
+ 315   1      	switch (pos_alph)
+ 316   1         {
+ 317   2      	 case 0:
+ 318   2      	 { temp_val = D[0];
+ 319   3      	  
+ 320   3      	 break;
+ 321   3      	 }
+ 322   2      
+ 323   2      	 case 1:
+ 324   2      	 { temp_val = D[1];
+ 325   3      	  
+ 326   3      	  break;
+ 327   3      	 }
+ 328   2      
+ 329   2      	 case 2:
+ 330   2      	 { temp_val = D[2];
+ 331   3      	   
+ 332   3      	  break;
+ 333   3      	 }
+ 334   2         }
+ 335   1      
+ 336   1          return temp_val;
+ 337   1      }
+ 338          
+ 339          
+ 340          /*************************************************************************************
+ 341          *          多重过程报警显示处理子程序												 *				 
+ 342          *																					 *
+ 343          **************************************************************************************/
+ 344          void MUL_display(unsigned char one ,unsigned char two,unsigned char three,unsigned char four)
+ 345          {
+ 346   1          if(Flag_set)  
+ 347   1        {	 
+ 348   2      	 
+ 349   2      	 LedOut[0]=Disp_alph[pos_alph];	   //千位
+ 350   2           LedOut[1]=Disp_Tab[LedNumVal%1000/100];      //百位带小数点
+ 351   2           LedOut[2]=Disp_Tab[LedNumVal%100/10]&0x7f;   //十位
+ 352   2           LedOut[3]=Disp_Tab[LedNumVal%10];            //个位
+ 353   2      
+ 354   2      	 LedOut[4]=Disp_Tab[LedNumVal%10000/1000];	   //千位
+ 355   2           LedOut[5]=Disp_Tab[LedNumVal%1000/100]&0x7f;
+ 356   2           LedOut[6]=Disp_Tab[LedNumVal%100/10];
+ 357   2           LedOut[7]=Disp_Tab[LedNumVal%10];
+ 358   2        }
+ 359   1        else
+ 360   1        {
+ 361   2           		
+ 362   2      	LedOut[0]=one;      //Disp_Tab[monitor_Number];	 
+ 363   2          LedOut[1]=two;
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 7   
+
+ 364   2          LedOut[2]=three;
+ 365   2          LedOut[3]=four;	 
+ 366   2      
+ 367   2      	LedOut[4]=Disp_Tab[Tick2_10ms%10000/1000];	   //千位
+ 368   2          LedOut[5]=Disp_Tab[Tick2_10ms%1000/100]&0x7f;
+ 369   2          LedOut[6]=Disp_Tab[D[1]%100/10];
+ 370   2          LedOut[7]=Disp_Tab[D[1]%10];
+ 371   2        }
+ 372   1      
+ 373   1      }
+ 374          
+ 375          /*************************************************************************************
+ 376          *          数码管显示处理															 *				 
+ 377          *																					 *
+ 378          **************************************************************************************/
+ 379          
+ 380          void Display()
+ 381          {   
+ 382   1        	unsigned int i; 
+ 383   1      	 for( i=0; i<8; i++) 
+ 384   1      	 {	
+ 385   2      			
+ 386   2      	  switch(i)					  
+ 387   2      	     {	    
+ 388   3      			case 0:
+ 389   3      			if ((pos == 1 )&Flag_Tim & (ADD&SUB))
+ 390   3      			{LedOut[0] = 0xff;
+ 391   4      			break;
+ 392   4      			}
+ 393   3      			else
+ 394   3      			{LS138A=0; LS138B=0; LS138C=0; 
+ 395   4      			 //L1 = 0;  L2 = 1;  L3 = 1; L4 = 1;
+ 396   4      			break; 
+ 397   4      			} 
+ 398   3      			       
+ 399   3      	        case 1:
+ 400   3      			if ((pos == 2 )&Flag_Tim& (ADD&SUB))
+ 401   3      			{LedOut[1] = 0xff;
+ 402   4      			break;
+ 403   4      			}
+ 404   3      			else
+ 405   3      			{LS138A=1; LS138B=0; LS138C=0; 
+ 406   4      			 //L1 = 1;  L2 = 0;  L3 = 1; L4 = 1;
+ 407   4      			break;}
+ 408   3      			             	
+ 409   3      	        case 2:
+ 410   3      			if ((pos == 3 )&Flag_Tim& (ADD&SUB))
+ 411   3      			{LedOut[2] = 0xff;
+ 412   4      			break;
+ 413   4      			}
+ 414   3      			else
+ 415   3      			{LS138A=0; LS138B=1; LS138C=0; 
+ 416   4      			 //L1 = 1;  L2 = 1;  L3 = 0; L4 = 1;
+ 417   4      			break;} 
+ 418   3      
+ 419   3      	        case 3:
+ 420   3      			if ((pos == 4 )&Flag_Tim& (ADD&SUB))
+ 421   3      			{LedOut[3] = 0xff;
+ 422   4      			break;
+ 423   4      			}
+ 424   3      			else 
+ 425   3      			{LS138A=1; LS138B=1; LS138C=0; 
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 8   
+
+ 426   4      			 //L1 = 1;  L2 = 1;  L3 = 1; L4 = 0;
+ 427   4      			break;}
+ 428   3      			 
+ 429   3      			case 4:
+ 430   3      			if ((pos == 1 )&Flag_Tim& (ADD&SUB))
+ 431   3      			{LedOut[4] = 0xff;
+ 432   4      			break;
+ 433   4      			}
+ 434   3      			else
+ 435   3      			{LS138A=0; LS138B=0; LS138C=1; 
+ 436   4      			 //L1 = 1;  L2 = 0;  L3 = 0; L4 = 0;
+ 437   4      			 break;}
+ 438   3      
+ 439   3      			case 5:
+ 440   3      			if ((pos == 2 )&Flag_Tim& (ADD&SUB))
+ 441   3      			{LedOut[5] = 0xff;
+ 442   4      			break;
+ 443   4      			}
+ 444   3      			else
+ 445   3      			{LS138A=1; LS138B=0; LS138C=1; 
+ 446   4      			// L1 = 0;  L2 = 1;  L3 = 0; L4 = 0;
+ 447   4      			break;}
+ 448   3      
+ 449   3      			case 6:
+ 450   3      			if ((pos == 3 )&Flag_Tim& (ADD&SUB))
+ 451   3      			{LedOut[6] = 0xff;
+ 452   4      			break;
+ 453   4      			}
+ 454   3      			else
+ 455   3      			{LS138A=0; LS138B=1; LS138C=1; 
+ 456   4      			 //L1 = 0;  L2 = 0;  L3 = 1; L4 = 0;
+ 457   4      			break;}
+ 458   3      
+ 459   3      			case 7:
+ 460   3      			if ((pos == 4  )&Flag_Tim& (ADD&SUB))
+ 461   3      			{  LedOut[7] = 0xff;
+ 462   4      		    	break;
+ 463   4      			}
+ 464   3      			else
+ 465   3      			{LS138A=1; LS138B=1; LS138C=1; 
+ 466   4      			 //L1 = 0;  L2 = 0;  L3 = 0; L4 = 1;
+ 467   4      			break; }  	
+ 468   3      			
+ 469   3      	     }
+ 470   2      		   P1 = LedOut[i];
+ 471   2      		  
+ 472   2      		delay(150);
+ 473   2      	  }
+ 474   1      	     P1 = 0xff;
+ 475   1      }
+ 476          	
+ 477          /*************************************************************************************
+ 478          *          延时程序														       	     *				 
+ 479          *																					 *
+ 480          **************************************************************************************/
+ 481          void delay(unsigned int i)
+ 482          {
+ 483   1          char j;
+ 484   1          for(i; i > 0; i--)
+ 485   1              for(j = 200; j > 0; j--);
+ 486   1      }
+ 487          
+C51 COMPILER V6.12  LED                                                                    09/15/2010 19:34:56 PAGE 9   
+
+ 488          
+ 489           /*************************************
+ 490           [ t1 (10ms)中断] 中断
+ 491          
+ 492          *************************************/
+ 493          void T1zd(void) interrupt 3      //3定时器1的中断号  1定时器0的中断号 0外部中断1 2外部中断2  4串口中断
+ 494          {
+ 495   1      
+ 496   1      	 TH1 = 0xD8;    //12.000
+ 497   1      	 TL1 = 0xF0;
+ 498   1      
+ 499   1      	 Tick_10ms++;
+ 500   1      	 Tick1_10ms++;
+ 501   1      	 Tick2_10ms++;
+ 502   1      
+ 503   1       	if (++user_T == 30)  
+ 504   1      	{Flag_Tim = ~Flag_Tim; 
+ 505   2      	 user_T = 0;
+ 506   2      	 }
+ 507   1      
+ 508   1         if (++user_T1 == 30) 
+ 509   1         {   
+ 510   2       
+ 511   2      	if (Flag_set)  
+ 512   2      	{   if (pos == 1)
+ 513   3      	   {
+ 514   4      	   	if (!ADD &SUB)  val = (++temp)%3;
+ 515   4              if (!SUB &ADD ) val = (--temp)%3;
+ 516   4      	   }
+ 517   3        	   else  
+ 518   3      	   {
+ 519   4      	   	if (!ADD & SUB & LedNumVal <999)  val2++ ;
+ 520   4              if (!SUB & ADD & val2 >=-1 ) val2-- ;
+ 521   4      	   }
+ 522   3      	 }	
+ 523   2      
+ 524   2      	  user_T1 = 0;
+ 525   2      	}
+ 526   1      
+ 527   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2295    ----
+   CONSTANT SIZE    =     24    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     58       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =     12    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,118 @@
+C51 COMPILER V7.10   IR                                                                    07/29/2010 14:38:46 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE IR
+OBJECT MODULE PLACED IN IR.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE IR.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /********************************************************************************
+   2          *  描述:                                                                       *
+   3          *         数码管显示 遥控键值读取器                                            *
+   4          *          遥控器接p3.2                                                        *
+   5          *  现象：当按遥控器时，按下事 数码管会有闪烁，                                 *
+   6          *                                                                              *
+   7          *         连接方法：使用红外功能时 J1跳线短接                                  *
+   8          *******************************************************************************/
+   9          
+  10          #include <reg51.h>
+  11          
+  12          sbit IRIN = P3^2;         //红外接收器数据线
+  13          
+  14          
+  15          void IRdelay(char x);  //x*0.14MS
+  16          void beep();
+  17          
+  18          unsigned char  IRCOM[7];
+  19          extern unsigned char Y0;
+  20          extern void display(unsigned char Key_Val);
+  21          /*******************************************************************/
+  22          void IRInit()
+  23          {
+  24   1          IE |= 0x81;                 //允许总中断中断,使能 INT0 外部中断
+  25   1          TCON |= 0x01;               //触发方式为脉冲负边沿触发
+  26   1          
+  27   1          IRIN=1;                    //I/O口初始化
+  28   1      } 
+  29          
+  30          /**********************************************************/
+  31          void IR_IN(void) interrupt 0 
+  32          {
+  33   1        unsigned char j,k,N=0;
+  34   1           EX0 = 0;  
+  35   1                 
+  36   1               IRdelay(5);
+  37   1               if (IRIN==1) 
+  38   1           { EX0 =1;
+  39   2                 return;
+  40   2                } 
+  41   1                                 //确认IR信号出现
+  42   1        while (!IRIN)            //等IR变为高电平，跳过9ms的前导低电平信号。
+  43   1          {IRdelay(1);}
+  44   1      
+  45   1       for (j=0;j<4;j++)         //收集四组数据
+  46   1       { 
+  47   2        for (k=0;k<8;k++)        //每组数据有8位
+  48   2        {
+  49   3         while (IRIN)            //等 IR 变为低电平，跳过4.5ms的前导高电平信号。
+  50   3           {IRdelay(1);}
+  51   3          while (!IRIN)          //等 IR 变为高电平
+  52   3           {IRdelay(1);}
+  53   3           while (IRIN)           //计算IR高电平时长
+  54   3            {
+  55   4          IRdelay(1);
+C51 COMPILER V7.10   IR                                                                    07/29/2010 14:38:46 PAGE 2   
+
+  56   4          N++;           
+  57   4          if (N>=30)
+  58   4               { EX0=1;
+  59   5               return;}                  //0.14ms计数过长自动离开。
+  60   4            }                        //高电平计数完毕                
+  61   3           IRCOM[j]=IRCOM[j] >> 1;                  //数据最高位补“0”
+  62   3           if (N>=8) {IRCOM[j] = IRCOM[j] | 0x80;}  //数据最高位补“1”
+  63   3           N=0;
+  64   3        }//end for k
+  65   2              
+  66   2       }//end for j
+  67   1         
+  68   1         if (IRCOM[2]!=~IRCOM[3])
+  69   1         { EX0=1;
+  70   2           return; 
+  71   2               
+  72   2              }
+  73   1      
+  74   1      
+  75   1            EX0 = 1; 
+  76   1               
+  77   1      
+  78   1      } 
+  79          
+  80          
+  81          /**********************************************************/
+  82          void IRdelay(unsigned char x)    //x*0.14MS
+  83          {
+  84   1       unsigned char i;
+  85   1        while(x--)
+  86   1       {
+  87   2        for (i = 0; i<13; i++) {}
+  88   2       }
+  89   1      }
+  90          
+  91          
+  92          
+  93          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    214    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

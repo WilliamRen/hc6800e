@@ -1,0 +1,283 @@
+A51 MACRO ASSEMBLER  YDLCD                                                                03/29/2009 20:16:54 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN ydLCD.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE ydLCD.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     ;/********************************************************************************
+                       3     ;*  描述:                LCD1602 移动显示                                       *
+                       4     ;* 显示方式：                                                                   *
+                       5     ;* 1、LCD第一行显示：  BIG BIG WORLD                                            *
+                       6     ;*      LCD第二行显示：I LOVE PUZHONG                                             *
+                       7     ;* 2、先将两行字符写入DDRAM中，然后从右至左逐字移出显示。                       *
+                       8     ;* 3、在指定位置停留1.6秒后，闪烁2次，清屏。                                    *
+                       9     ;* 4、反复循环上述显示方式。                                                    *          
+                                               
+                      10     ;********************************************************************************/
+                      11      
+                      12                                                                             
+  00A6                13               LCD_RS  EQU P2.6                                              
+  00A5                14               LCD_RW  EQU P2.5                                              
+  00A7                15               LCD_EN  EQU P2.7                                              
+                      16                                                                             
+                      17     ;*******************************************************************    
+0000                  18                  ORG  0000H                                                 
+0000 0130             19                  AJMP  MAIN                                                 
+0030                  20                  ORG  0030H                                                 
+                      21     ;*******************************************************************    
+0030                  22     MAIN:                                                                   
+0030 758160           23                  MOV SP,#60H                                                
+0033 117E             24                  ACALL LCD_INIT           ;LCD初始化                        
+0035                  25     MAIN1:                                                                  
+0035 11A3             26                  ACALL CLR_LCD           ;清LCD                             
+0037 7490             27                  MOV A,#90H                ;在第一行第17列的位置            
+0039 11A8             28                  ACALL LCD_CMD                                              
+003B 90005F           29                  MOV DPTR,#LINE1       ;第一行字符串的起始地址送入DPTR。    
+003E 11DE             30                  ACALL WRITE                                                
+0040 74D0             31                  MOV A,#0D0H              ;在第二行第17列的位置             
+0042 11A8             32                  ACALL LCD_CMD                                              
+0044 90006E           33                  MOV DPTR,#LINE2       ;第二行字符串的起始地址送入DPTR。    
+0047 11DE             34                  ACALL WRITE                                                
+                      35                                                                             
+0049 7B10             36                  MOV  R3,#10H             ;向左移动16格                     
+004B                  37     LOOPA:                                                                  
+004B 7418             38                  MOV  A,#18H               ;字符同时左移一格                
+004D 11A8             39                  ACALL LCD_CMD                                              
+004F 7D03             40                  MOV  R5,#03H             ;延时375MS                        
+0051 3104             41                  ACALL  DELAY125MS                                          
+0053 DBF6             42                  DJNZ  R3,LOOPA                                             
+                      43                                                                             
+0055 310F             44                  ACALL  DELAY4            ;延时1.6s                         
+0057 310F             45                  ACALL  DELAY4                                              
+0059 7C02             46                  MOV  R4,#02H            ;设置闪烁次数                      
+005B 11EC             47                  ACALL  FLASH              ;开始闪烁                        
+005D 0135             48                  AJMP  MAIN1                                                
+                      49                                                                             
+005F                  50     LINE1:                                                                  
+005F 20424947         51             DB " BIG BIG WORLD",00H                                       
+0063 20424947                
+0067 20574F52                
+006B 4C4400                  
+006E                  52     LINE2:                                                                  
+006E 2049204C         53             DB " I LOVE PUZHONG",00H                                       
+0072 4F564520                
+A51 MACRO ASSEMBLER  YDLCD                                                                03/29/2009 20:16:54 PAGE     2
+
+0076 50555A48                
+007A 4F4E4700                
+                      54                                                                             
+                      55     ;***************************************************************        
+                      56     ;LCD初始化设定子程序                                                    
+                      57     ;***************************************************************        
+007E                  58     LCD_INIT:                                                               
+007E 11FB             59               ACALL DELAY5MS            ;延时15MS                           
+0080 11FB             60               ACALL DELAY5MS            ;等待LCD电源稳定                    
+0082 11FB             61               ACALL DELAY5MS                                                
+                      62                                                                             
+0084 7438             63               MOV A,#38H                   ;16*2显示，5*7点阵，8位数据      
+0086 11AA             64               ACALL LCD_CMD_NC      ;不进行LCD忙检测                        
+0088 11FB             65               ACALL DELAY5MS                                                
+                      66                                                                             
+008A 7438             67               MOV A,#38H                   ;16*2显示，5*7点阵，8位数据      
+008C 11AA             68               ACALL LCD_CMD_NC      ;不进行LCD忙检测                        
+008E 11FB             69               ACALL DELAY5MS                                                
+                      70                                                                             
+0090 7438             71               MOV A,#38H                   ;16*2显示，5*7点阵，8位数据      
+0092 11AA             72               ACALL LCD_CMD_NC      ;不进行LCD忙检测                        
+0094 11FB             73               ACALL DELAY5MS                                                
+                      74                                                                             
+0096 7408             75               MOV  A,#08H                 ;显示关                           
+0098 11A8             76               ACALL LCD_CMD            ;进行LCD忙检测                       
+                      77                                                                             
+009A 7401             78               MOV A,#01H                  ;清除屏幕                         
+009C 11A8             79               ACALL LCD_CMD            ;进行LCD忙检测                       
+                      80                                                                             
+009E 740C             81               MOV  A,#0CH                ;显示开，关光标                    
+00A0 11A8             82               ACALL LCD_CMD           ;进行LCD忙检测                        
+                      83                                                                             
+00A2 22               84               RET                                                           
+                      85     ;***************************************************************        
+                      86     ;清LCD子程序                                                            
+                      87     ;***************************************************************        
+00A3                  88     CLR_LCD:                                                                
+00A3 7401             89                MOV A,#01H                ;清除屏幕                          
+00A5 11A8             90                ACALL LCD_CMD         ;进行LCD忙检测                         
+00A7 22               91                RET                                                          
+                      92                                                                             
+                      93     ;***************************************************************        
+                      94     ;写指令数据到LCD                                                        
+                      95     ;RS=L,RW=L,D0-D7=指令码，E=高脉冲                                       
+                      96     ;***************************************************************        
+00A8                  97     LCD_CMD:                                                                
+00A8 11CA             98               CALL  CHECKBUSY                                               
+00AA                  99     LCD_CMD_NC:                                                             
+00AA C2A6            100               CLR LCD_RS                                                    
+00AC C2A5            101               CLR LCD_RW                                                    
+00AE F580            102               MOV  P0,A                                                     
+00B0 D2A7            103               SETB LCD_EN                                                   
+00B2 00              104               NOP                                                           
+00B3 00              105               NOP                                                           
+00B4 00              106               NOP                                                           
+00B5 00              107               NOP                                                           
+00B6 C2A7            108               CLR  LCD_EN                                                   
+00B8 22              109               RET                                                           
+                     110     ;***************************************************************        
+                     111     ;写显示数据到LCD                                                        
+                     112     ;RS=H,RW=L,D0-D7=数据，E=高脉冲                                         
+                     113     ;***************************************************************        
+00B9                 114     LCD_WDATA:                                                              
+00B9 11CA            115               ACALL  CHECKBUSY                                              
+00BB D2A6            116               SETB  LCD_RS                                                  
+00BD C2A5            117               CLR   LCD_RW                                                  
+A51 MACRO ASSEMBLER  YDLCD                                                                03/29/2009 20:16:54 PAGE     3
+
+00BF F580            118               MOV   P0,A                                                    
+00C1 D2A7            119               SETB  LCD_EN                                                  
+00C3 00              120               NOP                                                           
+00C4 00              121               NOP                                                           
+00C5 00              122               NOP                                                           
+00C6 00              123               NOP                                                           
+00C7 C2A7            124               CLR   LCD_EN                                                  
+00C9 22              125               RET                                                           
+                     126     ;***************************************************************        
+                     127     ;检测LCD控制器忙状态                                                    
+                     128     ;读数据                                                                 
+                     129     ;RS=L,RW=H,E=H,输出：D0-D7=数据                                         
+                     130     ;P0.7=1，LCD忙，等待。P0.7=0，LCD闲，可以进行读写操作。                 
+                     131     ;***************************************************************        
+00CA                 132     CHECKBUSY:                                                              
+00CA C0E0            133               PUSH  ACC                                                     
+00CC 7580FF          134               MOV  P0,#0FFH                                                 
+00CF C2A6            135               CLR   LCD_RS                                                  
+00D1 D2A5            136               SETB  LCD_RW                                                  
+00D3 D2A7            137               SETB  LCD_EN                                                  
+00D5                 138     BUSYLOOP:                                                               
+00D5 00              139               NOP                                                           
+00D6 2087FC          140               JB P0.7,BUSYLOOP                                              
+00D9 C2A7            141               CLR  LCD_EN                                                   
+00DB D0E0            142               POP  ACC                                                      
+00DD 22              143               RET                                                           
+                     144     ;***************************************************************        
+                     145     ; 发送字符串子程序                                                      
+                     146     ;***************************************************************        
+00DE                 147     WRITE:                                                                  
+00DE C0E0            148               PUSH ACC                                                      
+00E0                 149     WRITE1:                                                                 
+00E0 E4              150               CLR  A                                                        
+00E1 93              151               MOVC  A,@A+DPTR                                               
+00E2 6005            152               JZ  WRITE2                                                    
+00E4 A3              153               INC  DPTR                                                     
+00E5 11B9            154               ACALL LCD_WDATA                                               
+00E7 80F7            155               JMP  WRITE1                                                   
+00E9                 156     WRITE2:                                                                 
+00E9 D0E0            157               POP  ACC                                                      
+00EB 22              158               RET                                                           
+                     159     ;***************************************************************        
+                     160     ;闪烁子程序                                                             
+                     161     ;***************************************************************        
+00EC                 162     FLASH:                                                                  
+00EC 7408            163               MOV A,#08H                ;关闭显示                           
+00EE 11A8            164               ACALL LCD_CMD                                                 
+00F0 310F            165               ACALL DELAY4                                                  
+00F2 740C            166               MOV A,#0CH                ;开显示，关闭光标                   
+00F4 11A8            167               ACALL LCD_CMD                                                 
+00F6 310F            168               ACALL DELAY4                                                  
+00F8 DCF2            169               DJNZ R4,FLASH                                                 
+00FA 22              170               RET                                                           
+                     171     ;***************************************************************        
+                     172     ;延时5MS子程序                                                          
+                     173     ;LCD初始化使用                                                          
+                     174     ;***************************************************************        
+00FB                 175     DELAY5MS:                                                               
+00FB 7E0A            176               MOV  R6,#10                                                   
+00FD                 177      DL1:                                                                   
+00FD 7FF9            178               MOV  R7,#249                                                  
+00FF                 179      DL2:                                                                   
+00FF DFFE            180               DJNZ R7,DL2                                                   
+0101 DEFA            181               DJNZ R6,DL1                                                   
+0103 22              182               RET                                                           
+                     183     ;***************************************************************        
+A51 MACRO ASSEMBLER  YDLCD                                                                03/29/2009 20:16:54 PAGE     4
+
+                     184     ;延时125MS子程序                                                        
+                     185     ;字符串移动时使用                                                       
+                     186     ;***************************************************************        
+0104                 187     DELAY125MS:                                                             
+0104                 188      DL3:                                                                   
+0104 7EFA            189               MOV  R6,#250                                                  
+0106                 190      DL4:                                                                   
+0106 7FF9            191               MOV  R7,#249                                                  
+0108                 192      DL5:                                                                   
+0108 DFFE            193               DJNZ R7,DL5                                                   
+010A DEFA            194               DJNZ R6,DL4                                                   
+010C DDF6            195               DJNZ R5,DL3                                                   
+010E 22              196               RET                                                           
+                     197     ;***************************************************************        
+                     198     ;延时800MS子程序                                                        
+                     199     ;闪烁时使用                                                             
+                     200     ;***************************************************************        
+010F                 201     DELAY4:                                                                 
+010F 7D28            202               MOV R5,#40                                                    
+0111                 203      DL6:                                                                   
+0111 7E64            204               MOV R6,#100                                                   
+0113                 205      DL7:                                                                   
+0113 7F64            206               MOV R7,#100                                                   
+0115                 207      DL8:                                                                   
+0115 DFFE            208               DJNZ R7,DL8                                                   
+0117 DEFA            209               DJNZ R6,DL7                                                   
+0119 DDF6            210               DJNZ R5,DL6                                                   
+011B 22              211               RET                                                           
+                     212     ;***************************************************************        
+                     213               END                                                
+A51 MACRO ASSEMBLER  YDLCD                                                                03/29/2009 20:16:54 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+BUSYLOOP . . . . .  C ADDR   00D5H   A   
+CHECKBUSY. . . . .  C ADDR   00CAH   A   
+CLR_LCD. . . . . .  C ADDR   00A3H   A   
+DELAY125MS . . . .  C ADDR   0104H   A   
+DELAY4 . . . . . .  C ADDR   010FH   A   
+DELAY5MS . . . . .  C ADDR   00FBH   A   
+DL1. . . . . . . .  C ADDR   00FDH   A   
+DL2. . . . . . . .  C ADDR   00FFH   A   
+DL3. . . . . . . .  C ADDR   0104H   A   
+DL4. . . . . . . .  C ADDR   0106H   A   
+DL5. . . . . . . .  C ADDR   0108H   A   
+DL6. . . . . . . .  C ADDR   0111H   A   
+DL7. . . . . . . .  C ADDR   0113H   A   
+DL8. . . . . . . .  C ADDR   0115H   A   
+FLASH. . . . . . .  C ADDR   00ECH   A   
+LCD_CMD. . . . . .  C ADDR   00A8H   A   
+LCD_CMD_NC . . . .  C ADDR   00AAH   A   
+LCD_EN . . . . . .  B ADDR   00A0H.7 A   
+LCD_INIT . . . . .  C ADDR   007EH   A   
+LCD_RS . . . . . .  B ADDR   00A0H.6 A   
+LCD_RW . . . . . .  B ADDR   00A0H.5 A   
+LCD_WDATA. . . . .  C ADDR   00B9H   A   
+LINE1. . . . . . .  C ADDR   005FH   A   
+LINE2. . . . . . .  C ADDR   006EH   A   
+LOOPA. . . . . . .  C ADDR   004BH   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+MAIN1. . . . . . .  C ADDR   0035H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+WRITE. . . . . . .  C ADDR   00DEH   A   
+WRITE1 . . . . . .  C ADDR   00E0H   A   
+WRITE2 . . . . . .  C ADDR   00E9H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

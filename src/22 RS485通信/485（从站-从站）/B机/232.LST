@@ -1,0 +1,93 @@
+C51 COMPILER V7.10   232                                                                   07/25/2010 15:52:49 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 232
+OBJECT MODULE PLACED IN 232.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 232.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           /*******************************************************************************************
+   2          *  标题:                  RS485通信试验(接收与发送)                                         *
+   3          *                                                                                                                                                                       *
+   4          *  1.通过本例程了解串口的基本原理及使用 ,理解并掌握对串口进行初始化                                     *
+   5          *                                                                                                                                                                           *
+   6          *  2.Baud 19200、数据位8、停止位1、效验位无 两台485设备  a机发 b机收                                    *
+   7          *                                                                                                                                                                           *
+   8          *  说明：                                                                                                                                                           *
+   9          *    使用两个带有485功能硬件设备(例如：两个带485的开发箱等) 每个设备都有信号端A和B,通过导线     *
+  10          *        分别连接两台设备 A 连 A  B 连 B                                                                                                                *
+  11          *  现象：按A机的独立按钮 在B机的LED等显示其状态 对应位的LED灯亮                                                     *
+  12          *                                                                                           *
+  13          * 请学员认真消化本例程，学会用C语言操作串口和485的实现简单收发功能                          *
+  14          *********************************************************************************************/
+  15          
+  16          #include <REG52.H>
+  17          #include <stdio.h>
+  18          
+  19          sbit RS485E=P3^7;   //定义485的使能脚
+  20          unsigned int ReData;
+  21          
+  22          /**************************************
+  23                      延时程序
+  24          **************************************/
+  25          void delay(unsigned char i)
+  26          {
+  27   1              unsigned char j;
+  28   1              for(i; i > 0; i--)
+  29   1                      for(j = 200; j > 0; j--);
+  30   1      }
+  31          
+  32          
+  33          void main (void) {
+  34   1      
+  35   1      
+  36   1              SCON = 0x50;      //REN=1允许串行接受状态，串口工作模式1                   
+  37   1                  TMOD|= 0x20;      //定时器工作方式2                    
+  38   1                      PCON|= 0x80;                                                          
+  39   1                      
+  40   1                      TH1  = 0xFD;     //baud*2  /* reload value 19200、数据位8、停止位1。效验位无          
+  41   1                      
+  42   1                      TR1  = 1;                                                             
+  43   1                      ES   = 1;        //开串口中断                  
+  44   1                      EA   = 1;        // 开总中断 
+  45   1         
+  46   1              while(1)
+  47   1          { P0 = 0xff;
+  48   2                P0 = ReData;            // max485(半双工通信) RE/DE定义 RE=0为接受状态  DE=1为发送状态(参考MAX485芯片管脚)
+  49   2                RS485E=0;                 // RS5485E=0为接收状态  RS5485E=1为发送状态
+  50   2                delay(20);
+  51   2          }
+  52   1       
+  53   1      }
+  54          
+  55          /****************************************************
+C51 COMPILER V7.10   232                                                                   07/25/2010 15:52:49 PAGE 2   
+
+  56                         串口中断程序
+  57          ******************************************************/
+  58          void ser_int (void) interrupt 4 using 1
+  59          {
+  60   1      
+  61   1       if(RI == 1)        //RI接受中断标志
+  62   1       {
+  63   2              RI = 0;             //清除RI接受中断标志
+  64   2              ReData = SBUF;  //SUBF接受/发送缓冲器
+  65   2              
+  66   2         
+  67   2       }
+  68   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     67    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

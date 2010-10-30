@@ -1,0 +1,125 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        05/28/2010  10:15:50  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, led2.obj TO LED2 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  led2.obj (LED2)
+
+
+LINK MAP OF MODULE:  LED2 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0015H     UNIT         ?PR?_DELAY?LED2
+            CODE    0815H     0014H     UNIT         ?PR?MAIN?LED2
+            CODE    0829H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   LED2 (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?LED2
+
+?PR?MAIN?LED2
+  +--> ?PR?_DELAY?LED2
+
+
+
+SYMBOL TABLE OF MODULE:  LED2 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0829H         SEGMENT       ?C_C51STARTUP
+  I:0008H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+BL51 BANKED LINKER/LOCATER V5.03                                                      05/28/2010  10:15:50  PAGE 2
+
+
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:082CH         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0829H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:0829H         LINE#         99
+  C:082BH         LINE#         100
+  C:082CH         LINE#         101
+  C:082DH         LINE#         102
+  C:082FH         LINE#         151
+  C:0832H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        LED2
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A0H         PUBLIC        P2
+  C:0815H         PUBLIC        main
+  C:0800H         PUBLIC        _delay
+  -------         PROC          MAIN
+  C:0815H         LINE#         12
+  C:0815H         LINE#         13
+  C:0815H         LINE#         15
+  C:0818H         LINE#         17
+  C:081FH         LINE#         19
+  C:0822H         LINE#         22
+  -------         ENDPROC       MAIN
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        i
+  -------         DO            
+  D:0005H         SYMBOL        j
+  -------         ENDDO         
+  C:0800H         LINE#         28
+  C:0800H         LINE#         29
+  C:0800H         LINE#         31
+  C:0809H         LINE#         32
+  C:0814H         LINE#         33
+  -------         ENDPROC       _DELAY
+  -------         ENDMOD        LED2
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 003DH BYTE ( 2%) *
+******************************************************************************
+
+Program Size: data=9.0 xdata=0 code=56
+BL51 BANKED LINKER/LOCATER V5.03                                                      05/28/2010  10:15:50  PAGE 3
+
+
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

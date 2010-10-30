@@ -1,0 +1,129 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        10/28/2009  22:57:14  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, led3.obj TO LED3 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  led3.obj (LED3)
+
+
+LINK MAP OF MODULE:  LED3 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0013H     UNIT         ?PR?MAIN?LED3
+            CODE    0016H     0012H     UNIT         ?PR?_DELAYMS?LED3
+            CODE    0028H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   LED3 (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?LED3
+
+?PR?MAIN?LED3
+  +--> ?PR?_DELAYMS?LED3
+
+
+
+SYMBOL TABLE OF MODULE:  LED3 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0028H         SEGMENT       ?C_C51STARTUP
+  I:0008H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/28/2009  22:57:14  PAGE 2
+
+
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:002BH         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0028H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:0028H         LINE#         99
+  C:002AH         LINE#         100
+  C:002BH         LINE#         101
+  C:002CH         LINE#         102
+  C:002EH         LINE#         151
+  C:0031H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        LED3
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A0H         PUBLIC        P2
+  C:0003H         PUBLIC        main
+  C:0016H         PUBLIC        _delayms
+  -------         PROC          _DELAYMS
+  D:0007H         SYMBOL        ms
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0016H         LINE#         10
+  C:0016H         LINE#         12
+  C:0016H         LINE#         14
+  C:001CH         LINE#         15
+  C:001CH         LINE#         16
+  C:0027H         LINE#         17
+  C:0027H         LINE#         18
+  -------         ENDPROC       _DELAYMS
+  -------         PROC          MAIN
+  -------         DO            
+  D:0004H         SYMBOL        LED
+  -------         ENDDO         
+  C:0003H         LINE#         21
+  C:0003H         LINE#         22
+  C:0003H         LINE#         24
+  C:0005H         LINE#         25
+  C:0005H         LINE#         26
+  C:0005H         LINE#         27
+  C:0007H         LINE#         28
+  C:000CH         LINE#         29
+  C:0010H         LINE#         30
+  C:0014H         LINE#         33
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/28/2009  22:57:14  PAGE 3
+
+
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        LED3
+
+Program Size: data=9.0 xdata=0 code=52
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

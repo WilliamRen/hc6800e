@@ -1,0 +1,207 @@
+; hc595.SRC generated from: hc595.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE hc595.c BROWSE DEBUG OBJECTEXTEND
+
+$NOMOD51
+
+NAME	HC595
+
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+T2	BIT	090H.0
+EA	BIT	0A8H.7
+MOSIO	BIT	090H.5
+R_CLK	BIT	090H.6
+S_CLK	BIT	090H.7
+IE	DATA	0A8H
+IN_Dat	BIT	0B0H.5
+OE	BIT	0B0H.6
+IN_PL	BIT	0B0H.4
+EXF2	BIT	0C8H.6
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+RCAP2H	DATA	0CBH
+PS	BIT	0B8H.4
+SP	DATA	081H
+T2EX	BIT	090H.1
+OV	BIT	0D0H.2
+RCAP2L	DATA	0CAH
+C_T2	BIT	0C8H.1
+WR	BIT	0B0H.6
+RCLK	BIT	0C8H.5
+TCLK	BIT	0C8H.4
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+CP_RL2	BIT	0C8H.0
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+ET2	BIT	0A8H.5
+TF1	BIT	088H.7
+TF2	BIT	0C8H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+TH2	DATA	0CDH
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+TL2	DATA	0CCH
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+PT2	BIT	0B8H.5
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+TR2	BIT	0C8H.2
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+DPL	DATA	082H
+EXEN2	BIT	0C8H.3
+REN	BIT	098H.4
+T2CON	DATA	0C8H
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+?PR?_HC595SendData?HC595                 SEGMENT CODE 
+	PUBLIC	_HC595SendData
+; 
+;  /*************************此部分为74HC595的驱动程序使用SPI总线连接*************************************/
+; #pragma SRC
+; #include<reg52.h>
+; #include <intrins.h>
+; 
+; #define  NOP()   _nop_()   /* 定义空指令 */
+; #define  _Nop()  _nop_()   /*定义空指令*/
+; void HC595SendData(unsigned int SendVal);
+; 
+; //SPI IO
+; sbit    MOSIO =P1^5;
+; sbit    R_CLK =P1^6;
+; sbit    S_CLK =P1^7;
+; sbit    IN_PL =P3^4;    //74HC165  shift load   把数据加载到锁存器中
+; sbit    IN_Dat=P3^5;    //74HC165  output       数据移出
+; sbit    OE    =P3^6;
+; 
+; 
+; 
+; /*********************************************************************************************************
+; ** 函数名称: HC595SendData
+; ** 功能描述: 向SPI总线发送数据
+; *********************************************************************************************************/
+; void HC595SendData(unsigned int SendVal)
+
+	RSEG  ?PR?_HC595SendData?HC595
+_HC595SendData:
+	USING	0
+			; SOURCE LINE # 25
+;---- Variable 'SendVal?040' assigned to Register 'R4/R5' ----
+	MOV  	R5,AR7
+	MOV  	R4,AR6
+; {  
+			; SOURCE LINE # 26
+;   unsigned char i;
+; 		
+;   for(i=0;i<16;i++) 
+			; SOURCE LINE # 29
+;---- Variable 'i?041' assigned to Register 'R3' ----
+	CLR  	A
+	MOV  	R3,A
+?C0001:
+;    {
+			; SOURCE LINE # 30
+; 	if((SendVal<<i)&0x8000) MOSIO=1; // set dataline high
+			; SOURCE LINE # 31
+	MOV  	A,R5
+	MOV  	R6,AR4
+	MOV  	R0,AR3
+	INC  	R0
+	SJMP 	?C0008
+?C0007:
+	CLR  	C
+	RLC  	A
+	XCH  	A,R6
+	RLC  	A
+	XCH  	A,R6
+?C0008:
+	DJNZ 	R0,?C0007
+	MOV  	A,R6
+	JNB  	ACC.7,?C0004
+	SETB 	MOSIO
+	SJMP 	?C0005
+?C0004:
+; 	else MOSIO=0;
+			; SOURCE LINE # 32
+	CLR  	MOSIO
+?C0005:
+;  
+; 	S_CLK=0;
+			; SOURCE LINE # 34
+	CLR  	S_CLK
+; 	NOP();
+			; SOURCE LINE # 35
+	NOP  	
+; 	NOP();
+			; SOURCE LINE # 36
+	NOP  	
+; 	S_CLK=1;	
+			; SOURCE LINE # 37
+	SETB 	S_CLK
+;    }
+			; SOURCE LINE # 38
+	INC  	R3
+	CJNE 	R3,#010H,?C0001
+?C0002:
+;    
+; 	
+;   R_CLK=0; //set dataline low
+			; SOURCE LINE # 41
+	CLR  	R_CLK
+;   NOP();
+			; SOURCE LINE # 42
+	NOP  	
+;   NOP();
+			; SOURCE LINE # 43
+	NOP  	
+;   R_CLK=1; //片选
+			; SOURCE LINE # 44
+	SETB 	R_CLK
+;   OE=0;
+			; SOURCE LINE # 45
+	CLR  	OE
+; 
+; }
+			; SOURCE LINE # 47
+	RET  	
+; END OF _HC595SendData
+
+	END

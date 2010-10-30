@@ -1,0 +1,7 @@
+"mainfun.obj",
+"system.obj",
+"Motor.obj",
+"VI2C_C51.obj",
+"AD_DA.obj" 
+TO "LCD" 
+NOPRINT RAMSIZE(256) 

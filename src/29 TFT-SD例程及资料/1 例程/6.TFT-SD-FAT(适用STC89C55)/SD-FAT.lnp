@@ -1,0 +1,7 @@
+"STARTUP.obj",
+"main.obj",
+"fat.obj",
+"LCD.obj",
+"MMC.obj" 
+TO "SD-FAT" 
+RAMSIZE(256) 

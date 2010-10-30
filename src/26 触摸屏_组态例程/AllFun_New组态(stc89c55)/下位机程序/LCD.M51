@@ -1,0 +1,342 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        08/07/2008  11:56:42  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\PROGRAM FILES\KEIL\C51\BIN\BL51.EXE mainfun.obj, system.obj, temp.obj, Motor.obj, Timer.obj, VI2C_C51.obj, AD_DA.obj,
+>>  lcd.obj TO LCD RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  mainfun.obj (MAINFUN)
+  system.obj (SYSTEM)
+  temp.obj (TEMP)
+  Motor.obj (MOTOR)
+  Timer.obj (TIMER)
+  VI2C_C51.obj (VI2C_C51)
+  AD_DA.obj (AD_DA)
+  lcd.obj (LCD)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?CSTPTR)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?IMUL)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?UIDIV)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?ILDPTR)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?ISTPTR)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?LNOT)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?ULSHR)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C?LSHL)
+  C:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  LCD (MAINFUN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000DH     UNIT         _DATA_GROUP_
+            DATA    0015H     000BH     UNIT         ?DT?MOTOR
+            DATA    0020H     0004H     BIT_ADDR     ?BA?MAINFUN
+            BIT     0024H.0   0001H.1   UNIT         ?BI?MAINFUN
+            BIT     0025H.1   0000H.2   UNIT         ?BI?LCD
+            BIT     0025H.3   0000H.1   UNIT         ?BI?TEMP
+            BIT     0025H.4   0000H.1   UNIT         ?BI?TIMER
+            BIT     0025H.5   0000H.1   UNIT         ?BI?VI2C_C51
+            BIT     0025H.6   0000H.1   UNIT         _BIT_GROUP_
+                    0025H.7   0000H.1                *** GAP ***
+            DATA    0026H     001BH     UNIT         ?DT?TEMP
+            DATA    0041H     0019H     UNIT         ?DT?LCD
+            DATA    005AH     000CH     UNIT         ?DT?TIMER
+            DATA    0066H     0006H     UNIT         ?DT?MAINFUN
+            DATA    006CH     0006H     UNIT         ?DT?_ISENDSTR?VI2C_C51
+            DATA    0072H     0006H     UNIT         ?DT?AD_DA
+            DATA    0078H     0004H     UNIT         ?DT?SYSTEM
+            IDATA   007CH     001AH     UNIT         ?ID?SYSTEM
+            IDATA   0096H     0001H     UNIT         ?STACK
+
+BL51 BANKED LINKER/LOCATER V5.03                                                      08/07/2008  11:56:42  PAGE 2
+
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0007H     UNIT         ?PR?_TEMPDELAY?TEMP
+                    000AH     0001H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     0015H     UNIT         ?PR?_DELAY?MAINFUN
+            CODE    0023H     0003H     ABSOLUTE     
+            CODE    0026H     025CH     UNIT         ?PR?MAIN?MAINFUN
+            CODE    0282H     010FH     UNIT         ?C?LIB_CODE
+            CODE    0391H     0100H     UNIT         ?CO?TEMP
+            CODE    0491H     0090H     UNIT         ?PR?SETMOTOR?MOTOR
+            CODE    0521H     0090H     UNIT         ?PR?LCDLEFTIN?LCD
+            CODE    05B1H     008CH     UNIT         ?C_C51STARTUP
+            CODE    063DH     0067H     UNIT         ?PR?COMMINTPROC?SYSTEM
+            CODE    06A4H     0061H     UNIT         ?PR?AD_DA?AD_DA
+            CODE    0705H     0057H     UNIT         ?PR?_IRCVSTR?VI2C_C51
+            CODE    075CH     0056H     UNIT         ?C_INITSEG
+            CODE    07B2H     003CH     UNIT         ?PR?_SENDBYTE?VI2C_C51
+            CODE    07EEH     003CH     UNIT         ?PR?_LCDWDA?LCD
+            CODE    082AH     003AH     UNIT         ?PR?_ISENDSTR?VI2C_C51
+            CODE    0864H     0032H     UNIT         ?PR?REHC74165?SYSTEM
+            CODE    0896H     0032H     UNIT         ?PR?_HC595SENDDATA?SYSTEM
+            CODE    08C8H     0031H     UNIT         ?PR?GEMTEMP?TEMP
+            CODE    08F9H     002EH     UNIT         ?PR?DISTIM?TIMER
+            CODE    0927H     002AH     UNIT         ?PR?_DACCONVERSION?AD_DA
+            CODE    0951H     0029H     UNIT         ?PR?_READ_BYTES?TEMP
+            CODE    097AH     0029H     UNIT         ?PR?LCDPOS?LCD
+            CODE    09A3H     0028H     UNIT         ?PR?INIT18B20?TEMP
+            CODE    09CBH     0028H     UNIT         ?PR?TEMPERATUERRESULT?TEMP
+            CODE    09F3H     0028H     UNIT         ?PR?GETTIMER?TIMER
+            CODE    0A1BH     0026H     UNIT         ?PR?GETTEMP?TEMP
+            CODE    0A41H     0025H     UNIT         ?PR?_WRITEBYTE?TEMP
+            CODE    0A66H     0024H     UNIT         ?PR?RCVBYTE?VI2C_C51
+            CODE    0A8AH     0023H     UNIT         ?PR?_TICKOUT?SYSTEM
+            CODE    0AADH     0022H     UNIT         ?PR?SENDDATA?SYSTEM
+            CODE    0ACFH     0022H     UNIT         ?PR?_IRCVBYTE?AD_DA
+            CODE    0AF1H     0021H     UNIT         ?PR?SYSTEM_INI?MAINFUN
+            CODE    0B12H     0021H     UNIT         ?PR?CONFIG18B20?TEMP
+            CODE    0B33H     0020H     UNIT         ?PR?_ISENDBYTE?AD_DA
+            CODE    0B53H     001EH     UNIT         ?PR?READBYTE?TEMP
+            CODE    0B71H     001DH     UNIT         ?PR?INITLCD?LCD
+            CODE    0B8EH     0019H     UNIT         ?PR?_CRC?TEMP
+            CODE    0BA7H     0018H     UNIT         ?PR?ACK_I2C?VI2C_C51
+            CODE    0BBFH     0018H     UNIT         ?PR?LCDWAITIDLE?LCD
+            CODE    0BD7H     0016H     UNIT         ?PR?START_I2C?VI2C_C51
+            CODE    0BEDH     0015H     UNIT         ?CO?SYSTEM
+            CODE    0C02H     0013H     UNIT         ?PR?T0ZD?SYSTEM
+            CODE    0C15H     0012H     UNIT         ?PR?_LCDWD?LCD
+            CODE    0C27H     0011H     UNIT         ?PR?STOP_I2C?VI2C_C51
+            CODE    0C38H     0010H     UNIT         ?CO?LCD
+            CODE    0C48H     000DH     UNIT         ?PR?READID?TEMP
+            CODE    0C55H     000CH     UNIT         ?PR?_LCDWCN?LCD
+            CODE    0C61H     000AH     UNIT         ?PR?_LCDWC?LCD
+
+
+
+OVERLAY MAP OF MODULE:   LCD (MAINFUN)
+BL51 BANKED LINKER/LOCATER V5.03                                                      08/07/2008  11:56:42  PAGE 3
+
+
+
+
+SEGMENT                               BIT_GROUP          DATA_GROUP 
+  +--> CALLED SEGMENT              START    LENGTH     START    LENGTH
+----------------------------------------------------------------------
+?PR?COMMINTPROC?SYSTEM             -----    -----      -----    -----
+  +--> ?PR?_DELAY?MAINFUN
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP                      -----    -----      -----    -----
+  +--> ?PR?MAIN?MAINFUN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAINFUN                   -----    -----      0008H    0007H
+  +--> ?PR?INITLCD?LCD
+  +--> ?PR?SYSTEM_INI?MAINFUN
+  +--> ?PR?LCDLEFTIN?LCD
+  +--> ?PR?REHC74165?SYSTEM
+  +--> ?PR?_TICKOUT?SYSTEM
+  +--> ?PR?AD_DA?AD_DA
+  +--> ?PR?GETTEMP?TEMP
+  +--> ?PR?SENDDATA?SYSTEM
+  +--> ?PR?GETTIMER?TIMER
+  +--> ?PR?SETMOTOR?MOTOR
+  +--> ?CO?SYSTEM
+  +--> ?PR?_HC595SENDDATA?SYSTEM
+  +--> ?PR?_DELAY?MAINFUN
+
+?PR?INITLCD?LCD                    -----    -----      -----    -----
+  +--> ?PR?_DELAY?MAINFUN
+  +--> ?PR?_LCDWCN?LCD
+  +--> ?PR?_LCDWC?LCD
+
+?PR?_LCDWC?LCD                     -----    -----      0012H    0001H
+  +--> ?PR?LCDWAITIDLE?LCD
+  +--> ?PR?_LCDWCN?LCD
+
+?PR?LCDWAITIDLE?LCD                -----    -----      -----    -----
+  +--> ?PR?_DELAY?MAINFUN
+
+?PR?LCDLEFTIN?LCD                  -----    -----      -----    -----
+  +--> ?PR?_TICKOUT?SYSTEM
+  +--> ?PR?_LCDWDA?LCD
+  +--> ?CO?LCD
+
+?PR?_LCDWDA?LCD                    -----    -----      000FH    0003H
+  +--> ?PR?LCDPOS?LCD
+  +--> ?PR?_LCDWD?LCD
+
+?PR?LCDPOS?LCD                     -----    -----      -----    -----
+  +--> ?PR?_LCDWC?LCD
+
+?PR?_LCDWD?LCD                     -----    -----      0012H    0001H
+  +--> ?PR?LCDWAITIDLE?LCD
+
+?PR?AD_DA?AD_DA                    -----    -----      -----    -----
+BL51 BANKED LINKER/LOCATER V5.03                                                      08/07/2008  11:56:42  PAGE 4
+
+
+  +--> ?PR?_DACCONVERSION?AD_DA
+  +--> ?PR?_ISENDBYTE?AD_DA
+  +--> ?PR?_IRCVBYTE?AD_DA
+
+?PR?_DACCONVERSION?AD_DA           -----    -----      000FH    0002H
+  +--> ?PR?START_I2C?VI2C_C51
+  +--> ?PR?_SENDBYTE?VI2C_C51
+  +--> ?PR?STOP_I2C?VI2C_C51
+
+?PR?_ISENDBYTE?AD_DA               -----    -----      000FH    0002H
+  +--> ?PR?START_I2C?VI2C_C51
+  +--> ?PR?_SENDBYTE?VI2C_C51
+  +--> ?PR?STOP_I2C?VI2C_C51
+
+?PR?_IRCVBYTE?AD_DA                -----    -----      000FH    0002H
+  +--> ?PR?START_I2C?VI2C_C51
+  +--> ?PR?_SENDBYTE?VI2C_C51
+  +--> ?PR?RCVBYTE?VI2C_C51
+  +--> ?PR?ACK_I2C?VI2C_C51
+  +--> ?PR?STOP_I2C?VI2C_C51
+
+?PR?ACK_I2C?VI2C_C51               0025H.6  0000H.1    -----    -----
+
+?PR?GETTEMP?TEMP                   -----    -----      -----    -----
+  +--> ?PR?_TICKOUT?SYSTEM
+  +--> ?PR?TEMPERATUERRESULT?TEMP
+
+?PR?TEMPERATUERRESULT?TEMP         -----    -----      -----    -----
+  +--> ?PR?READID?TEMP
+  +--> ?PR?CONFIG18B20?TEMP
+  +--> ?PR?_WRITEBYTE?TEMP
+  +--> ?PR?GEMTEMP?TEMP
+
+?PR?READID?TEMP                    -----    -----      -----    -----
+  +--> ?PR?INIT18B20?TEMP
+  +--> ?PR?_WRITEBYTE?TEMP
+  +--> ?PR?_READ_BYTES?TEMP
+
+?PR?INIT18B20?TEMP                 -----    -----      -----    -----
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?_WRITEBYTE?TEMP                -----    -----      -----    -----
+  +--> ?PR?INIT18B20?TEMP
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?_READ_BYTES?TEMP               -----    -----      000FH    0002H
+  +--> ?PR?READBYTE?TEMP
+
+?PR?READBYTE?TEMP                  -----    -----      -----    -----
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?CONFIG18B20?TEMP               -----    -----      -----    -----
+  +--> ?PR?_WRITEBYTE?TEMP
+
+?PR?GEMTEMP?TEMP                   -----    -----      -----    -----
+  +--> ?PR?_READ_BYTES?TEMP
+  +--> ?PR?_CRC?TEMP
+BL51 BANKED LINKER/LOCATER V5.03                                                      08/07/2008  11:56:42  PAGE 5
+
+
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?_CRC?TEMP                      -----    -----      -----    -----
+  +--> ?CO?TEMP
+
+?PR?GETTIMER?TIMER                 -----    -----      -----    -----
+  +--> ?PR?_TICKOUT?SYSTEM
+  +--> ?PR?_IRCVSTR?VI2C_C51
+  +--> ?PR?DISTIM?TIMER
+
+?PR?_IRCVSTR?VI2C_C51              -----    -----      000FH    0006H
+  +--> ?PR?START_I2C?VI2C_C51
+  +--> ?PR?_SENDBYTE?VI2C_C51
+  +--> ?PR?RCVBYTE?VI2C_C51
+  +--> ?PR?ACK_I2C?VI2C_C51
+  +--> ?PR?STOP_I2C?VI2C_C51
+
+?PR?SETMOTOR?MOTOR                 -----    -----      -----    -----
+  +--> ?PR?_TICKOUT?SYSTEM
+
+?C_INITSEG                         -----    -----      -----    -----
+  +--> ?CO?LCD
+
+
+
+UNRESOLVED EXTERNAL SYMBOLS:
+   INIT_MAX6675
+   READ_MAX6675
+
+
+
+SYMBOL TABLE OF MODULE:  LCD (MAINFUN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C?CLDPTR
+  C:0282H         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?CSTPTR
+  C:029BH         PUBLIC        ?C?CSTPTR
+  -------         ENDMOD        ?C?CSTPTR
+
+  -------         MODULE        ?C?IMUL
+  C:02ADH         PUBLIC        ?C?IMUL
+  -------         ENDMOD        ?C?IMUL
+
+  -------         MODULE        ?C?UIDIV
+  C:02BFH         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+  -------         MODULE        ?C?ILDPTR
+  C:0314H         PUBLIC        ?C?ILDPTR
+  -------         ENDMOD        ?C?ILDPTR
+
+  -------         MODULE        ?C?ISTPTR
+BL51 BANKED LINKER/LOCATER V5.03                                                      08/07/2008  11:56:42  PAGE 6
+
+
+  C:033FH         PUBLIC        ?C?ISTPTR
+  -------         ENDMOD        ?C?ISTPTR
+
+  -------         MODULE        ?C?LNOT
+  C:035EH         PUBLIC        ?C?LNOT
+  -------         ENDMOD        ?C?LNOT
+
+  -------         MODULE        ?C?ULSHR
+  C:036BH         PUBLIC        ?C?ULSHR
+  -------         ENDMOD        ?C?ULSHR
+
+  -------         MODULE        ?C?LSHL
+  C:037EH         PUBLIC        ?C?LSHL
+  -------         ENDMOD        ?C?LSHL
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ISENDSTR?VI2C_C51
+
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  READ_MAX6675
+    MODULE:  mainfun.obj (MAINFUN)
+
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  INIT_MAX6675
+    MODULE:  mainfun.obj (MAINFUN)
+
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  INIT_MAX6675
+    MODULE:  mainfun.obj (MAINFUN)
+    ADDRESS: 0030H
+
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  READ_MAX6675
+    MODULE:  mainfun.obj (MAINFUN)
+    ADDRESS: 00F0H
+
+Program Size: data=150.7 xdata=0 code=3178
+LINK/LOCATE RUN COMPLETE.  5 WARNING(S),  0 ERROR(S)

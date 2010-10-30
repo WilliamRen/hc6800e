@@ -1,0 +1,1348 @@
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+NO OBJECT MODULE REQUESTED
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE Temp.SRC SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; Temp.SRC generated from: Temp.c
+                       2     ; COMPILER INVOKED BY:
+                       3     ;        C:\Keil\C51\BIN\C51.EXE Temp.c BROWSE DEBUG OBJECTEXTEND
+                       4     
+                       5     $nomod51 
+                       6     
+                       7     NAME    TEMP
+                       8     
+  0080                 9     P0      DATA    080H
+  0090                10     P1      DATA    090H
+  00A0                11     P2      DATA    0A0H
+  00B0                12     P3      DATA    0B0H
+  00B4                13     T0      BIT     0B0H.4
+  00D6                14     AC      BIT     0D0H.6
+  00B5                15     T1      BIT     0B0H.5
+  0090                16     T2      BIT     090H.0
+  00AF                17     EA      BIT     0A8H.7
+  00A8                18     IE      DATA    0A8H
+  00CE                19     EXF2    BIT     0C8H.6
+  00B7                20     RD      BIT     0B0H.7
+  00AC                21     ES      BIT     0A8H.4
+  00B8                22     IP      DATA    0B8H
+  0098                23     RI      BIT     098H.0
+  00B2                24     INT0    BIT     0B0H.2
+  00D7                25     CY      BIT     0D0H.7
+  0099                26     TI      BIT     098H.1
+  00B3                27     INT1    BIT     0B0H.3
+  00CB                28     RCAP2H  DATA    0CBH
+  00BC                29     PS      BIT     0B8H.4
+  0081                30     SP      DATA    081H
+  0091                31     T2EX    BIT     090H.1
+  00D2                32     OV      BIT     0D0H.2
+  00CA                33     RCAP2L  DATA    0CAH
+  00C9                34     C_T2    BIT     0C8H.1
+  00B6                35     WR      BIT     0B0H.6
+  00CD                36     RCLK    BIT     0C8H.5
+  00CC                37     TCLK    BIT     0C8H.4
+  0099                38     SBUF    DATA    099H
+  0087                39     PCON    DATA    087H
+  0098                40     SCON    DATA    098H
+  0089                41     TMOD    DATA    089H
+  0088                42     TCON    DATA    088H
+  0089                43     IE0     BIT     088H.1
+  008B                44     IE1     BIT     088H.3
+  00F0                45     B       DATA    0F0H
+  00C8                46     CP_RL2  BIT     0C8H.0
+  00E0                47     ACC     DATA    0E0H
+  00A9                48     ET0     BIT     0A8H.1
+  00AB                49     ET1     BIT     0A8H.3
+  008D                50     TF0     BIT     088H.5
+  00AD                51     ET2     BIT     0A8H.5
+  008F                52     TF1     BIT     088H.7
+  00CF                53     TF2     BIT     0C8H.7
+  009A                54     RB8     BIT     098H.2
+  008C                55     TH0     DATA    08CH
+  00A8                56     EX0     BIT     0A8H.0
+  0088                57     IT0     BIT     088H.0
+  008D                58     TH1     DATA    08DH
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     2
+
+  009B                59     TB8     BIT     098H.3
+  00AA                60     EX1     BIT     0A8H.2
+  008A                61     IT1     BIT     088H.2
+  00CD                62     TH2     DATA    0CDH
+  00D0                63     P       BIT     0D0H.0
+  009F                64     SM0     BIT     098H.7
+  008A                65     TL0     DATA    08AH
+  009E                66     SM1     BIT     098H.6
+  008B                67     TL1     DATA    08BH
+  00B3                68     D18B20  BIT     0B0H.3
+  009D                69     SM2     BIT     098H.5
+  00CC                70     TL2     DATA    0CCH
+  00B9                71     PT0     BIT     0B8H.1
+  00BB                72     PT1     BIT     0B8H.3
+  00D3                73     RS0     BIT     0D0H.3
+  00BD                74     PT2     BIT     0B8H.5
+  008C                75     TR0     BIT     088H.4
+  00D4                76     RS1     BIT     0D0H.4
+  008E                77     TR1     BIT     088H.6
+  00CA                78     TR2     BIT     0C8H.2
+  00B8                79     PX0     BIT     0B8H.0
+  00BA                80     PX1     BIT     0B8H.2
+  0083                81     DPH     DATA    083H
+  0082                82     DPL     DATA    082H
+  00CB                83     EXEN2   BIT     0C8H.3
+  009C                84     REN     BIT     098H.4
+  00C8                85     T2CON   DATA    0C8H
+  00B0                86     RXD     BIT     0B0H.0
+  00B1                87     TXD     BIT     0B0H.1
+  00D5                88     F0      BIT     0D0H.5
+  00D0                89     PSW     DATA    0D0H
+                      90     ?PR?_TempDelay?TEMP  SEGMENT CODE 
+                      91     ?PR?Init18b20?TEMP   SEGMENT CODE 
+                      92     ?PR?_WriteByte?TEMP  SEGMENT CODE 
+                      93     ?PR?ReadByte?TEMP    SEGMENT CODE 
+                      94     ?PR?_read_bytes?TEMP SEGMENT CODE 
+                      95     ?PR?_CRC?TEMP        SEGMENT CODE 
+                      96     ?PR?GemTemp?TEMP     SEGMENT CODE 
+                      97     ?PR?Config18b20?TEMP SEGMENT CODE 
+                      98     ?PR?ReadID?TEMP      SEGMENT CODE 
+                      99     ?PR?TemperatuerResult?TEMP               SEGMENT CODE 
+                     100     ?PR?GetTemp?TEMP     SEGMENT CODE 
+                     101     ?PR?T1zd?TEMP        SEGMENT CODE 
+                     102     ?C_INITSEG           SEGMENT CODE 
+                     103     ?CO?TEMP             SEGMENT CODE 
+                     104     ?ID?TEMP             SEGMENT IDATA 
+                     105     ?BI?TEMP             SEGMENT BIT 
+                     106     ?DT?TEMP             SEGMENT DATA 
+                     107     ?ID?_WriteByte?TEMP  SEGMENT IDATA OVERLAYABLE 
+                     108     ?ID?ReadByte?TEMP    SEGMENT IDATA OVERLAYABLE 
+                     109     ?ID?_read_bytes?TEMP SEGMENT IDATA OVERLAYABLE 
+                     110     ?ID?_CRC?TEMP        SEGMENT IDATA OVERLAYABLE 
+                     111             PUBLIC  p
+                     112             PUBLIC  TIM
+                     113             PUBLIC  id_buff
+                     114             PUBLIC  D
+                     115             PUBLIC  temp_buff
+                     116             PUBLIC  crc_data
+                     117             PUBLIC  TempTick
+                     118             PUBLIC  flag
+                     119             PUBLIC  Temperature
+                     120             PUBLIC  CrcTable
+                     121             PUBLIC  T1zd
+                     122             PUBLIC  GetTemp
+                     123             PUBLIC  TemperatuerResult
+                     124             PUBLIC  ReadID
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     3
+
+                     125             PUBLIC  Config18b20
+                     126             PUBLIC  GemTemp
+                     127             PUBLIC  _CRC
+                     128             PUBLIC  _read_bytes
+                     129             PUBLIC  ReadByte
+                     130             PUBLIC  _WriteByte
+                     131             PUBLIC  Init18b20
+                     132             PUBLIC  _TempDelay
+                     133     
+----                 134             RSEG  ?ID?TEMP
+0000                 135         Temperature:   DS   2
+0002                 136            crc_data:   DS   1
+0003                 137           temp_buff:   DS   9
+000C                 138                   D:   DS   20
+0020                 139             id_buff:   DS   8
+                     140     
+----                 141             RSEG  ?BI?TEMP
+0000                 142                flag:   DBIT   1
+                     143     
+----                 144             RSEG  ?DT?TEMP
+0000                 145            TempTick:   DS   2
+0002                 146                 TIM:   DS   1
+00D0                 147                   p:   DS   1
+*** _______________________________________^
+*** ERROR #A8 IN 147 (Temp.SRC, LINE 147): ATTEMPT TO DEFINE AN ALREADY DEFINED LABEL
+                     148     
+----                 149             RSEG  ?ID?_WriteByte?TEMP
+0000                 150               i?242:   DS   1
+                     151     
+----                 152             RSEG  ?ID?ReadByte?TEMP
+0000                 153               i?343:   DS   1
+                     154     
+----                 155             RSEG  ?ID?ReadByte?TEMP
+0001                 156               u?344:   DS   1
+                     157     
+----                 158             RSEG  ?ID?_read_bytes?TEMP
+0000                 159               i?446:   DS   1
+                     160     
+----                 161             RSEG  ?ID?_CRC?TEMP
+0000                 162               i?548:   DS   1
+                     163     
+----                 164             RSEG  ?ID?_CRC?TEMP
+0001                 165        crc_data?549:   DS   1
+                     166     
+----                 167             RSEG  ?CO?TEMP
+0000                 168     CrcTable:
+0000 00              169             DB      000H
+0001 5E              170             DB      05EH
+0002 BC              171             DB      0BCH
+0003 E2              172             DB      0E2H
+0004 61              173             DB      061H
+0005 3F              174             DB      03FH
+0006 DD              175             DB      0DDH
+0007 83              176             DB      083H
+0008 C2              177             DB      0C2H
+0009 9C              178             DB      09CH
+000A 7E              179             DB      07EH
+000B 20              180             DB      020H
+000C A3              181             DB      0A3H
+000D FD              182             DB      0FDH
+000E 1F              183             DB      01FH
+000F 41              184             DB      041H
+0010 9D              185             DB      09DH
+0011 C3              186             DB      0C3H
+0012 21              187             DB      021H
+0013 7F              188             DB      07FH
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     4
+
+0014 FC              189             DB      0FCH
+0015 A2              190             DB      0A2H
+0016 40              191             DB      040H
+0017 1E              192             DB      01EH
+0018 5F              193             DB      05FH
+0019 01              194             DB      001H
+001A E3              195             DB      0E3H
+001B BD              196             DB      0BDH
+001C 3E              197             DB      03EH
+001D 60              198             DB      060H
+001E 82              199             DB      082H
+001F DC              200             DB      0DCH
+0020 23              201             DB      023H
+0021 7D              202             DB      07DH
+0022 9F              203             DB      09FH
+0023 C1              204             DB      0C1H
+0024 42              205             DB      042H
+0025 1C              206             DB      01CH
+0026 FE              207             DB      0FEH
+0027 A0              208             DB      0A0H
+0028 E1              209             DB      0E1H
+0029 BF              210             DB      0BFH
+002A 5D              211             DB      05DH
+002B 03              212             DB      003H
+002C 80              213             DB      080H
+002D DE              214             DB      0DEH
+002E 3C              215             DB      03CH
+002F 62              216             DB      062H
+0030 BE              217             DB      0BEH
+0031 E0              218             DB      0E0H
+0032 02              219             DB      002H
+0033 5C              220             DB      05CH
+0034 DF              221             DB      0DFH
+0035 81              222             DB      081H
+0036 63              223             DB      063H
+0037 3D              224             DB      03DH
+0038 7C              225             DB      07CH
+0039 22              226             DB      022H
+003A C0              227             DB      0C0H
+003B 9E              228             DB      09EH
+003C 1D              229             DB      01DH
+003D 43              230             DB      043H
+003E A1              231             DB      0A1H
+003F FF              232             DB      0FFH
+0040 46              233             DB      046H
+0041 18              234             DB      018H
+0042 FA              235             DB      0FAH
+0043 A4              236             DB      0A4H
+0044 27              237             DB      027H
+0045 79              238             DB      079H
+0046 9B              239             DB      09BH
+0047 C5              240             DB      0C5H
+0048 84              241             DB      084H
+0049 DA              242             DB      0DAH
+004A 38              243             DB      038H
+004B 66              244             DB      066H
+004C E5              245             DB      0E5H
+004D BB              246             DB      0BBH
+004E 59              247             DB      059H
+004F 07              248             DB      007H
+0050 DB              249             DB      0DBH
+0051 85              250             DB      085H
+0052 67              251             DB      067H
+0053 39              252             DB      039H
+0054 BA              253             DB      0BAH
+0055 E4              254             DB      0E4H
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     5
+
+0056 06              255             DB      006H
+0057 58              256             DB      058H
+0058 19              257             DB      019H
+0059 47              258             DB      047H
+005A A5              259             DB      0A5H
+005B FB              260             DB      0FBH
+005C 78              261             DB      078H
+005D 26              262             DB      026H
+005E C4              263             DB      0C4H
+005F 9A              264             DB      09AH
+0060 65              265             DB      065H
+0061 3B              266             DB      03BH
+0062 D9              267             DB      0D9H
+0063 87              268             DB      087H
+0064 04              269             DB      004H
+0065 5A              270             DB      05AH
+0066 B8              271             DB      0B8H
+0067 E6              272             DB      0E6H
+0068 A7              273             DB      0A7H
+0069 F9              274             DB      0F9H
+006A 1B              275             DB      01BH
+006B 45              276             DB      045H
+006C C6              277             DB      0C6H
+006D 98              278             DB      098H
+006E 7A              279             DB      07AH
+006F 24              280             DB      024H
+0070 F8              281             DB      0F8H
+0071 A6              282             DB      0A6H
+0072 44              283             DB      044H
+0073 1A              284             DB      01AH
+0074 99              285             DB      099H
+0075 C7              286             DB      0C7H
+0076 25              287             DB      025H
+0077 7B              288             DB      07BH
+0078 3A              289             DB      03AH
+0079 64              290             DB      064H
+007A 86              291             DB      086H
+007B D8              292             DB      0D8H
+007C 5B              293             DB      05BH
+007D 05              294             DB      005H
+007E E7              295             DB      0E7H
+007F B9              296             DB      0B9H
+0080 8C              297             DB      08CH
+0081 D2              298             DB      0D2H
+0082 30              299             DB      030H
+0083 6E              300             DB      06EH
+0084 ED              301             DB      0EDH
+0085 B3              302             DB      0B3H
+0086 51              303             DB      051H
+0087 0F              304             DB      00FH
+0088 4E              305             DB      04EH
+0089 10              306             DB      010H
+008A F2              307             DB      0F2H
+008B AC              308             DB      0ACH
+008C 2F              309             DB      02FH
+008D 71              310             DB      071H
+008E 93              311             DB      093H
+008F CD              312             DB      0CDH
+0090 11              313             DB      011H
+0091 4F              314             DB      04FH
+0092 AD              315             DB      0ADH
+0093 F3              316             DB      0F3H
+0094 70              317             DB      070H
+0095 2E              318             DB      02EH
+0096 CC              319             DB      0CCH
+0097 92              320             DB      092H
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     6
+
+0098 D3              321             DB      0D3H
+0099 8D              322             DB      08DH
+009A 6F              323             DB      06FH
+009B 31              324             DB      031H
+009C B2              325             DB      0B2H
+009D EC              326             DB      0ECH
+009E 0E              327             DB      00EH
+009F 50              328             DB      050H
+00A0 AF              329             DB      0AFH
+00A1 F1              330             DB      0F1H
+00A2 13              331             DB      013H
+00A3 4D              332             DB      04DH
+00A4 CE              333             DB      0CEH
+00A5 90              334             DB      090H
+00A6 72              335             DB      072H
+00A7 2C              336             DB      02CH
+00A8 6D              337             DB      06DH
+00A9 33              338             DB      033H
+00AA D1              339             DB      0D1H
+00AB 8F              340             DB      08FH
+00AC 0C              341             DB      00CH
+00AD 52              342             DB      052H
+00AE B0              343             DB      0B0H
+00AF EE              344             DB      0EEH
+00B0 32              345             DB      032H
+00B1 6C              346             DB      06CH
+00B2 8E              347             DB      08EH
+00B3 D0              348             DB      0D0H
+00B4 53              349             DB      053H
+00B5 0D              350             DB      00DH
+00B6 EF              351             DB      0EFH
+00B7 B1              352             DB      0B1H
+00B8 F0              353             DB      0F0H
+00B9 AE              354             DB      0AEH
+00BA 4C              355             DB      04CH
+00BB 12              356             DB      012H
+00BC 91              357             DB      091H
+00BD CF              358             DB      0CFH
+00BE 2D              359             DB      02DH
+00BF 73              360             DB      073H
+00C0 CA              361             DB      0CAH
+00C1 94              362             DB      094H
+00C2 76              363             DB      076H
+00C3 28              364             DB      028H
+00C4 AB              365             DB      0ABH
+00C5 F5              366             DB      0F5H
+00C6 17              367             DB      017H
+00C7 49              368             DB      049H
+00C8 08              369             DB      008H
+00C9 56              370             DB      056H
+00CA B4              371             DB      0B4H
+00CB EA              372             DB      0EAH
+00CC 69              373             DB      069H
+00CD 37              374             DB      037H
+00CE D5              375             DB      0D5H
+00CF 8B              376             DB      08BH
+00D0 57              377             DB      057H
+00D1 09              378             DB      009H
+00D2 EB              379             DB      0EBH
+00D3 B5              380             DB      0B5H
+00D4 36              381             DB      036H
+00D5 68              382             DB      068H
+00D6 8A              383             DB      08AH
+00D7 D4              384             DB      0D4H
+00D8 95              385             DB      095H
+00D9 CB              386             DB      0CBH
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     7
+
+00DA 29              387             DB      029H
+00DB 77              388             DB      077H
+00DC F4              389             DB      0F4H
+00DD AA              390             DB      0AAH
+00DE 48              391             DB      048H
+00DF 16              392             DB      016H
+00E0 E9              393             DB      0E9H
+00E1 B7              394             DB      0B7H
+00E2 55              395             DB      055H
+00E3 0B              396             DB      00BH
+00E4 88              397             DB      088H
+00E5 D6              398             DB      0D6H
+00E6 34              399             DB      034H
+00E7 6A              400             DB      06AH
+00E8 2B              401             DB      02BH
+00E9 75              402             DB      075H
+00EA 97              403             DB      097H
+00EB C9              404             DB      0C9H
+00EC 4A              405             DB      04AH
+00ED 14              406             DB      014H
+00EE F6              407             DB      0F6H
+00EF A8              408             DB      0A8H
+00F0 74              409             DB      074H
+00F1 2A              410             DB      02AH
+00F2 C8              411             DB      0C8H
+00F3 96              412             DB      096H
+00F4 15              413             DB      015H
+00F5 4B              414             DB      04BH
+00F6 A9              415             DB      0A9H
+00F7 F7              416             DB      0F7H
+00F8 B6              417             DB      0B6H
+00F9 E8              418             DB      0E8H
+00FA 0A              419             DB      00AH
+00FB 54              420             DB      054H
+00FC D7              421             DB      0D7H
+00FD 89              422             DB      089H
+00FE 6B              423             DB      06BH
+00FF 35              424             DB      035H
+                     425     
+                     426     
+----                 427             RSEG  ?C_INITSEG
+0000 02              428             DB      002H
+0001 00       F      429             DB      TempTick
+0002 0000            430             DW      00000H
+                     431     
+                     432     ;  
+                     433     ;  /*************************此部分为18B20的驱动程序*************************************/
+                     434     
+                     435     ; #include <reg52.H>
+                     436     ; #include <intrins.h>
+                     437     ; 
+                     438     ; sbit    D18B20=P3^3;
+                     439     ; #define  NOP()   _nop_()   /* 定义空指令 */
+                     440     ; #define  _Nop()  _nop_()   /*定义空指令*/
+                     441     ; 
+                     442     ; void TempDelay (unsigned char idata us);
+                     443     ; void Init18b20 (void);
+                     444     ; void WriteByte (unsigned char idata wr);  //单字节写入
+                     445     ; void read_bytes (unsigned char idata j);
+                     446     ; unsigned char CRC (unsigned char j);
+                     447     ; void GemTemp (void);
+                     448     ; void Config18b20 (void);
+                     449     ; void ReadID (void);
+                     450     ; void TemperatuerResult(void);
+                     451     ; 
+                     452     ; 
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     8
+
+                     453     ; bit  flag;
+                     454     ; unsigned int  idata Temperature,D[10];
+                     455     ; unsigned char idata temp_buff[9]; //存储读取的字节，read scratchpad为9字节，read rom ID为8字节
+                     456     ; unsigned char idata id_buff[8];
+                     457     ; unsigned char idata *p,TIM;
+                     458     ; unsigned char idata crc_data;
+                     459     ; 
+                     460     ; 
+                     461     ; unsigned char code CrcTable [256]={
+                     462     ; 0,  94, 188,  226,  97,  63,  221,  131,  194,  156,  126,  32,  163,  253,  31,  65,
+                     463     ; 157,  195,  33,  127,  252,  162,  64,  30,  95,  1,  227,  189,  62,  96,  130,  220,
+                     464     ; 35,  125,  159,  193,  66,  28,  254,  160,  225,  191,  93,  3,  128,  222,  60,  98,
+                     465     ; 190,  224,  2,  92,  223,  129,  99,  61,  124,  34,  192,  158,  29,  67,  161,  255,
+                     466     ; 70,  24,  250,  164,  39,  121,  155,  197,  132,  218,  56,  102,  229,  187,  89,  7,
+                     467     ; 219,  133, 103,  57,  186,  228,  6,  88,  25,  71,  165,  251,  120,  38,  196,  154,
+                     468     ; 101,  59, 217,  135,  4,  90,  184,  230,  167,  249,  27,  69,  198,  152,  122,  36,
+                     469     ; 248,  166, 68,  26,  153,  199,  37,  123,  58,  100,  134,  216,  91,  5,  231,  185,
+                     470     ; 140,  210, 48,  110,  237,  179,  81,  15,  78,  16,  242,  172,  47,  113,  147,  205,
+                     471     ; 17,  79,  173,  243,  112,  46,  204,  146,  211,  141,  111,  49,  178,  236,  14,  80,
+                     472     ; 175,  241, 19,  77,  206,  144,  114,  44,  109,  51,  209,  143,  12,  82,  176,  238,
+                     473     ; 50,  108,  142,  208,  83,  13,  239,  177,  240,  174,  76,  18,  145,  207,  45,  115,
+                     474     ; 202,  148, 118,  40,  171,  245,  23,  73,  8,  86,  180,  234,  105,  55,  213, 139,
+                     475     ; 87,  9,  235,  181,  54,  104,  138,  212,  149,  203,  41,  119,  244,  170,  72,  22,
+                     476     ; 233,  183,  85,  11,  136,  214,  52,  106,  43,  117,  151,  201,  74,  20,  246,  168,
+                     477     ; 116,  42,  200,  150,  21,  75,  169,  247,  182,  232,  10,  84,  215,  137,  107,  53}; 
+                     478     ; //
+                     479     ; /************************************************************
+                     480     ; *Function:延时处理
+                     481     ; *parameter:
+                     482     ; *Return:
+                     483     ; *Modify:
+                     484     ; *************************************************************/
+                     485     ; void TempDelay (unsigned char idata us)
+                     486     
+----                 487             RSEG  ?PR?_TempDelay?TEMP
+0000                 488     _TempDelay:
+                     489             USING   0
+                     490                             ; SOURCE LINE # 54
+                     491     ;---- Variable 'us?040' assigned to Register 'R7' ----
+                     492     ; {
+                     493                             ; SOURCE LINE # 55
+0000                 494     ?C0001:
+                     495     ;       while(us--);
+                     496                             ; SOURCE LINE # 56
+0000 AE07            497             MOV     R6,AR7
+0002 1F              498             DEC     R7
+0003 EE              499             MOV     A,R6
+0004 70FA            500             JNZ     ?C0001
+                     501     ; }
+                     502                             ; SOURCE LINE # 57
+0006                 503     ?C0003:
+0006 22              504             RET     
+                     505     ; END OF _TempDelay
+                     506     
+                     507     ; 
+                     508     ; /************************************************************
+                     509     ; *Function:18B20初始化
+                     510     ; *parameter:
+                     511     ; *Return:
+                     512     ; *Modify:
+                     513     ; *************************************************************/
+                     514     ; void Init18b20 (void)
+                     515     
+----                 516             RSEG  ?PR?Init18b20?TEMP
+0000                 517     Init18b20:
+                     518             USING   0
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE     9
+
+                     519                             ; SOURCE LINE # 65
+                     520     ; {
+                     521                             ; SOURCE LINE # 66
+                     522     ;       D18B20=1;
+                     523                             ; SOURCE LINE # 67
+0000 D2B3            524             SETB    D18B20
+                     525     ;       _nop_();
+                     526                             ; SOURCE LINE # 68
+0002 00              527             NOP     
+                     528     ;       D18B20=0;
+                     529                             ; SOURCE LINE # 69
+0003 C2B3            530             CLR     D18B20
+                     531     ;       TempDelay(40);   //delay 530 uS//80
+                     532                             ; SOURCE LINE # 70
+0005 7F28            533             MOV     R7,#028H
+0007 120000   F      534             LCALL   _TempDelay
+                     535     ;       _nop_();
+                     536                             ; SOURCE LINE # 71
+000A 00              537             NOP     
+                     538     ;       D18B20=1;
+                     539                             ; SOURCE LINE # 72
+000B D2B3            540             SETB    D18B20
+                     541     ;       TempDelay(7);   //delay 100 uS//14
+                     542                             ; SOURCE LINE # 73
+000D 7F07            543             MOV     R7,#07H
+000F 120000   F      544             LCALL   _TempDelay
+                     545     ;       _nop_();
+                     546                             ; SOURCE LINE # 74
+0012 00              547             NOP     
+                     548     ;       _nop_();
+                     549                             ; SOURCE LINE # 75
+0013 00              550             NOP     
+                     551     ;       _nop_();
+                     552                             ; SOURCE LINE # 76
+0014 00              553             NOP     
+                     554     ;       
+                     555     ;       if(D18B20==0)
+                     556                             ; SOURCE LINE # 78
+0015 20B304          557             JB      D18B20,?C0004
+                     558     ;               flag = 1;   //detect 1820 success!
+                     559                             ; SOURCE LINE # 79
+0018 D200     F      560             SETB    flag
+001A 8002            561             SJMP    ?C0005
+001C                 562     ?C0004:
+                     563     ;       else
+                     564     ;               flag = 0;    //detect 1820 fail!
+                     565                             ; SOURCE LINE # 81
+001C C200     F      566             CLR     flag
+001E                 567     ?C0005:
+                     568     ;       TempDelay(10);       //20
+                     569                             ; SOURCE LINE # 82
+001E 7F0A            570             MOV     R7,#0AH
+0020 120000   F      571             LCALL   _TempDelay
+                     572     ;       _nop_();
+                     573                             ; SOURCE LINE # 83
+0023 00              574             NOP     
+                     575     ;       _nop_();
+                     576                             ; SOURCE LINE # 84
+0024 00              577             NOP     
+                     578     ;       D18B20 = 1;
+                     579                             ; SOURCE LINE # 85
+0025 D2B3            580             SETB    D18B20
+                     581     ; }
+                     582                             ; SOURCE LINE # 86
+0027 22              583             RET     
+                     584     ; END OF Init18b20
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    10
+
+                     585     
+                     586     ; 
+                     587     ; /************************************************************
+                     588     ; *Function:向18B20写入一个字节
+                     589     ; *parameter:
+                     590     ; *Return:
+                     591     ; *Modify:
+                     592     ; *************************************************************/
+                     593     ; void WriteByte (unsigned char idata wr)  //单字节写入
+                     594     
+----                 595             RSEG  ?PR?_WriteByte?TEMP
+0000                 596     L?0032:
+                     597             USING   0
+0000                 598     L?0033:
+0000 120000   F      599             LCALL   Init18b20
+0003 7FCC            600             MOV     R7,#0CCH
+0005                 601     _WriteByte:
+                     602             USING   0
+                     603                             ; SOURCE LINE # 94
+                     604     ;---- Variable 'wr?241' assigned to Register 'R5' ----
+0005 AD07            605             MOV     R5,AR7
+                     606     ; {
+                     607                             ; SOURCE LINE # 95
+                     608     ;       unsigned char idata i;
+                     609     ;       for (i=0;i<8;i++)
+                     610                             ; SOURCE LINE # 97
+0007 E4              611             CLR     A
+0008 7800     F      612             MOV     R0,#LOW (i?242)
+000A F6              613             MOV     @R0,A
+000B                 614     ?C0007:
+                     615     ;       {
+                     616                             ; SOURCE LINE # 98
+                     617     ;               D18B20 = 0;
+                     618                             ; SOURCE LINE # 99
+000B C2B3            619             CLR     D18B20
+                     620     ;               _nop_();
+                     621                             ; SOURCE LINE # 100
+000D 00              622             NOP     
+                     623     ;               D18B20=wr&0x01;
+                     624                             ; SOURCE LINE # 101
+000E ED              625             MOV     A,R5
+000F 13              626             RRC     A
+0010 92B3            627             MOV     D18B20,C
+                     628     ;               TempDelay(3);   //delay 45 uS //5
+                     629                             ; SOURCE LINE # 102
+0012 7F03            630             MOV     R7,#03H
+0014 120000   F      631             LCALL   _TempDelay
+                     632     ;               _nop_();
+                     633                             ; SOURCE LINE # 103
+0017 00              634             NOP     
+                     635     ;               _nop_();
+                     636                             ; SOURCE LINE # 104
+0018 00              637             NOP     
+                     638     ;               D18B20=1;
+                     639                             ; SOURCE LINE # 105
+0019 D2B3            640             SETB    D18B20
+                     641     ;               wr >>= 1;
+                     642                             ; SOURCE LINE # 106
+001B ED              643             MOV     A,R5
+001C C3              644             CLR     C
+001D 13              645             RRC     A
+001E FD              646             MOV     R5,A
+                     647     ;       }
+                     648                             ; SOURCE LINE # 107
+001F 7800     F      649             MOV     R0,#LOW (i?242)
+0021 06              650             INC     @R0
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    11
+
+0022 E6              651             MOV     A,@R0
+0023 C3              652             CLR     C
+0024 9408            653             SUBB    A,#08H
+0026 40E3            654             JC      ?C0007
+                     655     ; }
+                     656                             ; SOURCE LINE # 108
+0028                 657     ?C0010:
+0028 22              658             RET     
+                     659     ; END OF _WriteByte
+                     660     
+                     661     ; 
+                     662     ; /************************************************************
+                     663     ; *Function:读18B20的一个字节
+                     664     ; *parameter:
+                     665     ; *Return:
+                     666     ; *Modify:
+                     667     ; *************************************************************/
+                     668     ; unsigned char ReadByte (void)     //读取单字节
+                     669     
+----                 670             RSEG  ?PR?ReadByte?TEMP
+0000                 671     ReadByte:
+                     672             USING   0
+                     673                             ; SOURCE LINE # 116
+                     674     ; {
+                     675                             ; SOURCE LINE # 117
+                     676     ;       unsigned char idata i,u=0;
+                     677                             ; SOURCE LINE # 118
+0000 E4              678             CLR     A
+0001 7800     F      679             MOV     R0,#LOW (u?344)
+0003 F6              680             MOV     @R0,A
+                     681     ;       for(i=0;i<8;i++)
+                     682                             ; SOURCE LINE # 119
+0004 18              683             DEC     R0
+0005 F6              684             MOV     @R0,A
+0006                 685     ?C0011:
+                     686     ;       {
+                     687                             ; SOURCE LINE # 120
+                     688     ;               D18B20 = 0;
+                     689                             ; SOURCE LINE # 121
+0006 C2B3            690             CLR     D18B20
+                     691     ;               u >>= 1;
+                     692                             ; SOURCE LINE # 122
+0008 7800     F      693             MOV     R0,#LOW (u?344)
+000A E6              694             MOV     A,@R0
+000B C3              695             CLR     C
+000C 13              696             RRC     A
+000D F6              697             MOV     @R0,A
+                     698     ;               D18B20 = 1;
+                     699                             ; SOURCE LINE # 123
+000E D2B3            700             SETB    D18B20
+                     701     ;               if(D18B20==1)
+                     702                             ; SOURCE LINE # 124
+0010 30B304          703             JNB     D18B20,?C0014
+                     704     ;               u |= 0x80;
+                     705                             ; SOURCE LINE # 125
+0013 E6              706             MOV     A,@R0
+0014 4480            707             ORL     A,#080H
+0016 F6              708             MOV     @R0,A
+0017                 709     ?C0014:
+                     710     ;               TempDelay (2);
+                     711                             ; SOURCE LINE # 126
+0017 7F02            712             MOV     R7,#02H
+0019 120000   F      713             LCALL   _TempDelay
+                     714     ;               _nop_();
+                     715                             ; SOURCE LINE # 127
+001C 00              716             NOP     
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    12
+
+                     717     ;       }
+                     718                             ; SOURCE LINE # 128
+001D 7800     F      719             MOV     R0,#LOW (i?343)
+001F 06              720             INC     @R0
+0020 E6              721             MOV     A,@R0
+0021 C3              722             CLR     C
+0022 9408            723             SUBB    A,#08H
+0024 40E0            724             JC      ?C0011
+0026                 725     ?C0012:
+                     726     ;       return(u);
+                     727                             ; SOURCE LINE # 129
+0026 7800     F      728             MOV     R0,#LOW (u?344)
+0028 E6              729             MOV     A,@R0
+0029 FF              730             MOV     R7,A
+                     731     ; }
+                     732                             ; SOURCE LINE # 130
+002A                 733     ?C0015:
+002A 22              734             RET     
+                     735     ; END OF ReadByte
+                     736     
+                     737     ; 
+                     738     ; /************************************************************
+                     739     ; *Function:读18B20
+                     740     ; *parameter:
+                     741     ; *Return:
+                     742     ; *Modify:
+                     743     ; *************************************************************/
+                     744     ; void read_bytes (unsigned char idata j)
+                     745     
+----                 746             RSEG  ?PR?_read_bytes?TEMP
+0000                 747     _read_bytes:
+                     748             USING   0
+                     749                             ; SOURCE LINE # 138
+                     750     ;---- Variable 'j?445' assigned to Register 'R5' ----
+0000 AD07            751             MOV     R5,AR7
+                     752     ; {
+                     753                             ; SOURCE LINE # 139
+                     754     ;        unsigned char idata i;
+                     755     ;        for(i=0;i<j;i++)
+                     756                             ; SOURCE LINE # 141
+0002 E4              757             CLR     A
+0003 7800     F      758             MOV     R0,#LOW (i?446)
+0005 F6              759             MOV     @R0,A
+0006                 760     ?C0016:
+0006 7800     F      761             MOV     R0,#LOW (i?446)
+0008 E6              762             MOV     A,@R0
+0009 C3              763             CLR     C
+000A 9D              764             SUBB    A,R5
+000B 500E            765             JNC     ?C0019
+                     766     ;        {
+                     767                             ; SOURCE LINE # 142
+                     768     ;                 *p = ReadByte();
+                     769                             ; SOURCE LINE # 143
+000D 120000   F      770             LCALL   ReadByte
+0010 A800            771             MOV     R0,p
+*** ____________________________________________^
+*** ERROR #A48 IN 771 (Temp.SRC, LINE 771): DATA-ADDRESS EXPECTED
+0012 A607            772             MOV     @R0,AR7
+                     773     ;                 p++;
+                     774                             ; SOURCE LINE # 144
+0014 0500            775             INC     p
+*** _________________________________________^
+*** ERROR #A48 IN 775 (Temp.SRC, LINE 775): DATA-ADDRESS EXPECTED
+                     776     ;        }
+                     777                             ; SOURCE LINE # 145
+0016 7800     F      778             MOV     R0,#LOW (i?446)
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    13
+
+0018 06              779             INC     @R0
+0019 80EB            780             SJMP    ?C0016
+                     781     ; }
+                     782                             ; SOURCE LINE # 146
+001B                 783     ?C0019:
+001B 22              784             RET     
+                     785     ; END OF _read_bytes
+                     786     
+                     787     ; 
+                     788     ; /************************************************************
+                     789     ; *Function:CRC校验
+                     790     ; *parameter:
+                     791     ; *Return:
+                     792     ; *Modify:
+                     793     ; *************************************************************/
+                     794     ; unsigned char CRC (unsigned char j)
+                     795     
+----                 796             RSEG  ?PR?_CRC?TEMP
+0000                 797     _CRC:
+                     798             USING   0
+                     799                             ; SOURCE LINE # 154
+                     800     ;---- Variable 'j?547' assigned to Register 'R7' ----
+                     801     ; {
+                     802                             ; SOURCE LINE # 155
+                     803     ;       unsigned char idata i,crc_data=0;
+                     804                             ; SOURCE LINE # 156
+0000 E4              805             CLR     A
+0001 7800     F      806             MOV     R0,#LOW (crc_data?549)
+0003 F6              807             MOV     @R0,A
+                     808     ;       for(i=0;i<j;i++)  //查表校验
+                     809                             ; SOURCE LINE # 157
+0004 18              810             DEC     R0
+0005 F6              811             MOV     @R0,A
+0006                 812     ?C0020:
+0006 7800     F      813             MOV     R0,#LOW (i?548)
+0008 E6              814             MOV     A,@R0
+0009 FE              815             MOV     R6,A
+000A C3              816             CLR     C
+000B 9F              817             SUBB    A,R7
+000C 5010            818             JNC     ?C0021
+                     819     ;       crc_data = CrcTable[crc_data^temp_buff[i]];
+                     820                             ; SOURCE LINE # 158
+000E 7400     F      821             MOV     A,#LOW (temp_buff)
+0010 2E              822             ADD     A,R6
+0011 F9              823             MOV     R1,A
+0012 08              824             INC     R0
+0013 E6              825             MOV     A,@R0
+0014 67              826             XRL     A,@R1
+0015 900000   F      827             MOV     DPTR,#CrcTable
+0018 93              828             MOVC    A,@A+DPTR
+0019 F6              829             MOV     @R0,A
+001A 18              830             DEC     R0
+001B 06              831             INC     @R0
+001C 80E8            832             SJMP    ?C0020
+001E                 833     ?C0021:
+                     834     ;     return (crc_data);
+                     835                             ; SOURCE LINE # 159
+001E 7800     F      836             MOV     R0,#LOW (crc_data?549)
+0020 E6              837             MOV     A,@R0
+0021 FF              838             MOV     R7,A
+                     839     ; }
+                     840                             ; SOURCE LINE # 160
+0022                 841     ?C0023:
+0022 22              842             RET     
+                     843     ; END OF _CRC
+                     844     
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    14
+
+                     845     ; 
+                     846     ; /************************************************************
+                     847     ; *Function:读取温度
+                     848     ; *parameter:
+                     849     ; *Return:
+                     850     ; *Modify:
+                     851     ; *************************************************************/
+                     852     ; void GemTemp (void)
+                     853     
+----                 854             RSEG  ?PR?GemTemp?TEMP
+0000                 855     GemTemp:
+                     856             USING   0
+                     857                             ; SOURCE LINE # 168
+                     858     ; {
+                     859                             ; SOURCE LINE # 169
+                     860     ;    read_bytes (9);
+                     861                             ; SOURCE LINE # 170
+0000 7F09            862             MOV     R7,#09H
+0002 120000   F      863             LCALL   _read_bytes
+                     864     ;    if (CRC(9)==0) //校验正确
+                     865                             ; SOURCE LINE # 171
+0005 7F09            866             MOV     R7,#09H
+0007 120000   F      867             LCALL   _CRC
+000A EF              868             MOV     A,R7
+000B 7027            869             JNZ     ?C0025
+                     870     ;    {
+                     871                             ; SOURCE LINE # 172
+                     872     ;           Temperature = temp_buff[1]*0x100 + temp_buff[0];
+                     873                             ; SOURCE LINE # 173
+000D 7800     F      874             MOV     R0,#LOW (temp_buff+01H)
+000F E6              875             MOV     A,@R0
+0010 FE              876             MOV     R6,A
+0011 18              877             DEC     R0
+0012 E6              878             MOV     A,@R0
+0013 7C00            879             MOV     R4,#00H
+0015 2400            880             ADD     A,#00H
+0017 7800     F      881             MOV     R0,#LOW (Temperature+01H)
+0019 F6              882             MOV     @R0,A
+001A EC              883             MOV     A,R4
+001B 3E              884             ADDC    A,R6
+001C 18              885             DEC     R0
+001D F6              886             MOV     @R0,A
+                     887     ; //        Temperature *= 0.625;
+                     888     ;               Temperature /= 16;
+                     889                             ; SOURCE LINE # 175
+001E 7900     F      890             MOV     R1,#LOW (Temperature)
+0020 E7              891             MOV     A,@R1
+0021 C4              892             SWAP    A
+0022 F8              893             MOV     R0,A
+0023 54F0            894             ANL     A,#0F0H
+0025 C8              895             XCH     A,R0
+0026 68              896             XRL     A,R0
+0027 F7              897             MOV     @R1,A
+0028 09              898             INC     R1
+0029 E7              899             MOV     A,@R1
+002A C4              900             SWAP    A
+002B 540F            901             ANL     A,#0FH
+002D 48              902             ORL     A,R0
+002E F7              903             MOV     @R1,A
+                     904     ;               TempDelay(1);
+                     905                             ; SOURCE LINE # 176
+002F 7F01            906             MOV     R7,#01H
+0031 120000   F      907             LCALL   _TempDelay
+                     908     ;     }
+                     909                             ; SOURCE LINE # 177
+                     910     ; }
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    15
+
+                     911                             ; SOURCE LINE # 178
+0034                 912     ?C0025:
+0034 22              913             RET     
+                     914     ; END OF GemTemp
+                     915     
+                     916     ; 
+                     917     ; /************************************************************
+                     918     ; *Function:内部配置
+                     919     ; *parameter:
+                     920     ; *Return:
+                     921     ; *Modify:
+                     922     ; *************************************************************/
+                     923     ; void Config18b20 (void)  //重新配置报警限定值和分辨率
+                     924     
+----                 925             RSEG  ?PR?Config18b20?TEMP
+0000                 926     Config18b20:
+                     927             USING   0
+                     928                             ; SOURCE LINE # 186
+                     929     ; {
+                     930                             ; SOURCE LINE # 187
+                     931     ;      Init18b20();
+                     932                             ; SOURCE LINE # 188
+                     933     ;      WriteByte(0xcc);  //skip rom
+                     934                             ; SOURCE LINE # 189
+0000 120000   F      935             LCALL   L?0032
+                     936     ;      WriteByte(0x4e);  //write scratchpad
+                     937                             ; SOURCE LINE # 190
+0003 7F4E            938             MOV     R7,#04EH
+0005 120000   F      939             LCALL   _WriteByte
+                     940     ;      WriteByte(0x19);  //上限
+                     941                             ; SOURCE LINE # 191
+0008 7F19            942             MOV     R7,#019H
+000A 120000   F      943             LCALL   _WriteByte
+                     944     ;      WriteByte(0x1a);  //下限
+                     945                             ; SOURCE LINE # 192
+000D 7F1A            946             MOV     R7,#01AH
+000F 120000   F      947             LCALL   _WriteByte
+                     948     ;      WriteByte(0x7f);     //set 11 bit (0.125)
+                     949                             ; SOURCE LINE # 193
+0012 7F7F            950             MOV     R7,#07FH
+0014 120000   F      951             LCALL   _WriteByte
+                     952     ;      Init18b20();
+                     953                             ; SOURCE LINE # 194
+                     954     ;      WriteByte(0xcc);  //skip rom
+                     955                             ; SOURCE LINE # 195
+0017 120000   F      956             LCALL   L?0032
+                     957     ;      WriteByte(0x48);  //保存设定值
+                     958                             ; SOURCE LINE # 196
+001A 7F48            959             MOV     R7,#048H
+001C 120000   F      960             LCALL   _WriteByte
+                     961     ;      Init18b20();
+                     962                             ; SOURCE LINE # 197
+                     963     ;      WriteByte(0xcc);  //skip rom
+                     964                             ; SOURCE LINE # 198
+001F 120000   F      965             LCALL   L?0033
+                     966     ;      WriteByte(0xb8);  //回调设定值
+                     967                             ; SOURCE LINE # 199
+0022 7FB8            968             MOV     R7,#0B8H
+0024 020000   F      969             LJMP    _WriteByte
+                     970     ; END OF Config18b20
+                     971     
+                     972     ; }
+                     973     ; 
+                     974     ; /************************************************************
+                     975     ; *Function:读18B20ID
+                     976     ; *parameter:
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    16
+
+                     977     ; *Return:
+                     978     ; *Modify:
+                     979     ; *************************************************************/
+                     980     ; void ReadID (void)//读取器件 id
+                     981     
+----                 982             RSEG  ?PR?ReadID?TEMP
+0000                 983     ReadID:
+                     984             USING   0
+                     985                             ; SOURCE LINE # 208
+                     986     ; {
+                     987                             ; SOURCE LINE # 209
+                     988     ;       Init18b20();
+                     989                             ; SOURCE LINE # 210
+0000 120000   F      990             LCALL   Init18b20
+                     991     ;       WriteByte(0x33);  //read rom
+                     992                             ; SOURCE LINE # 211
+0003 7F33            993             MOV     R7,#033H
+0005 120000   F      994             LCALL   _WriteByte
+                     995     ;       read_bytes(8);
+                     996                             ; SOURCE LINE # 212
+0008 7F08            997             MOV     R7,#08H
+000A 020000   F      998             LJMP    _read_bytes
+                     999     ; END OF ReadID
+                    1000     
+                    1001     ; }
+                    1002     ; 
+                    1003     ; /************************************************************
+                    1004     ; *Function:18B20ID全处理
+                    1005     ; *parameter:
+                    1006     ; *Return:
+                    1007     ; *Modify:
+                    1008     ; *************************************************************/
+                    1009     ; void TemperatuerResult(void)
+                    1010     
+----                1011             RSEG  ?PR?TemperatuerResult?TEMP
+0000                1012     TemperatuerResult:
+                    1013             USING   0
+                    1014                             ; SOURCE LINE # 221
+                    1015     ; {
+                    1016                             ; SOURCE LINE # 222
+                    1017     ;       p = id_buff;
+                    1018                             ; SOURCE LINE # 223
+0000 750000   F     1019             MOV     p,#LOW (id_buff)
+*** _________________________________________^
+*** ERROR #A48 IN 1019 (Temp.SRC, LINE 1019): DATA-ADDRESS EXPECTED
+                    1020     ;       ReadID();
+                    1021                             ; SOURCE LINE # 224
+0003 120000   F     1022             LCALL   ReadID
+                    1023     ;       Config18b20();
+                    1024                             ; SOURCE LINE # 225
+0006 120000   F     1025             LCALL   Config18b20
+                    1026     ;       Init18b20 ();
+                    1027                             ; SOURCE LINE # 226
+                    1028     ;       WriteByte(0xcc);   //skip rom
+                    1029                             ; SOURCE LINE # 227
+0009 120000   F     1030             LCALL   L?0033
+                    1031     ;       WriteByte(0x44);   //Temperature convert
+                    1032                             ; SOURCE LINE # 228
+000C 7F44           1033             MOV     R7,#044H
+000E 120000   F     1034             LCALL   _WriteByte
+                    1035     ; 
+                    1036     ;       Init18b20 ();
+                    1037                             ; SOURCE LINE # 230
+                    1038     ;       WriteByte(0xcc);   //skip rom
+                    1039                             ; SOURCE LINE # 231
+0011 120000   F     1040             LCALL   L?0033
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    17
+
+                    1041     ;       WriteByte(0xbe);   //read Temperature
+                    1042                             ; SOURCE LINE # 232
+0014 7FBE           1043             MOV     R7,#0BEH
+0016 120000   F     1044             LCALL   _WriteByte
+                    1045     ;       p = temp_buff;
+                    1046                             ; SOURCE LINE # 233
+0019 750000   F     1047             MOV     p,#LOW (temp_buff)
+*** _________________________________________^
+*** ERROR #A48 IN 1047 (Temp.SRC, LINE 1047): DATA-ADDRESS EXPECTED
+                    1048     ;       GemTemp();
+                    1049                             ; SOURCE LINE # 234
+001C 020000   F     1050             LJMP    GemTemp
+                    1051     ; END OF TemperatuerResult
+                    1052     
+                    1053     ; }
+                    1054     ; 
+                    1055     ; unsigned int TempTick=0;
+                    1056     ; void GetTemp()
+                    1057     
+----                1058             RSEG  ?PR?GetTemp?TEMP
+0000                1059     GetTemp:
+                    1060             USING   0
+                    1061                             ; SOURCE LINE # 238
+                    1062     ; {       
+                    1063                             ; SOURCE LINE # 239
+                    1064     ;      if(TIM==1)
+                    1065                             ; SOURCE LINE # 240
+0000 E500     F     1066             MOV     A,TIM
+0002 B40114         1067             CJNE    A,#01H,?C0030
+                    1068     ;       {  TIM=0;
+                    1069                             ; SOURCE LINE # 241
+0005 E4             1070             CLR     A
+0006 F500     F     1071             MOV     TIM,A
+                    1072     ;          TemperatuerResult();
+                    1073                             ; SOURCE LINE # 242
+0008 120000   F     1074             LCALL   TemperatuerResult
+                    1075     ;          D[5]=Temperature;
+                    1076                             ; SOURCE LINE # 243
+000B 7800     F     1077             MOV     R0,#LOW (Temperature)
+000D E6             1078             MOV     A,@R0
+000E FE             1079             MOV     R6,A
+000F 08             1080             INC     R0
+0010 E6             1081             MOV     A,@R0
+0011 FF             1082             MOV     R7,A
+0012 7800     F     1083             MOV     R0,#LOW (D+0AH)
+0014 A606           1084             MOV     @R0,AR6
+0016 08             1085             INC     R0
+0017 A607           1086             MOV     @R0,AR7
+                    1087     ;       }
+                    1088                             ; SOURCE LINE # 244
+                    1089     ; 
+                    1090     ; }
+                    1091                             ; SOURCE LINE # 246
+0019                1092     ?C0030:
+0019 22             1093             RET     
+                    1094     ; END OF GetTemp
+                    1095     
+----                1096     CSEG    AT      0001BH
+001B 020000   F     1097             LJMP    T1zd
+                    1098     
+                    1099     ; 
+                    1100     ; /*************************************
+                    1101     ;  [ t1 (0.5ms)中断] 中断中做 PWM 输出
+                    1102     ;   ------------1000/(0.02ms*250)=200Hz
+                    1103     ; *************************************/
+                    1104     ; void T1zd(void) interrupt 3 
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    18
+
+                    1105     
+----                1106             RSEG  ?PR?T1zd?TEMP
+                    1107             USING   0
+0000                1108     T1zd:
+                    1109                             ; SOURCE LINE # 252
+                    1110     ; {
+                    1111     ;    TH1 = 0xfe;    //11.0592
+                    1112                             ; SOURCE LINE # 254
+0000 758DFE         1113             MOV     TH1,#0FEH
+                    1114     ;    TL1 = 0x33;
+                    1115                             ; SOURCE LINE # 255
+0003 758B33         1116             MOV     TL1,#033H
+                    1117     ;    TIM++;
+                    1118                             ; SOURCE LINE # 256
+0006 0500     F     1119             INC     TIM
+                    1120     ; 
+                    1121     ; }
+                    1122                             ; SOURCE LINE # 258
+0008 32             1123             RETI    
+                    1124     ; END OF T1zd
+                    1125     
+                    1126             END
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    19
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                     T Y P E  V A L U E   ATTRIBUTES
+
+?BI?TEMP . . . . . . . . .  B SEG    0001H       REL=UNIT
+?C0001 . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_TEMPDELAY?TEMP
+?C0003 . . . . . . . . . .  C ADDR   0006H   R   SEG=?PR?_TEMPDELAY?TEMP
+?C0004 . . . . . . . . . .  C ADDR   001CH   R   SEG=?PR?INIT18B20?TEMP
+?C0005 . . . . . . . . . .  C ADDR   001EH   R   SEG=?PR?INIT18B20?TEMP
+?C0007 . . . . . . . . . .  C ADDR   000BH   R   SEG=?PR?_WRITEBYTE?TEMP
+?C0010 . . . . . . . . . .  C ADDR   0028H   R   SEG=?PR?_WRITEBYTE?TEMP
+?C0011 . . . . . . . . . .  C ADDR   0006H   R   SEG=?PR?READBYTE?TEMP
+?C0012 . . . . . . . . . .  C ADDR   0026H   R   SEG=?PR?READBYTE?TEMP
+?C0014 . . . . . . . . . .  C ADDR   0017H   R   SEG=?PR?READBYTE?TEMP
+?C0015 . . . . . . . . . .  C ADDR   002AH   R   SEG=?PR?READBYTE?TEMP
+?C0016 . . . . . . . . . .  C ADDR   0006H   R   SEG=?PR?_READ_BYTES?TEMP
+?C0019 . . . . . . . . . .  C ADDR   001BH   R   SEG=?PR?_READ_BYTES?TEMP
+?C0020 . . . . . . . . . .  C ADDR   0006H   R   SEG=?PR?_CRC?TEMP
+?C0021 . . . . . . . . . .  C ADDR   001EH   R   SEG=?PR?_CRC?TEMP
+?C0023 . . . . . . . . . .  C ADDR   0022H   R   SEG=?PR?_CRC?TEMP
+?C0025 . . . . . . . . . .  C ADDR   0034H   R   SEG=?PR?GEMTEMP?TEMP
+?C0030 . . . . . . . . . .  C ADDR   0019H   R   SEG=?PR?GETTEMP?TEMP
+?CO?TEMP . . . . . . . . .  C SEG    0100H       REL=UNIT
+?C_INITSEG . . . . . . . .  C SEG    0004H       REL=UNIT
+?DT?TEMP . . . . . . . . .  D SEG    0004H       REL=UNIT
+?ID?READBYTE?TEMP. . . . .  I SEG    0002H       REL=UNIT
+?ID?TEMP . . . . . . . . .  I SEG    0028H       REL=UNIT
+?ID?_CRC?TEMP. . . . . . .  I SEG    0002H       REL=UNIT
+?ID?_READ_BYTES?TEMP . . .  I SEG    0001H       REL=UNIT
+?ID?_WRITEBYTE?TEMP. . . .  I SEG    0001H       REL=UNIT
+?PR?CONFIG18B20?TEMP . . .  C SEG    0027H       REL=UNIT
+?PR?GEMTEMP?TEMP . . . . .  C SEG    0035H       REL=UNIT
+?PR?GETTEMP?TEMP . . . . .  C SEG    001AH       REL=UNIT
+?PR?INIT18B20?TEMP . . . .  C SEG    0028H       REL=UNIT
+?PR?READBYTE?TEMP. . . . .  C SEG    002BH       REL=UNIT
+?PR?READID?TEMP. . . . . .  C SEG    000DH       REL=UNIT
+?PR?T1ZD?TEMP. . . . . . .  C SEG    0009H       REL=UNIT
+?PR?TEMPERATUERRESULT?TEMP  C SEG    001FH       REL=UNIT
+?PR?_CRC?TEMP. . . . . . .  C SEG    0023H       REL=UNIT
+?PR?_READ_BYTES?TEMP . . .  C SEG    001CH       REL=UNIT
+?PR?_TEMPDELAY?TEMP. . . .  C SEG    0007H       REL=UNIT
+?PR?_WRITEBYTE?TEMP. . . .  C SEG    0029H       REL=UNIT
+AC . . . . . . . . . . . .  B ADDR   00D0H.6 A   
+ACC. . . . . . . . . . . .  D ADDR   00E0H   A   
+AR6. . . . . . . . . . . .  D ADDR   0006H   A   
+AR7. . . . . . . . . . . .  D ADDR   0007H   A   
+B. . . . . . . . . . . . .  D ADDR   00F0H   A   
+CONFIG18B20. . . . . . . .  C ADDR   0000H   R   SEG=?PR?CONFIG18B20?TEMP
+CP_RL2 . . . . . . . . . .  B ADDR   00C8H.0 A   
+CRCTABLE . . . . . . . . .  C ADDR   0000H   R   SEG=?CO?TEMP
+CRC_DATA . . . . . . . . .  I ADDR   0002H   R   SEG=?ID?TEMP
+CRC_DATA?549 . . . . . . .  I ADDR   0001H   R   SEG=?ID?_CRC?TEMP
+CY . . . . . . . . . . . .  B ADDR   00D0H.7 A   
+C_T2 . . . . . . . . . . .  B ADDR   00C8H.1 A   
+D. . . . . . . . . . . . .  I ADDR   000CH   R   SEG=?ID?TEMP
+D18B20 . . . . . . . . . .  B ADDR   00B0H.3 A   
+DPH. . . . . . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . . . . . .  D ADDR   0082H   A   
+EA . . . . . . . . . . . .  B ADDR   00A8H.7 A   
+ES . . . . . . . . . . . .  B ADDR   00A8H.4 A   
+ET0. . . . . . . . . . . .  B ADDR   00A8H.1 A   
+ET1. . . . . . . . . . . .  B ADDR   00A8H.3 A   
+ET2. . . . . . . . . . . .  B ADDR   00A8H.5 A   
+EX0. . . . . . . . . . . .  B ADDR   00A8H.0 A   
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    20
+
+EX1. . . . . . . . . . . .  B ADDR   00A8H.2 A   
+EXEN2. . . . . . . . . . .  B ADDR   00C8H.3 A   
+EXF2 . . . . . . . . . . .  B ADDR   00C8H.6 A   
+F0 . . . . . . . . . . . .  B ADDR   00D0H.5 A   
+FLAG . . . . . . . . . . .  B ADDR   0000H.0 R   SEG=?BI?TEMP
+GEMTEMP. . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?GEMTEMP?TEMP
+GETTEMP. . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?GETTEMP?TEMP
+I?242. . . . . . . . . . .  I ADDR   0000H   R   SEG=?ID?_WRITEBYTE?TEMP
+I?343. . . . . . . . . . .  I ADDR   0000H   R   SEG=?ID?READBYTE?TEMP
+I?446. . . . . . . . . . .  I ADDR   0000H   R   SEG=?ID?_READ_BYTES?TEMP
+I?548. . . . . . . . . . .  I ADDR   0000H   R   SEG=?ID?_CRC?TEMP
+ID_BUFF. . . . . . . . . .  I ADDR   0020H   R   SEG=?ID?TEMP
+IE . . . . . . . . . . . .  D ADDR   00A8H   A   
+IE0. . . . . . . . . . . .  B ADDR   0088H.1 A   
+IE1. . . . . . . . . . . .  B ADDR   0088H.3 A   
+INIT18B20. . . . . . . . .  C ADDR   0000H   R   SEG=?PR?INIT18B20?TEMP
+INT0 . . . . . . . . . . .  B ADDR   00B0H.2 A   
+INT1 . . . . . . . . . . .  B ADDR   00B0H.3 A   
+IP . . . . . . . . . . . .  D ADDR   00B8H   A   
+IT0. . . . . . . . . . . .  B ADDR   0088H.0 A   
+IT1. . . . . . . . . . . .  B ADDR   0088H.2 A   
+L?0032 . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_WRITEBYTE?TEMP
+L?0033 . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_WRITEBYTE?TEMP
+OV . . . . . . . . . . . .  B ADDR   00D0H.2 A   
+P. . . . . . . . . . . . .  B ADDR   00D0H.0 A   
+P0 . . . . . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . . . . . .  D ADDR   00B0H   A   
+PCON . . . . . . . . . . .  D ADDR   0087H   A   
+PS . . . . . . . . . . . .  B ADDR   00B8H.4 A   
+PSW. . . . . . . . . . . .  D ADDR   00D0H   A   
+PT0. . . . . . . . . . . .  B ADDR   00B8H.1 A   
+PT1. . . . . . . . . . . .  B ADDR   00B8H.3 A   
+PT2. . . . . . . . . . . .  B ADDR   00B8H.5 A   
+PX0. . . . . . . . . . . .  B ADDR   00B8H.0 A   
+PX1. . . . . . . . . . . .  B ADDR   00B8H.2 A   
+RB8. . . . . . . . . . . .  B ADDR   0098H.2 A   
+RCAP2H . . . . . . . . . .  D ADDR   00CBH   A   
+RCAP2L . . . . . . . . . .  D ADDR   00CAH   A   
+RCLK . . . . . . . . . . .  B ADDR   00C8H.5 A   
+RD . . . . . . . . . . . .  B ADDR   00B0H.7 A   
+READBYTE . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?READBYTE?TEMP
+READID . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?READID?TEMP
+REN. . . . . . . . . . . .  B ADDR   0098H.4 A   
+RI . . . . . . . . . . . .  B ADDR   0098H.0 A   
+RS0. . . . . . . . . . . .  B ADDR   00D0H.3 A   
+RS1. . . . . . . . . . . .  B ADDR   00D0H.4 A   
+RXD. . . . . . . . . . . .  B ADDR   00B0H.0 A   
+SBUF . . . . . . . . . . .  D ADDR   0099H   A   
+SCON . . . . . . . . . . .  D ADDR   0098H   A   
+SM0. . . . . . . . . . . .  B ADDR   0098H.7 A   
+SM1. . . . . . . . . . . .  B ADDR   0098H.6 A   
+SM2. . . . . . . . . . . .  B ADDR   0098H.5 A   
+SP . . . . . . . . . . . .  D ADDR   0081H   A   
+T0 . . . . . . . . . . . .  B ADDR   00B0H.4 A   
+T1 . . . . . . . . . . . .  B ADDR   00B0H.5 A   
+T1ZD . . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?T1ZD?TEMP
+T2 . . . . . . . . . . . .  B ADDR   0090H.0 A   
+T2CON. . . . . . . . . . .  D ADDR   00C8H   A   
+T2EX . . . . . . . . . . .  B ADDR   0090H.1 A   
+TB8. . . . . . . . . . . .  B ADDR   0098H.3 A   
+TCLK . . . . . . . . . . .  B ADDR   00C8H.4 A   
+TCON . . . . . . . . . . .  D ADDR   0088H   A   
+TEMP . . . . . . . . . . .  N NUMB   -----       
+TEMPERATUERRESULT. . . . .  C ADDR   0000H   R   SEG=?PR?TEMPERATUERRESULT?TEMP
+A51 MACRO ASSEMBLER  TEMP                                                                 09/16/2009 23:33:52 PAGE    21
+
+TEMPERATURE. . . . . . . .  I ADDR   0000H   R   SEG=?ID?TEMP
+TEMPTICK . . . . . . . . .  D ADDR   0000H   R   SEG=?DT?TEMP
+TEMP_BUFF. . . . . . . . .  I ADDR   0003H   R   SEG=?ID?TEMP
+TF0. . . . . . . . . . . .  B ADDR   0088H.5 A   
+TF1. . . . . . . . . . . .  B ADDR   0088H.7 A   
+TF2. . . . . . . . . . . .  B ADDR   00C8H.7 A   
+TH0. . . . . . . . . . . .  D ADDR   008CH   A   
+TH1. . . . . . . . . . . .  D ADDR   008DH   A   
+TH2. . . . . . . . . . . .  D ADDR   00CDH   A   
+TI . . . . . . . . . . . .  B ADDR   0098H.1 A   
+TIM. . . . . . . . . . . .  D ADDR   0002H   R   SEG=?DT?TEMP
+TL0. . . . . . . . . . . .  D ADDR   008AH   A   
+TL1. . . . . . . . . . . .  D ADDR   008BH   A   
+TL2. . . . . . . . . . . .  D ADDR   00CCH   A   
+TMOD . . . . . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . . . . . .  B ADDR   0088H.4 A   
+TR1. . . . . . . . . . . .  B ADDR   0088H.6 A   
+TR2. . . . . . . . . . . .  B ADDR   00C8H.2 A   
+TXD. . . . . . . . . . . .  B ADDR   00B0H.1 A   
+U?344. . . . . . . . . . .  I ADDR   0001H   R   SEG=?ID?READBYTE?TEMP
+WR . . . . . . . . . . . .  B ADDR   00B0H.6 A   
+_CRC . . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_CRC?TEMP
+_READ_BYTES. . . . . . . .  C ADDR   0000H   R   SEG=?PR?_READ_BYTES?TEMP
+_TEMPDELAY . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_TEMPDELAY?TEMP
+_WRITEBYTE . . . . . . . .  C ADDR   0005H   R   SEG=?PR?_WRITEBYTE?TEMP
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 5 ERROR(S)

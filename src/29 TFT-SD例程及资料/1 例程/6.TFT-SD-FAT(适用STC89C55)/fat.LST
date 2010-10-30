@@ -1,0 +1,159 @@
+C51 COMPILER V7.10   FAT                                                                   10/01/2010 19:15:25 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE FAT
+OBJECT MODULE PLACED IN fat.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE fat.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2          #include "fat.h"
+   3          
+   4          
+   5          xdata  uchar buffer[512];
+   6          
+   7          uint8   BPBSecPerClust;   // 每簇的扇区数
+   8          uint16  FirstFATSector;   // 首FAT起始扇区
+   9          uint16  FirstDirSector;   // 根目录起始扇区
+  10          uint16  FirstDataSector;  // 数据区起始扇区
+  11          uint32  FatClusSec;       // 簇号所在的扇区
+  12          uint32  FirstDircluster;  // FAT32根目录首簇号
+  13          uint8   DirSecitemCunt;   // FDT每扇区目录项基数 FAT16=8 FAT32=7
+  14          
+  15          xdata   uint16 BPBbytesPerSec;          // 每扇区的字节数
+  16          xdata   uint16 BPBRevdFATSec;           // FAT1前的保留扇区数
+  17          xdata   uint8  ParNumberFATs;           // 该分区上的FAT份数
+  18          //      uint16 BPBRootDirCunt;                  // 根目录项数
+  19          xdata   uint16 BPBTotSector16;          // 16位扇区数
+  20          xdata   uint16 BPBFATPerSec16;          // 16bit每FAT占用的扇区数
+  21          xdata   uint16 BPBhiddsector;           // 该分区系统隐藏扇区数
+  22          xdata   uint32 BPBTotSector32;          // 32位扇区数
+  23          xdata   uint32 DataClusterCount;        // 数据区簇数
+  24          xdata   uint32 Sector;                          // 扇区变量
+  25          
+  26          uint8 FAT_init()
+  27          {
+  28   1      /*
+  29   1      xdata  uint16 BPBbytesPerSec;           // 每扇区的字节数
+  30   1      xdata   uint16 BPBRevdFATSec;           // FAT1前的保留扇区数
+  31   1      xdata   uint8  ParNumberFATs;           // 该分区上的FAT份数
+  32   1      //      uint16 BPBRootDirCunt;                  // 根目录项数
+  33   1      xdata   uint16 BPBTotSector16;          // 16位扇区数
+  34   1      xdata   uint16 BPBFATPerSec16;          // 16bit每FAT占用的扇区数
+  35   1      xdata   uint16 BPBhiddsector;           // 该分区系统隐藏扇区数
+  36   1      xdata   uint32 BPBTotSector32;          // 32位扇区数
+  37   1      xdata   uint32 DataClusterCount;        // 数据区簇数
+  38   1      xdata   uint32 Sector;                          // 扇区变量
+  39   1      */
+  40   1              mmc_read_sector(0,buffer);              // 读SD卡0扇区
+  41   1      
+  42   1              if((0xEB != buffer[0])&&(0xE9 != buffer[0]))                    // 如果0扇区不是DBR
+  43   1              {
+  44   2                      if((0x55 != buffer[510])||(0xAA != buffer[511]))
+  45   2                       return MBR_ERR;        // MBR错误！
+  46   2      
+  47   2                      Sector = ((uint32)buffer[454])|                 // 载入MBR里DPT中的DBR偏移量,只用低2字节
+  48   2                                       ((uint32)buffer[455]<<8);
+  49   2                      mmc_read_sector(Sector,buffer);                 // 读DBR所在扇区
+  50   2      
+  51   2                      if((0xEB != buffer[0])&&(0xE9 != buffer[0]))
+  52   2                              return DBR_ERR;                                 // 如果不是DBR则报错：磁盘未格式化！
+  53   2              }
+  54   1      //-----------------------------------------------------------------
+  55   1      
+C51 COMPILER V7.10   FAT                                                                   10/01/2010 19:15:25 PAGE 2   
+
+  56   1              BPBbytesPerSec = ((uint16)buffer[11])|          // 每扇区字节数，通常为512
+  57   1                                               ((uint16)buffer[12]<<8);
+  58   1      
+  59   1              BPBSecPerClust = buffer[13];                            // 每簇扇区数
+  60   1      
+  61   1              BPBRevdFATSec  = ((uint16)buffer[14])|          // FAT1前的保留扇区数
+  62   1                                               ((uint16)buffer[15]<<8);
+  63   1      
+  64   1              ParNumberFATs  = buffer[16];                            // 该分区上的FAT份数，通常为2
+  65   1      
+  66   1      //      BPBRootDirCunt = ((uint16)buffer[17])|          // 根目录项数,如果为0则可能是FAT32系统
+  67   1      //                                       ((uint16)buffer[18]<<8);
+  68   1      
+  69   1          BPBTotSector16 = ((uint16)buffer[19])|              // 16位扇区数
+  70   1                           ((uint16)buffer[20]<<8);
+  71   1      
+  72   1              BPBFATPerSec16 = ((uint16)buffer[22])|          // 每FAT占用的扇区数,16bit
+  73   1                                               ((uint16)buffer[23]<<8);
+  74   1      
+  75   1              BPBhiddsector  = ((uint16)buffer[28])|          // 系统隐藏扇区数,只用低2字节
+  76   1                                               ((uint16)buffer[29]<<8);
+  77   1      
+  78   1          BPBTotSector32 = ((uint32)buffer[32])|              // 32位扇区数
+  79   1                           ((uint32)buffer[33]<<8)|
+  80   1                           ((uint32)buffer[34]<<16)|
+  81   1                           ((uint32)buffer[35]<<24);
+  82   1      
+  83   1      //-------------------------------------_-------------------------------
+  84   1          // 获得逻辑总扇区数
+  85   1          if(BPBTotSector32 == 0)
+  86   1              {
+  87   2              if(BPBTotSector16 == 0) 
+  88   2                      return SECTORS_ERR;                     //扇区数报错：磁盘错误！
+  89   2              else 
+  90   2                      BPBTotSector32 = BPBTotSector16;
+  91   2          }
+  92   1                      
+  93   1              FirstFATSector  = BPBhiddsector + BPBRevdFATSec;                
+  94   1                      // 首FAT起始扇区=系统隐藏扇区数+FAT1前的保留扇区数
+  95   1      
+  96   1              FirstDirSector  = FirstFATSector + BPBFATPerSec16 * ParNumberFATs;
+  97   1                      // 根目录起始扇区=首FAT起始扇区 +(每FAT占用的扇区数 × 该分区上的FAT份数)
+  98   1      
+  99   1              FirstDataSector = FirstDirSector + 32;
+ 100   1                      // 数据区起始扇区=根目录起始扇区 + 根目录占用扇区
+ 101   1              DataClusterCount= (BPBTotSector32 - FirstDataSector + BPBhiddsector)/BPBSecPerClust;
+ 102   1                  // 数据区簇数=(BPB中磁盘总数-数据区起始扇区+系统隐藏扇区数)/每簇的扇区数
+ 103   1              
+ 104   1              //按照Microsoft的方法判断簇数，
+ 105   1          //小于4085的就是FAT12，小于65525的就是FAT16，否则为FAT32；
+ 106   1              if(DataClusterCount<4085)
+ 107   1              return CLUSTER_COUNT_ERR;                       //报错：FAT12文件系统不被支持！
+ 108   1              else 
+ 109   1              if(DataClusterCount<=65525)
+ 110   1              {
+ 111   2                      DirSecitemCunt = FAT16;            // FAT16目录项数的基数
+ 112   2                      return FAT16;                          // 文件系统:FAT16
+ 113   2              }
+ 114   1              else if(DataClusterCount> 65525)
+ 115   1              {
+ 116   2                      DirSecitemCunt = FAT32;                                  // FAT32目录项数的基数
+ 117   2                      BPBFATPerSec16 = ((uint16)buffer[36])|          // FAT32每FAT占用的扇区数,只用低2字节
+C51 COMPILER V7.10   FAT                                                                   10/01/2010 19:15:25 PAGE 3   
+
+ 118   2                                                       ((uint16)buffer[37]<<8);
+ 119   2      
+ 120   2                      FirstDirSector  = FirstFATSector + BPBFATPerSec16 * ParNumberFATs;
+ 121   2                              // 根目录起始扇区=首FAT起始扇区+(每FAT占用的扇区数×该分区上的FAT份数)
+ 122   2      
+ 123   2                      FirstDataSector = FirstDirSector + BPBSecPerClust;      
+ 124   2                              // 数据区起始扇区=根目录起始扇区 + 每簇扇区数(单个根目录占用扇区)
+ 125   2      
+ 126   2                      FirstDircluster = ((uint32)buffer[44])|         // FAT32根目录首簇号
+ 127   2                                                        ((uint32)buffer[45]<<8)|
+ 128   2                                                        ((uint32)buffer[46]<<16)|
+ 129   2                                                        ((uint32)buffer[47]<<24);
+ 130   2                      return FAT32;                                                           // 文件系统:FAT32
+ 131   2              }
+ 132   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    826    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    535    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,345 @@
+C51 COMPILER V7.10   MMC                                                                   10/01/2010 19:15:25 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MMC
+OBJECT MODULE PLACED IN MMC.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE MMC.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************
+   2          *
+   3          *  SD卡和MMC卡驱动程序
+   4          ********************************************************************/
+   5          
+   6          #include <reg52.h>
+   7          #include <intrins.h>
+   8          
+   9          
+  10          #define uchar unsigned char
+  11          #define uint  unsigned int
+  12          #define ulong  unsigned long
+  13          
+  14          sbit SPI_DO =P1^0;
+  15          sbit SPI_SCL=P1^1;
+  16          sbit SPI_DI =P1^2;
+  17          sbit SPI_CS =P1^3;
+  18          
+  19          #define INIT_CMD0_ERROR     0x01
+  20          #define INIT_CMD1_ERROR         0x02
+  21          #define WRITE_BLOCK_ERROR       0x03
+  22          #define READ_BLOCK_ERROR        0x04 
+  23          
+  24          bit  Init_Flag;    //Set it to 1 when Init is processing.
+  25          bit  card_type;  
+  26          
+  27          unsigned char CMD[] = {0x40,0x00,0x00,0x00,0x00,0x95};//CMD0
+  28          
+  29          /**********************************************************
+  30          
+  31           延时子函数
+  32          
+  33          **********************************************************/
+  34          void delay(unsigned int time)
+  35          {
+  36   1       while(time--);
+  37   1      }
+  38          
+  39          /**********************************************************
+  40          
+  41           us延时子程序  (4.34us)
+  42          
+  43          **********************************************************/
+  44          void delayNOP()
+  45          {
+  46   1        _nop_();
+  47   1        _nop_();
+  48   1        _nop_();
+  49   1        _nop_();
+  50   1      }
+  51          
+  52          /************************************************************
+  53          
+  54           卡端口初始化
+  55          
+C51 COMPILER V7.10   MMC                                                                   10/01/2010 19:15:25 PAGE 2   
+
+  56          ************************************************************/
+  57          void MMC_Port_Init()
+  58          {
+  59   1         SPI_SCL=1;
+  60   1         SPI_DO =1;
+  61   1         SPI_CS=1;             
+  62   1      }
+  63          
+  64          //****************************************************************************
+  65          //Routine for sending a byte to MMC/SD-Card
+  66          //write a byte
+  67          
+  68          //****************************************************************************
+  69          void Write_Byte_MMC(uchar value)
+  70          { 
+  71   1         unsigned char i;
+  72   1      
+  73   1         for (i=0;i<8;i++)
+  74   1         { 
+  75   2           if (value&0x80)
+  76   2                SPI_DI=1;      //Send bit by bit(MSB First)
+  77   2           else 
+  78   2                SPI_DI=0;
+  79   2      
+  80   2           SPI_SCL=0;         //Clock low
+  81   2           if(Init_Flag)
+  82   2                delayNOP();
+  83   2           SPI_SCL=1;        //Clock High
+  84   2           if(Init_Flag)
+  85   2                delayNOP();
+  86   2           value <<=1;
+  87   2         }
+  88   1      }
+  89          
+  90          //****************************************************************************
+  91          //Routine for reading a byte from MMC/SD-Card
+  92            //Software SPI
+  93          //****************************************************************************
+  94          unsigned char Read_Byte_MMC()
+  95          { 
+  96   1         unsigned char temp=0;
+  97   1         unsigned char i;
+  98   1         SPI_DO=1;
+  99   1      
+ 100   1         for (i=0;i<8;i++)    //MSB First
+ 101   1         {
+ 102   2           SPI_SCL=0;         //Clock Low
+ 103   2           if(Init_Flag)
+ 104   2               delayNOP();   
+ 105   2           SPI_SCL=1;         //Clock High
+ 106   2           if(Init_Flag) 
+ 107   2               delayNOP();    
+ 108   2      
+ 109   2               temp=(temp<<1)|SPI_DO;           //read mmc data out pin 
+ 110   2         }
+ 111   1         return (temp);
+ 112   1      }
+ 113          
+ 114          //****************************************************************************
+ 115          //Send a Command to MMC/SD-Card
+ 116          //Return: the second byte of response register of MMC/SD-Card
+ 117          
+C51 COMPILER V7.10   MMC                                                                   10/01/2010 19:15:25 PAGE 3   
+
+ 118          //****************************************************************************
+ 119          unsigned char Write_Command_MMC(unsigned char *CMD)
+ 120          {
+ 121   1         unsigned char tmp;
+ 122   1         unsigned char i;
+ 123   1      
+ 124   1         //set MMC_Chip_Select to high (MMC/SD-Card disable) 
+ 125   1         SPI_CS=1;
+ 126   1         //send 8 Clock Impulse
+ 127   1         Write_Byte_MMC(0xFF);
+ 128   1         //set MMC_Chip_Select to low (MMC/SD-Card active)
+ 129   1         SPI_CS=0;
+ 130   1      
+ 131   1         //send 6 Byte Command to MMC/SD-Card
+ 132   1         for (i=0;i<0x06;i++) 
+ 133   1         { 
+ 134   2            Write_Byte_MMC(*CMD++);
+ 135   2         }
+ 136   1         i = 0;
+ 137   1         //get 16 bit response
+ 138   1         Read_Byte_MMC(); //read the first byte,ignore it. 
+ 139   1         do 
+ 140   1         {  //Only last 8 bit is used here.Read it out. 
+ 141   2            tmp = Read_Byte_MMC();
+ 142   2            i++;
+ 143   2         }
+ 144   1         while((tmp==0xff)&&(i<100)); 
+ 145   1         return(tmp);
+ 146   1      }
+ 147          
+ 148          /**********************************************************
+ 149          
+ 150           卡初始化子函数
+ 151          
+ 152          **********************************************************/
+ 153          
+ 154          unsigned char MMC_Init()
+ 155          {  
+ 156   1         unsigned char temp;
+ 157   1         unsigned char i;
+ 158   1      
+ 159   1         MMC_Port_Init(); //Init SPI port  
+ 160   1      
+ 161   1         delay(200);
+ 162   1         
+ 163   1         Init_Flag=1; //Set the init flag
+ 164   1      
+ 165   1         for (i=0;i<0x0f;i++) 
+ 166   1         {
+ 167   2            Write_Byte_MMC(0xff); //send 74 clock at least!!!
+ 168   2         }
+ 169   1              
+ 170   1         //Send Command CMD0 to MMC/SD Card
+ 171   1         i = 0;
+ 172   1         do
+ 173   1         { //retry 200 times to send CMD0 command 
+ 174   2           temp=Write_Command_MMC(CMD);
+ 175   2           i++;
+ 176   2           if(i >= 200) 
+ 177   2           { //time out
+ 178   3             return(INIT_CMD0_ERROR);  //CMD0 Error!
+ 179   3           }
+C51 COMPILER V7.10   MMC                                                                   10/01/2010 19:15:25 PAGE 4   
+
+ 180   2         } 
+ 181   1         while(temp!=1);
+ 182   1         
+ 183   1         i = 0;
+ 184   1         do{
+ 185   2             CMD[0] = 0x77;                   //CMD55命令
+ 186   2             temp = Write_Command_MMC(CMD);   //先发送 CMD55
+ 187   2      
+ 188   2             if(temp == 0x01)                 //如果有反应 
+ 189   2             {
+ 190   3               CMD[0] = 0x69;                 //ACMD41命令
+ 191   3               temp = Write_Command_MMC(CMD); //发送CMD41进行激活
+ 192   3               if(temp == 0x00)               //激活成功就是SD卡 
+ 193   3                       {
+ 194   4                        card_type =1;                 //SD
+ 195   4                        }
+ 196   3             }
+ 197   2             else                             //如果发送CMD55无反应，改发送CMD1 
+ 198   2             {
+ 199   3               CMD[0] = 0x41;                 //CMD1命令
+ 200   3               CMD[5] = 0xFF; 
+ 201   3               temp = Write_Command_MMC(CMD);    //发送CMD1进行激活
+ 202   3               if(temp == 0x00)               //激活成功就是MMC卡 
+ 203   3                       { 
+ 204   4                        card_type =0;                 //MMC
+ 205   4                        }
+ 206   3             }
+ 207   2             i++;
+ 208   2             if(i >= 200)
+ 209   2             {
+ 210   3               return(INIT_CMD1_ERROR);      //CMD1 Error!
+ 211   3             }
+ 212   2           }while(temp != 0x00);      // MMC和SD卡激活后的返回值均为0x00
+ 213   1      
+ 214   1         Init_Flag=0; //Init is completed,clear the flag 
+ 215   1         
+ 216   1         SPI_CS=1;  //set MMC_Chip_Select to high 
+ 217   1      
+ 218   1       //  wr_string(0,2,"  INIT SUCCESS  ");
+ 219   1         
+ 220   1         return(0); //All commands have been taken.
+ 221   1      } 
+ 222          
+ 223          /**********************************************************
+ 224          
+ 225           读SD卡寄存器子函数
+ 226          
+ 227          **********************************************************/
+ 228          unsigned char MMC_Read_Block(uchar *CMD,uchar *Buffer,uint Bytes)
+ 229          {  
+ 230   1         unsigned int i; 
+ 231   1         unsigned  char temp;
+ 232   1          
+ 233   1         //Send Command CMD to MMC/SD-Card
+ 234   1         i = 0;
+ 235   1         do
+ 236   1         {  //Retry 100 times to send command.
+ 237   2            temp=Write_Command_MMC(CMD);
+ 238   2            i++;
+ 239   2            if(i == 100) 
+ 240   2            {
+ 241   3              return(READ_BLOCK_ERROR); //block write Error!
+C51 COMPILER V7.10   MMC                                                                   10/01/2010 19:15:25 PAGE 5   
+
+ 242   3            }
+ 243   2         }
+ 244   1         while(temp!=0); 
+ 245   1                              
+ 246   1         //Read Start Byte form MMC/SD-Card (FEh/Start Byte)
+ 247   1         while (Read_Byte_MMC()!=0xfe) ;
+ 248   1              
+ 249   1         //Write blocks(normal 512Bytes) to MMC/SD-Card
+ 250   1         for (i=0;i<Bytes;i++)
+ 251   1         {
+ 252   2            *Buffer++ = Read_Byte_MMC();
+ 253   2         }
+ 254   1         
+ 255   1         Read_Byte_MMC();//CRC - Byte 
+ 256   1         Read_Byte_MMC();//CRC - Byte
+ 257   1              
+ 258   1         SPI_CS=1;
+ 259   1         return(0);
+ 260   1      }
+ 261          
+ 262          /**********************************************************
+ 263          
+ 264           读CSD寄存器子函数
+ 265          
+ 266          **********************************************************/
+ 267          unsigned char Read_CSD_MMC(unsigned char *Buffer)
+ 268          {          
+ 269   1         unsigned char temp;
+ 270   1         CMD[0]=0X49;
+ 271   1         CMD[5]=0XFF;
+ 272   1      
+ 273   1         temp=MMC_Read_Block(CMD,Buffer,16); //read 16 bytes
+ 274   1         return(temp);
+ 275   1      }
+ 276          
+ 277          /**********************************************************
+ 278          
+ 279           读CID寄存器子函数
+ 280          
+ 281          **********************************************************/
+ 282          unsigned char Read_CID_MMC(unsigned char *Buffer)
+ 283          {
+ 284   1         unsigned char temp;
+ 285   1         CMD[0]=0X4A;
+ 286   1         CMD[5]=0XFF;
+ 287   1      
+ 288   1         temp=MMC_Read_Block(CMD,Buffer,16); //read 16 bytes
+ 289   1         return(temp);
+ 290   1      }
+ 291          
+ 292          /**********************************************************
+ 293          
+ 294           读扇区子函数
+ 295          
+ 296          **********************************************************/
+ 297          uchar mmc_read_sector (ulong addr,uchar *Buffer)
+ 298          {       
+ 299   1              uchar cmd[] = {0x51,0x00,0x00,0x00,0x00,0xFF}; 
+ 300   1      
+ 301   1              addr = addr << 9; //addr = addr * 512
+ 302   1      
+ 303   1              cmd[1] = ((addr & 0xFF000000) >>24 );
+C51 COMPILER V7.10   MMC                                                                   10/01/2010 19:15:25 PAGE 6   
+
+ 304   1              cmd[2] = ((addr & 0x00FF0000) >>16 );
+ 305   1              cmd[3] = ((addr & 0x0000FF00) >>8 );
+ 306   1      
+ 307   1          MMC_Read_Block(cmd,Buffer,512);
+ 308   1      
+ 309   1              return(0);
+ 310   1      }
+ 311          
+ 312          /**********************************************************/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    536    ----
+   CONSTANT SIZE    =      6    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6      32
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

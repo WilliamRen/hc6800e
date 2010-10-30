@@ -1,0 +1,288 @@
+C51 COMPILER V7.10   TEMP                                                                  07/29/2010 11:37:59 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE TEMP
+OBJECT MODULE PLACED IN Temp.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE Temp.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           
+   2           /*************************此部分为18B20的驱动程序*************************************/
+   3          
+   4          #include <reg52.H>
+   5          #include <intrins.h>
+   6          
+   7          sbit    D18B20=P3^7;
+   8          #define  NOP()   _nop_()   /* 定义空指令 */
+   9          #define  _Nop()  _nop_()   /*定义空指令*/
+  10          
+  11          void TempDelay (unsigned char idata us);
+  12          void Init18b20 (void);
+  13          void WriteByte (unsigned char idata wr);  //单字节写入
+  14          void read_bytes (unsigned char idata j);
+  15          unsigned char CRC (unsigned char j);
+  16          void GemTemp (void);
+  17          void Config18b20 (void);
+  18          void ReadID (void);
+  19          void TemperatuerResult(void);
+  20          
+  21          
+  22          bit  flag;
+  23          unsigned int  idata Temperature;
+  24          unsigned char idata temp_buff[9]; //存储读取的字节，read scratchpad为9字节，read rom ID为8字节
+  25          unsigned char idata id_buff[8];
+  26          unsigned char idata *p,TIM;
+  27          unsigned char idata crc_data;
+  28          
+  29          
+  30          unsigned char code CrcTable [256]={
+  31          0,  94, 188,  226,  97,  63,  221,  131,  194,  156,  126,  32,  163,  253,  31,  65,
+  32          157,  195,  33,  127,  252,  162,  64,  30,  95,  1,  227,  189,  62,  96,  130,  220,
+  33          35,  125,  159,  193,  66,  28,  254,  160,  225,  191,  93,  3,  128,  222,  60,  98,
+  34          190,  224,  2,  92,  223,  129,  99,  61,  124,  34,  192,  158,  29,  67,  161,  255,
+  35          70,  24,  250,  164,  39,  121,  155,  197,  132,  218,  56,  102,  229,  187,  89,  7,
+  36          219,  133, 103,  57,  186,  228,  6,  88,  25,  71,  165,  251,  120,  38,  196,  154,
+  37          101,  59, 217,  135,  4,  90,  184,  230,  167,  249,  27,  69,  198,  152,  122,  36,
+  38          248,  166, 68,  26,  153,  199,  37,  123,  58,  100,  134,  216,  91,  5,  231,  185,
+  39          140,  210, 48,  110,  237,  179,  81,  15,  78,  16,  242,  172,  47,  113,  147,  205,
+  40          17,  79,  173,  243,  112,  46,  204,  146,  211,  141,  111,  49,  178,  236,  14,  80,
+  41          175,  241, 19,  77,  206,  144,  114,  44,  109,  51,  209,  143,  12,  82,  176,  238,
+  42          50,  108,  142,  208,  83,  13,  239,  177,  240,  174,  76,  18,  145,  207,  45,  115,
+  43          202,  148, 118,  40,  171,  245,  23,  73,  8,  86,  180,  234,  105,  55,  213, 139,
+  44          87,  9,  235,  181,  54,  104,  138,  212,  149,  203,  41,  119,  244,  170,  72,  22,
+  45          233,  183,  85,  11,  136,  214,  52,  106,  43,  117,  151,  201,  74,  20,  246,  168,
+  46          116,  42,  200,  150,  21,  75,  169,  247,  182,  232,  10,  84,  215,  137,  107,  53}; 
+  47          //
+  48          /************************************************************
+  49          *Function:延时处理
+  50          *parameter:
+  51          *Return:
+  52          *Modify:
+  53          *************************************************************/
+  54          void TempDelay (unsigned char idata us)
+  55          {
+C51 COMPILER V7.10   TEMP                                                                  07/29/2010 11:37:59 PAGE 2   
+
+  56   1              while(us--);
+  57   1      }
+  58          
+  59          /************************************************************
+  60          *Function:18B20初始化
+  61          *parameter:
+  62          *Return:
+  63          *Modify:
+  64          *************************************************************/
+  65          void Init18b20 (void)
+  66          {
+  67   1              D18B20=1;
+  68   1              _nop_();
+  69   1              D18B20=0;
+  70   1              TempDelay(80);   //delay 530 uS//80
+  71   1              _nop_();
+  72   1              D18B20=1;
+  73   1              TempDelay(14);   //delay 100 uS//14
+  74   1              _nop_();
+  75   1              _nop_();
+  76   1              _nop_();
+  77   1              
+  78   1              if(D18B20==0)
+  79   1                      flag = 1;   //detect 1820 success!
+  80   1              else
+  81   1                      flag = 0;    //detect 1820 fail!
+  82   1              TempDelay(20);       //20
+  83   1              _nop_();
+  84   1              _nop_();
+  85   1              D18B20 = 1;
+  86   1      }
+  87          
+  88          /************************************************************
+  89          *Function:向18B20写入一个字节
+  90          *parameter:
+  91          *Return:
+  92          *Modify:
+  93          *************************************************************/
+  94          void WriteByte (unsigned char idata wr)  //单字节写入
+  95          {
+  96   1              unsigned char idata i;
+  97   1              for (i=0;i<8;i++)
+  98   1              {
+  99   2                      D18B20 = 0;
+ 100   2                      _nop_();
+ 101   2                      D18B20=wr&0x01;
+ 102   2                      TempDelay(3);   //delay 45 uS //5
+ 103   2                      _nop_();
+ 104   2                      _nop_();
+ 105   2                      D18B20=1;
+ 106   2                      wr >>= 1;
+ 107   2              }
+ 108   1      }
+ 109          
+ 110          /************************************************************
+ 111          *Function:读18B20的一个字节
+ 112          *parameter:
+ 113          *Return:
+ 114          *Modify:
+ 115          *************************************************************/
+ 116          unsigned char ReadByte (void)     //读取单字节
+ 117          {
+C51 COMPILER V7.10   TEMP                                                                  07/29/2010 11:37:59 PAGE 3   
+
+ 118   1              unsigned char idata i,u=0;
+ 119   1              for(i=0;i<8;i++)
+ 120   1              {
+ 121   2                      D18B20 = 0;
+ 122   2                      u >>= 1;
+ 123   2                      D18B20 = 1;
+ 124   2                      if(D18B20==1)
+ 125   2                      u |= 0x80;
+ 126   2                      TempDelay (2);
+ 127   2                      _nop_();
+ 128   2              }
+ 129   1              return(u);
+ 130   1      }
+ 131          
+ 132          /************************************************************
+ 133          *Function:读18B20
+ 134          *parameter:
+ 135          *Return:
+ 136          *Modify:
+ 137          *************************************************************/
+ 138          void read_bytes (unsigned char idata j)
+ 139          {
+ 140   1               unsigned char idata i;
+ 141   1               for(i=0;i<j;i++)
+ 142   1               {
+ 143   2                        *p = ReadByte();
+ 144   2                        p++;
+ 145   2               }
+ 146   1      }
+ 147          
+ 148          /************************************************************
+ 149          *Function:CRC校验
+ 150          *parameter:
+ 151          *Return:
+ 152          *Modify:
+ 153          *************************************************************/
+ 154          unsigned char CRC (unsigned char j)
+ 155          {
+ 156   1              unsigned char idata i,crc_data=0;
+ 157   1              for(i=0;i<j;i++)  //查表校验
+ 158   1              crc_data = CrcTable[crc_data^temp_buff[i]];
+ 159   1          return (crc_data);
+ 160   1      }
+ 161          
+ 162          /************************************************************
+ 163          *Function:读取温度
+ 164          *parameter:
+ 165          *Return:
+ 166          *Modify:
+ 167          *************************************************************/
+ 168          void GemTemp (void)
+ 169          {
+ 170   1         read_bytes (9);
+ 171   1         if (CRC(9)==0) //校验正确
+ 172   1         {
+ 173   2                  Temperature = temp_buff[1]*0x100 + temp_buff[0];
+ 174   2      //          Temperature *= 0.625;
+ 175   2                      Temperature /= 16;
+ 176   2                      TempDelay(1);
+ 177   2          }
+ 178   1      }
+ 179          
+C51 COMPILER V7.10   TEMP                                                                  07/29/2010 11:37:59 PAGE 4   
+
+ 180          /************************************************************
+ 181          *Function:内部配置
+ 182          *parameter:
+ 183          *Return:
+ 184          *Modify:
+ 185          *************************************************************/
+ 186          void Config18b20 (void)  //重新配置报警限定值和分辨率
+ 187          {
+ 188   1           Init18b20();
+ 189   1           WriteByte(0xcc);  //skip rom
+ 190   1           WriteByte(0x4e);  //write scratchpad
+ 191   1           WriteByte(0x19);  //上限
+ 192   1           WriteByte(0x1a);  //下限
+ 193   1           WriteByte(0x7f);     //set 11 bit (0.125)
+ 194   1           Init18b20();
+ 195   1           WriteByte(0xcc);  //skip rom
+ 196   1           WriteByte(0x48);  //保存设定值
+ 197   1           Init18b20();
+ 198   1           WriteByte(0xcc);  //skip rom
+ 199   1           WriteByte(0xb8);  //回调设定值
+ 200   1      }
+ 201          
+ 202          /************************************************************
+ 203          *Function:读18B20ID
+ 204          *parameter:
+ 205          *Return:
+ 206          *Modify:
+ 207          *************************************************************/
+ 208          void ReadID (void)//读取器件 id
+ 209          {
+ 210   1              Init18b20();
+ 211   1              WriteByte(0x33);  //read rom
+ 212   1              read_bytes(8);
+ 213   1      }
+ 214          
+ 215          /************************************************************
+ 216          *Function:18B20ID全处理
+ 217          *parameter:
+ 218          *Return:
+ 219          *Modify:
+ 220          *************************************************************/
+ 221          void TemperatuerResult(void)
+ 222          {
+ 223   1              p = id_buff;
+ 224   1              ReadID();
+ 225   1              Config18b20();
+ 226   1              Init18b20 ();
+ 227   1              WriteByte(0xcc);   //skip rom
+ 228   1              WriteByte(0x44);   //Temperature convert
+ 229   1      
+ 230   1              Init18b20 ();
+ 231   1              WriteByte(0xcc);   //skip rom
+ 232   1              WriteByte(0xbe);   //read Temperature
+ 233   1              p = temp_buff;
+ 234   1              GemTemp();
+ 235   1      }
+ 236          
+ 237          
+ 238          void GetTemp()
+ 239          {       
+ 240   1           if(TIM==1)
+ 241   1              {  TIM=0;
+C51 COMPILER V7.10   TEMP                                                                  07/29/2010 11:37:59 PAGE 5   
+
+ 242   2                 TemperatuerResult();
+ 243   2              }
+ 244   1      
+ 245   1      }
+ 246          
+ 247          /*************************************
+ 248           [ t1 (0.5ms)中断] 中断中做 PWM 输出
+ 249            ------------1000/(0.02ms*250)=200Hz
+ 250          *************************************/
+ 251          void T1zd(void) interrupt 3 
+ 252          {
+ 253   1         TH1 = 0xfe;    //11.0592
+ 254   1         TL1 = 0x33;
+ 255   1         TIM++;
+ 256   1      
+ 257   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    351    ----
+   CONSTANT SIZE    =    256    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =     20       6
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

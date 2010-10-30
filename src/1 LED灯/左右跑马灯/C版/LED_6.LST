@@ -1,0 +1,77 @@
+C51 COMPILER V7.10   LED_6                                                                 10/29/2009 00:13:19 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LED_6
+OBJECT MODULE PLACED IN LED_6.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE LED_6.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /********************************************************************************
+   2          ;*                                                                                  *
+   3          ;                                                                                                                                                               *
+   4          ;     延时实现LED流水灯效果   p2口八个灯作跑马灯。采用了寄存器存中间数          *
+   5          ;     连接方法： JP11（P2）和JP1(LED灯) 用8PIN排线连接起来                                          *
+   6          ;********************************************************************************/
+   7          
+   8          
+   9          #include <reg52.h>
+  10          void delay(unsigned int i);  //声明延时函数
+  11          char LED;
+  12          
+  13          
+  14          main()
+  15          { 
+  16   1        unsigned char i;
+  17   1        
+  18   1        while (1) 
+  19   1        {      LED = 0xfe;
+  20   2                 
+  21   2                 for (i = 0 ;i < 8 ; i++)
+  22   2                { 
+  23   3                 P2  = LED;
+  24   3                 delay(500);
+  25   3                 LED = LED << 1;          // 左移
+  26   3                 LED = LED | 0x01;    // 移位后，后面的位为高电平
+  27   3                 if (LED == 0x7f)      break;
+  28   3                 }
+  29   2              
+  30   2                 for (i = 0 ;i < 8 ; i++)
+  31   2                 {
+  32   3                       
+  33   3                        P2  = LED;
+  34   3                        delay(500);
+  35   3                        LED = LED >> 1;        // 右移
+  36   3                        LED = LED | 0x80;      // 移位后，后面的位为高电平
+  37   3                 
+  38   3                 }
+  39   2      
+  40   2         }
+  41   1       
+  42   1      }
+  43          
+  44          
+  45          /*******延时函数*************/
+  46          void delay(unsigned int i)
+  47          {
+  48   1          unsigned char j;
+  49   1          for(i; i > 0; i--)
+  50   1              for(j = 255; j > 0; j--);
+  51   1      
+  52   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V7.10   LED_6                                                                 10/29/2009 00:13:19 PAGE 2   
+
+   CODE SIZE        =     88    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

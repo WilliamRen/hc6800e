@@ -1,0 +1,243 @@
+C51 COMPILER V7.10   PS2                                                                   03/31/2010 13:48:05 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE PS2
+OBJECT MODULE PLACED IN ps2.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ps2.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /****************************************************************************************
+   2                                    PS2 读电脑键盘实验                                                                                    *
+   3          连接方法 ： P0口与J12连接 拔开跳线帽用杜邦线连接左针与P3.2  右针与P1.6  连接                *
+   4          使用方法：  用外部中断读取PS2键盘的数据 并在数码管上显示，此程序只处理数字键盘。            *
+   5                                                                                                                                                                                          *
+   6          其余按键功能用户可以自行扩展，为了程序简单便于阅读和学习，程序中没有使用奇偶校验，          *
+   7          校验程序请自行添加。            *                                                                                                               *
+   8                                                                                                                                                              *
+   9          *****************************************************************************************/
+  10          
+  11          #include<reg52.h>       
+  12          
+  13          sbit LS138A=P2^2;  
+  14          sbit LS138B=P2^3;
+  15          sbit LS138C=P2^4; 
+  16          
+  17          sbit BEEP = P1^5;
+  18          
+  19          sbit Key_Data = P1^6 ;   //定义键盘引脚
+  20          sbit Key_CLK = P3^2;     //使用外部中断
+  21          
+  22          /******************************************************************/
+  23          /*                    函数声明                                    */
+  24          /******************************************************************/
+  25          void Decode(unsigned char ScanCode);  //解码子程序
+  26          void delay(unsigned int i);      //函数声名
+  27          void display();
+  28          void beep();
+  29          
+  30          
+  31          // 此表为 LED 的字模            // 0    1    2    3    4    5    6   7    8    9    A    b    c    d    E 
+             -   -    L   P    U    Hidden  _ (20)
+  32          unsigned char code Disp_Tab[] = { ~0xC0,~0xF9,~0xA4,~0xB0,~0x99,~0x92,~0x82,~0xF8,~0x80,~0x90,~0x88,~0x83,
+             -~0xC6,~0xA1,~0x86,~0xbf,~0xc7,~0x8c,~0xc1, ~0xff,  ~0xf7 }; 
+  33          bit BF;                                 
+  34          unsigned char KeyV;
+  35          unsigned char LedNumVal  ;
+  36          int KEY_val,IntNum;
+  37          
+  38          /******************************************************************/
+  39          /*                    主函数                                      */
+  40          /******************************************************************/
+  41          void main()
+  42          {
+  43   1      
+  44   1      IT1 = 0;                              //设外部中断1为低电平触发
+  45   1      EA = 1;                               //外部中断开
+  46   1      EX0 = 1;                              //开中断
+  47   1      
+  48   1        while(1)
+  49   1       {
+  50   2         if (BF)
+  51   2          {  
+  52   3              if (KeyV != 240)  beep();  
+  53   3                
+C51 COMPILER V7.10   PS2                                                                   03/31/2010 13:48:05 PAGE 2   
+
+  54   3             Decode(KeyV);    //解码
+  55   3                 
+  56   3                }
+  57   2          else
+  58   2            EA = 1; //开中断   
+  59   2                display();
+  60   2       }
+  61   1      
+  62   1      }
+  63          
+  64          /******************************************************************/
+  65          /*                    外部中断读入信息                            */
+  66          /******************************************************************/
+  67          void Keyboard_out(void) interrupt 0
+  68          {
+  69   1      if ((IntNum > 0) && (IntNum < 9))
+  70   1         { 
+  71   2              KeyV = KeyV >> 1;                //因键盘数据是低>>高，结合上一句所以右移一位
+  72   2              if (Key_Data)
+  73   2              KeyV = KeyV | 0x80;          //当键盘数据线为1时到最高位
+  74   2              }
+  75   1              IntNum++;
+  76   1              while (!Key_CLK);                //等待PS/2CLK拉高
+  77   1      
+  78   1              if (IntNum > 10)
+  79   1                 { 
+  80   2                      IntNum = 0;                  //当中断11次后表示一帧数据收完，清变量准备下一次接收
+  81   2                      BF = 1;                      //标识有字符输入完了
+  82   2                      EA = 0;                      //关中断等显示完后再开中断 
+  83   2                      }
+  84   1      
+  85   1        }
+  86          
+  87          /******************************************************************/
+  88          /*                    解码信息                                    */
+  89          /******************************************************************/
+  90          void Decode(unsigned char ScanCode) //注意:如SHIFT+G为12H 34H F0H 34H F0H 12H，也就是说shift的通码+G的通码
+             -+shift的断码+G的断码
+  91          {
+  92   1          
+  93   1              switch (ScanCode)
+  94   1                              {
+  95   2                              case 0x70 :             // 当收到0xF0，Key_UP置1表示断码开始
+  96   2                                      KEY_val = 0;
+  97   2                                      break;
+  98   2      
+  99   2                              case 0x69 :             
+ 100   2                                      KEY_val = 1;
+ 101   2                                      break;
+ 102   2      
+ 103   2                              case 0x72 :             
+ 104   2                                      KEY_val = 2;
+ 105   2                                      break;
+ 106   2      
+ 107   2                              case 0x7A :             
+ 108   2                                  KEY_val = 3;
+ 109   2                                      break;
+ 110   2      
+ 111   2                              case 0x6B :             
+ 112   2                                      KEY_val = 4;
+ 113   2                                      break;
+ 114   2      
+C51 COMPILER V7.10   PS2                                                                   03/31/2010 13:48:05 PAGE 3   
+
+ 115   2                              case 0x73 :             
+ 116   2                                      KEY_val = 5;
+ 117   2                                      break;
+ 118   2      
+ 119   2                              case 0x74 :             
+ 120   2                                      KEY_val = 6;
+ 121   2                                      break;
+ 122   2      
+ 123   2                              case 0x6c :             
+ 124   2                                      KEY_val = 7;
+ 125   2                                      break;
+ 126   2      
+ 127   2                              case 0x75 :             
+ 128   2                                      KEY_val = 8;
+ 129   2                                      break;
+ 130   2      
+ 131   2                              case 0x7d :             
+ 132   2                                      KEY_val = 9;
+ 133   2                                      break;
+ 134   2      
+ 135   2                         case 0x71 :
+ 136   2                                      
+ 137   2                              //      dot = 0X7F;
+ 138   2                                      break;
+ 139   2              
+ 140   2              }
+ 141   1              
+ 142   1        
+ 143   1      BF = 0; //标识字符处理完了      
+ 144   1      } 
+ 145          
+ 146          
+ 147          /***************************************************************************************/
+ 148          void display( )
+ 149          {
+ 150   1         unsigned char i;
+ 151   1         unsigned int LedOut[8];
+ 152   1       
+ 153   1         LedNumVal = KEY_val ;
+ 154   1      
+ 155   1      
+ 156   1               LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+ 157   1           LedOut[1]=Disp_Tab[LedNumVal%1000/100];
+ 158   1           LedOut[2]=Disp_Tab[LedNumVal%100/10];
+ 159   1           LedOut[3]=Disp_Tab[LedNumVal%10];
+ 160   1               
+ 161   1               LedOut[4]=Disp_Tab[LedNumVal%10000/1000];         //千位
+ 162   1           LedOut[5]=Disp_Tab[LedNumVal%1000/100];  //百位带小数点
+ 163   1           LedOut[6]=Disp_Tab[LedNumVal%100/10];                 //十位
+ 164   1           LedOut[7]=Disp_Tab[LedNumVal%10];             //个位
+ 165   1                
+ 166   1              
+ 167   1               for( i=0; i<8; i++) 
+ 168   1               {       P0 = LedOut[i];
+ 169   2                              
+ 170   2                switch(i)                                       
+ 171   2                   {      
+ 172   3                              case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+ 173   3                      case 1:LS138A=1; LS138B=0; LS138C=0; break;                     
+ 174   3                      case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+ 175   3                      case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+ 176   3                              case 4:LS138A=0; LS138B=0; LS138C=1; break;
+C51 COMPILER V7.10   PS2                                                                   03/31/2010 13:48:05 PAGE 4   
+
+ 177   3                              case 5:LS138A=1; LS138B=0; LS138C=1; break;
+ 178   3                              case 6:LS138A=0; LS138B=1; LS138C=1; break;
+ 179   3                              case 7:LS138A=1; LS138B=1; LS138C=1; break;
+ 180   3                              
+ 181   3                   }
+ 182   2                       
+ 183   2                      delay(50);
+ 184   2                }
+ 185   1       
+ 186   1      }
+ 187          
+ 188          /***************************************************************************************
+ 189          延时程序                                                                                                                                                           *
+ 190          ****************************************************************************************/
+ 191          void delay(unsigned int i)
+ 192          {
+ 193   1          char j;
+ 194   1          for(i; i > 0; i--)
+ 195   1              for(j = 200; j > 0; j--);
+ 196   1      }
+ 197          
+ 198          /***************************************************************************************
+ 199          蜂铃器发声                                                                                                                                                         *
+ 200          ****************************************************************************************/
+ 201          void beep()
+ 202          {
+ 203   1        unsigned char i;
+ 204   1        for (i=0;i<255;i++)
+ 205   1         {
+ 206   2         delay(5);
+ 207   2         BEEP=!BEEP;                 //BEEP取反
+ 208   2         } 
+ 209   1        BEEP=1;                      //关闭蜂鸣器
+ 210   1      }
+ 211          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    544    ----
+   CONSTANT SIZE    =     21    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6      17
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

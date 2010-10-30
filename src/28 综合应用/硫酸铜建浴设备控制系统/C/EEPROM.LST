@@ -1,0 +1,181 @@
+C51 COMPILER V6.12  EEPROM                                                                 09/15/2010 19:34:56 PAGE 1   
+
+
+C51 COMPILER V6.12, COMPILATION OF MODULE EEPROM
+OBJECT MODULE PLACED IN EEPROM.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE EEPROM.C BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          /*******************************************************************************
+   2          *	此为STC89C52 的内部 EEPROM 读写操作										   *
+   3          *																			   *
+   4          *																			   *
+   5          ********************************************************************************/
+   6          #include "system.h"
+   7          
+   8          unsigned int W_buffer[10];
+   9          /*****************************************
+  10          STC单片机EEPROM操作
+  11          每个扇区512字节的空间, 只是用低128字节
+  12          58系列起始地址 EEPROM 0x8000	单片机有58个扇区
+  13          52系列起始地址 EEPROM 0X2000
+  14          ******************************************/
+  15          #ifndef 	__DATAFLASH_C__
+  16          #define		__DATAFLASH_C__
+  17          #endif
+  18          
+  19          
+  20          //命令
+  21          #define READ_BYTE		0x01
+  22          #define WRITE_BYTE		0x02
+  23          #define EARSE_SECTOR	0x03
+  24          #define WAIT_TIME		0x01
+  25          //#define MAX_BYTE_USED	        512  //每扇区最大存储空间
+  26          
+  27          #define DEBUG_STC89C_LE52RC
+  28          
+  29          #ifdef DEBUG_STC89C_LE58RD                        //STC89C58RD+,  89LE58RD+
+              	#define EEPROM_start       0x8000 //58单片机的eepeom的起始地址
+              #endif
+  32          #ifdef DEBUG_STC89C_LE52RC                        //STC89C52RC,        89LE52RC
+  33          	#define EEPROM_start       0x2000 //58单片机的eepeom的起始地址
+  34          #endif
+  35          #ifdef DEBUG_STC89C_LE54RC                        //STC89C54RC,        89LE54RC
+              	#define EEPROM_start       0x8000 //58单片机的eepeom的起始地址
+              #endif
+  38           
+  39          
+  40          /************************/
+  41          sfr ISP_DATA    = 0xe2;
+  42          sfr ISP_ADDR_H 	= 0xe3;
+  43          sfr ISP_ADDR_L 	= 0xe4;
+  44          sfr ISP_CMD  	= 0xe5;
+  45          sfr ISP_TRIG	= 0xe6;
+  46          sfr ISP_CONTR	= 0xe7;
+  47          /************************/
+  48          Uint8 rdByte(Uint16 addr)
+  49          {
+  50   1      	  //addr = addr+EEPROM_start;
+  51   1      		ISP_ADDR_H = (Uint8)(addr>>8);
+  52   1      		ISP_ADDR_L = (Uint8)(addr&0x00ff);
+  53   1      		ISP_CMD  = ISP_CMD & 0xf8;   // 1111,1000 
+  54   1      		ISP_CMD = ISP_CMD | READ_BYTE;
+  55   1      
+C51 COMPILER V6.12  EEPROM                                                                 09/15/2010 19:34:56 PAGE 2   
+
+  56   1      		ISP_CONTR = ISP_CONTR & 0x18;        // 0001,1000 
+  57   1      		ISP_CONTR = (ISP_CONTR | WAIT_TIME );
+  58   1      		ISP_CONTR = ISP_CONTR | 0x80; 
+  59   1      
+  60   1      		ISP_TRIG = 0x46;
+  61   1      		ISP_TRIG = 0xb9;
+  62   1      		_nop_();_nop_();_nop_();
+  63   1      		ISP_CONTR &= 0x7f;
+  64   1      		ISP_TRIG = 0x00;
+  65   1      		return(ISP_DATA);
+  66   1      }		
+  67          
+  68          /*addr-字节的地址，buffer[]-读的数据所在的数组，len-读的数据的长度*/			
+  69          void rdData(unsigned int addr, unsigned int len)
+  70          {
+  71   1      		Uint16 i,temp;
+  72   1      		EA = 0;
+  73   1      		addr = addr+EEPROM_start;
+  74   1      		for(i=0; i<len; i++)
+  75   1      		{
+  76   2      				D[i] = rdByte(addr+(i*2));
+  77   2      				D[i] <<=8;
+  78   2      				temp=rdByte(addr+(i*2)+1);
+  79   2      				D[i] = D[i] | (unsigned int)temp;
+  80   2      		}
+  81   1      		EA = 1;
+  82   1      }				
+  83          
+  84          void earseSector(unsigned int addr)
+  85          {
+  86   1      	  EA = 0;
+  87   1      		addr = addr+EEPROM_start;
+  88   1      		addr &= 0xfe00;										/*块的起始地址*/
+  89   1      		ISP_ADDR_H = (Uint8)(addr>>8);
+  90   1      		ISP_ADDR_L = (Uint8)(addr&0x00ff);
+  91   1      
+  92   1      		ISP_CMD = ISP_CMD & 0xf8;       // 1111,1000
+  93   1      		ISP_CMD = ISP_CMD |EARSE_SECTOR;
+  94   1      
+  95   1      
+  96   1      		ISP_CONTR = ISP_CONTR & 0x18;        // 0001,1000 
+  97   1      		ISP_CONTR = (ISP_CONTR | WAIT_TIME );
+  98   1      		ISP_CONTR = ISP_CONTR | 0x80; 
+  99   1      
+ 100   1      		ISP_TRIG = 0x46;
+ 101   1      		ISP_TRIG = 0xb9;
+ 102   1      		_nop_();_nop_();_nop_();
+ 103   1      
+ 104   1      		ISP_CONTR &= 0x7f;
+ 105   1      		ISP_TRIG = 0x00;
+ 106   1      		EA = 1;
+ 107   1      }	
+ 108          	
+ 109          void wrByte(Uint16 addr, Uint8 byte)
+ 110          {		
+ 111   1      		ISP_ADDR_H = (Uint8)(addr>>8);
+ 112   1      		ISP_ADDR_L = (Uint8)(addr&0x00ff);
+ 113   1      
+ 114   1      		ISP_CMD  = ISP_CMD & 0xf8;         // 1111,1000 
+ 115   1      		ISP_CMD = ISP_CMD |WRITE_BYTE;
+ 116   1      		ISP_DATA =  byte;
+ 117   1      
+C51 COMPILER V6.12  EEPROM                                                                 09/15/2010 19:34:56 PAGE 3   
+
+ 118   1      		ISP_CONTR = ISP_CONTR & 0x18;        // 0001,1000 
+ 119   1      		ISP_CONTR = (ISP_CONTR | WAIT_TIME );
+ 120   1      		ISP_CONTR = ISP_CONTR | 0x80; 
+ 121   1      
+ 122   1      		ISP_TRIG = 0x46;
+ 123   1      		ISP_TRIG = 0xb9;
+ 124   1      		_nop_(); _nop_(); _nop_();
+ 125   1      
+ 126   1      		ISP_CONTR &= 0x7f;
+ 127   1      		ISP_TRIG = 0x00;
+ 128   1      }	
+ 129          
+ 130          /*addr-字节的地址，buffer[]-要写的数据的数组，len-写的数据的长度*/	
+ 131          void wrData(unsigned int addr,  unsigned int len)
+ 132          {
+ 133   1      		Uint8 i,temp;
+ 134   1      		EA = 0;
+ 135   1      		addr = addr+EEPROM_start;
+ 136   1      		for(i=0; i<len; i++)
+ 137   1      		{
+ 138   2      				
+ 139   2      				temp = (Uint8)W_buffer[i]>>8;
+ 140   2      				wrByte(addr+(i*2), temp);			/*写入整个数组*/
+ 141   2      
+ 142   2      				W_buffer[i] = W_buffer[i] & 0x00ff;
+ 143   2      				wrByte(addr+(i*2+1), (Uint8)W_buffer[i]);
+ 144   2      
+ 145   2      		}		
+ 146   1      		EA = 1;
+ 147   1      }
+ 148          
+ 149          
+ 150          
+ 151          
+ 152          
+ 153          
+ 154          	 
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    400    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     20      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

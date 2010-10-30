@@ -1,0 +1,187 @@
+A51 MACRO ASSEMBLER  COUNTLCD                                                             03/29/2009 20:18:48 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN Countlcd.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE Countlcd.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;             1602液晶6位计数器:本程序调试通过                                  *
+                       3     ;      硬件： 插上1602液晶                                                                 
+                                                  *
+                       4     
+                       5     ;********************************************************************************
+                       6     
+  00A6                 7             RS EQU P2.6         
+  00A5                 8             RW EQU P2.5         
+  00A7                 9             E EQU P2.7
+0000                  10             org 00h
+  0030                11             a_bit equ 30h           ;个位数存放处
+  0031                12             b_bit equ 31h           ;十位数存放处
+  0032                13             c_bit equ 32h           ;百位数存放处
+  0033                14             d_bit equ 33h           ;千位数存放处
+  0034                15             e_bit equ 34h           ;万位数存放处
+  0035                16             f_bit equ 35h           ;十万位数存放处
+0000 7430             17             mov     a,#30h          ;30H的ASCIC码为0
+0002 F530             18             mov     a_bit,a
+0004 F531             19             mov     b_bit,a
+0006 F532             20             mov     c_bit,a
+0008 F533             21             mov     d_bit,a
+000A F534             22             mov     e_bit,a
+000C F535             23             mov     f_bit,a
+0030                  24             org     0030h
+0030 758001           25             MOV P0,#00000001B       ;清屏
+0033 11E8             26             ACALL ENABLE
+0035 758038           27             MOV P0,#00111000B       ;显示功能
+0038 11E8             28             ACALL ENABLE
+003A 75800C           29             MOV P0,#00001100B       ;显示开关控制
+003D 11E8             30             ACALL ENABLE
+003F 758006           31             MOV P0,#06H             ;输入模式
+0042 11E8             32             ACALL ENABLE
+0044 758080           33             MOV p0,#80H             ;第一行的开始位置
+0047 11E8             34             cALL ENABLE
+0049 758001           35             MOV P0,#00000001B       ;清屏
+004C 11E8             36             ACALL ENABLE
+004E 90010C           37             MOV DPTR,#TABLE1        ;显示PASS WORD
+0051 11DD             38             CALL WRITE1             ;到TABLE1取码?
+0053 1193             39     stlop:  acall display           ;显示
+0055 0530             40             inc a_bit               ;加1
+0057 E530             41             mov     a,a_bit
+0059 B43AF7           42             cjne    a,#3AH,stlop    ;如果A的值到3AH那么继续否则重新
+005C 753030           43             mov     a_bit,#30h      ;显示数送30H（就是显示0)
+005F 0531             44             inc b_bit
+0061 E531             45             mov     a,b_bit
+0063 B43AED           46             cjne    a,#3AH,stlop
+0066 753130           47             mov     b_bit,#30h
+0069 0532             48             inc c_bit
+006B E532             49             mov     a,c_bit
+006D B43AE3           50             cjne    a,#3AH,stlop
+0070 753230           51             mov     c_bit,#30h
+0073 0533             52             inc d_bit
+0075 E533             53             mov     a,d_bit
+0077 B43AD9           54             cjne    a,#3AH,stlop
+007A 753330           55             mov     d_bit,#30h
+007D 0534             56             inc e_bit
+007F E534             57             mov     a,e_bit
+A51 MACRO ASSEMBLER  COUNTLCD                                                             03/29/2009 20:18:48 PAGE     2
+
+0081 B43ACF           58             cjne    a,#3AH,stlop
+0084 753430           59             mov     e_bit,#30h
+0087 0535             60             inc f_bit
+0089 E535             61             mov     a,f_bit
+008B B43AC5           62             cjne    a,#3AH,stlop
+008E 753530           63             mov     f_bit,#30h
+0091 0153             64             ajmp    stlop
+0093                  65     display:                        ;显示子程序
+0093 7580C9           66             MOV P0,#0C9H
+0096 11E8             67             ACALL ENABLE
+0098 E530             68             MOV A,A_BIT
+009A 11CE             69             ACALL WRILTE2
+009C 7580C8           70             MOV P0,#0C8H            ;显示的位置
+009F 11E8             71             ACALL ENABLE
+00A1 E531             72             MOV A,B_BIT             ;显示10位数
+00A3 11CE             73             ACALL WRILTE2           ;显示
+00A5 7580C7           74             MOV P0,#0C7H            ;数据存贮器地址
+00A8 11E8             75             ACALL ENABLE
+00AA E532             76             MOV A,C_BIT
+00AC 11CE             77             ACALL WRILTE2
+00AE 7580C6           78             MOV P0,#0C6H            ;数据存贮器地址
+00B1 11E8             79             ACALL ENABLE
+00B3 E533             80             MOV A,D_BIT
+00B5 11CE             81             ACALL WRILTE2
+00B7 7580C5           82             MOV P0,#0C5H            ;数据存贮器地址
+00BA 11E8             83             ACALL ENABLE
+00BC E534             84             MOV A,E_BIT
+00BE 11CE             85             ACALL WRILTE2
+00C0 7580C4           86             MOV P0,#0C4H            ;数据存贮器地址
+00C3 11E8             87             ACALL ENABLE
+00C5 E535             88             MOV A,F_BIT
+00C7 11CE             89             ACALL WRILTE2
+                      90                                     ;1MS延时(按12MHZ算)
+                      91     ;====================================================
+00C9 7F02             92     D1MS:   MOV R7,#2
+00CB DFFE             93             DJNZ R7,$
+00CD 22               94             RET
+00CE F580             95     WRILTE2:MOV p0,A  ;显示
+00D0 D2A6             96             SETB RS
+00D2 C2A5             97             CLR RW
+00D4 C2A7             98             CLR E
+00D6 11F3             99             CALL DELAY
+00D8 3103            100             CALL DELAY3
+00DA D2A7            101             SETB E
+00DC 22              102             RET
+00DD 7900            103      WRITE1: MOV R1,#00H            ;显示table中的值
+00DF E9              104             A1: MOV A,R1            ;到table取码
+00E0 93              105             MOVC A,@A+DPTR
+00E1 11CE            106             call  WRILTE2           ;显示到lcd
+00E3 09              107             INC R1
+00E4 B400F8          108             CJNE A,#00H,A1          ;是否到00h
+00E7 22              109             RET
+00E8 C2A6            110     ENABLE: CLR RS                  ;送命令
+00EA C2A5            111             CLR RW
+00EC C2A7            112             CLR E
+00EE 11F3            113             ACALL DELAY
+00F0 D2A7            114             SETB E
+00F2 22              115             RET
+00F3 7580FF          116     DELAY: MOV P0,#0FFH
+00F6 C2A6            117             CLR RS
+00F8 D2A5            118             SETB RW
+00FA C2A7            119             CLR E
+00FC 00              120             NOP
+00FD D2A7            121             SETB E
+00FF 2087F1          122             JB P0.7,DELAY           ;判断忙标志
+0102 22              123             RET
+A51 MACRO ASSEMBLER  COUNTLCD                                                             03/29/2009 20:18:48 PAGE     3
+
+0103                 124     DELAY3:                         ; 延时程序
+0103 7FFF            125             MOV  R7,#255
+0105 7E19            126             D1:MOV R6,#25
+0107 DEFE            127             D2: DJNZ R6,D2
+0109 DFFA            128             DJNZ R7,D1
+010B 22              129     RET
+010C 20202043        130     table1: db"   Counter      ",00H
+0110 6F756E74                
+0114 65722020                
+0118 20202020                
+011C 00                      
+                     131     end
+                             
+A51 MACRO ASSEMBLER  COUNTLCD                                                             03/29/2009 20:18:48 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+A1 . . . . . . . .  C ADDR   00DFH   A   
+A_BIT. . . . . . .  N NUMB   0030H   A   
+B_BIT. . . . . . .  N NUMB   0031H   A   
+C_BIT. . . . . . .  N NUMB   0032H   A   
+D1 . . . . . . . .  C ADDR   0105H   A   
+D1MS . . . . . . .  C ADDR   00C9H   A   
+D2 . . . . . . . .  C ADDR   0107H   A   
+DELAY. . . . . . .  C ADDR   00F3H   A   
+DELAY3 . . . . . .  C ADDR   0103H   A   
+DISPLAY. . . . . .  C ADDR   0093H   A   
+D_BIT. . . . . . .  N NUMB   0033H   A   
+E. . . . . . . . .  B ADDR   00A0H.7 A   
+ENABLE . . . . . .  C ADDR   00E8H   A   
+E_BIT. . . . . . .  N NUMB   0034H   A   
+F_BIT. . . . . . .  N NUMB   0035H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+RS . . . . . . . .  B ADDR   00A0H.6 A   
+RW . . . . . . . .  B ADDR   00A0H.5 A   
+STLOP. . . . . . .  C ADDR   0053H   A   
+TABLE1 . . . . . .  C ADDR   010CH   A   
+WRILTE2. . . . . .  C ADDR   00CEH   A   
+WRITE1 . . . . . .  C ADDR   00DDH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

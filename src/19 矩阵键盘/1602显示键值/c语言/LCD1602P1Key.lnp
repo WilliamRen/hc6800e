@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"LCD1602P1Key.obj" 
+TO "LCD1602P1Key" 
+RAMSIZE(256) 

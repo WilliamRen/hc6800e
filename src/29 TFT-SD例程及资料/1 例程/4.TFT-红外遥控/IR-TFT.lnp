@@ -1,0 +1,5 @@
+"STARTUP.obj",
+"main.obj",
+"Lcd.obj" 
+TO "IR-TFT" 
+RAMSIZE(256) 

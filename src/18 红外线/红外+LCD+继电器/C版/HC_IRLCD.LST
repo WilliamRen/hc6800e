@@ -1,0 +1,320 @@
+C51 COMPILER V7.10   HC_IRLCD                                                              02/15/2010 14:59:09 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE HC_IRLCD
+OBJECT MODULE PLACED IN HC_IRLCD.OBJ
+COMPILER INVOKED BY: C:\Program Files\Keil\C51\BIN\C51.EXE HC_IRLCD.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /********************************************************************************
+   2          *  描述:                                                                       *
+   3          *         lcd1602显示 遥控键值读取器                                           *
+   4          *         lcd1602显示 遥控器接p3.2                                             *
+   5          *         喇叭接p1.5  继电器接p1.4                                             *
+   6          *         17(40h)键按下，继电器吸合。19(04h)键按下，继电器关闭。               *
+   7          *   连接方法：使用红外功能时 J1跳线短接                                                                   
+             -        *
+   8          *******************************************************************************/
+   9          
+  10          #include <reg51.h>
+  11          #include <intrins.h>
+  12          #define  NOP()   _nop_()   /* 定义空指令 */
+  13          
+  14          #define uchar unsigned char
+  15          #define uint  unsigned int
+  16          #define delayNOP(); {_nop_();_nop_();_nop_();_nop_();};
+  17          
+  18          void delay(uchar x);  //x*0.14MS
+  19          void delay1(int ms);
+  20          void beep(void);
+  21          
+  22          sbit IRIN = P3^2;         //红外接收器数据线
+  23          sbit RELAY= P1^4;         //继电器驱动线
+  24          sbit BEEP = P1^5;         //蜂鸣器驱动线
+  25          
+  26          uchar IRCOM[7];
+  27          
+  28          uchar cdis1[] = {" REMOTE CONTROL "};
+  29          uchar cdis2[] = {"  IR-CODE: ----H"};
+  30          
+  31          //LCD IO
+  32          sbit LCD_RW = P2^5;
+  33          sbit LCD_RS = P2^6;             
+  34          sbit LCD_EN = P2^7;
+  35          
+  36          
+  37          unsigned char Y0;
+  38          
+  39          /*******************************************************************/
+  40          /*                                                                 */
+  41          /*检查LCD忙状态                                                    */
+  42          /*lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。      */
+  43          /*                                                                 */
+  44          /*******************************************************************/ 
+  45          
+  46          bit lcd_busy()
+  47           {                          
+  48   1          bit result;
+  49   1          LCD_RS = 0;
+  50   1          LCD_RW = 1;
+  51   1          LCD_EN = 1;
+  52   1          delayNOP();
+  53   1          result = (bit)(P0&0x80);
+  54   1          LCD_EN = 0;
+C51 COMPILER V7.10   HC_IRLCD                                                              02/15/2010 14:59:09 PAGE 2   
+
+  55   1          return(result); 
+  56   1       }
+  57          
+  58          /*******************************************************************/
+  59          /*                                                                 */
+  60          /*写指令数据到LCD                                                  */
+  61          /*RS=L，RW=L，E=高脉冲，D0-D7=指令码。                             */
+  62          /*                                                                 */
+  63          /*******************************************************************/
+  64          
+  65          void lcd_wcmd(uchar cmd)
+  66          
+  67          {                          
+  68   1         while(lcd_busy());
+  69   1          LCD_RS = 0;
+  70   1          LCD_RW = 0;
+  71   1          LCD_EN = 0;
+  72   1          _nop_();
+  73   1          _nop_(); 
+  74   1          P0 = cmd;
+  75   1          delayNOP();
+  76   1          LCD_EN = 1;
+  77   1          delayNOP();
+  78   1          LCD_EN = 0;  
+  79   1      }
+  80          
+  81          /*******************************************************************/
+  82          /*                                                                 */
+  83          /*写显示数据到LCD                                                  */
+  84          /*RS=H，RW=L，E=高脉冲，D0-D7=数据。                               */
+  85          /*                                                                 */
+  86          /*******************************************************************/
+  87          
+  88          void lcd_wdat(uchar dat)
+  89          {                          
+  90   1         while(lcd_busy());
+  91   1          LCD_RS = 1;
+  92   1          LCD_RW = 0;
+  93   1          LCD_EN = 0;
+  94   1          P0 = dat;
+  95   1          delayNOP();
+  96   1          LCD_EN = 1;
+  97   1          delayNOP();
+  98   1          LCD_EN = 0; 
+  99   1      }
+ 100          
+ 101          /*******************************************************************/
+ 102          /*                                                                 */
+ 103          /*  LCD初始化设定                                                  */
+ 104          /*                                                                 */
+ 105          /*******************************************************************/
+ 106          
+ 107          void lcd_init()
+ 108          { 
+ 109   1          delay1(15);                   
+ 110   1          lcd_wcmd(0x38);      //16*2显示，5*7点阵，8位数据
+ 111   1          delay1(5);
+ 112   1          lcd_wcmd(0x38);         
+ 113   1          delay1(5);
+ 114   1          lcd_wcmd(0x38);         
+ 115   1          delay1(5);
+ 116   1      
+C51 COMPILER V7.10   HC_IRLCD                                                              02/15/2010 14:59:09 PAGE 3   
+
+ 117   1          lcd_wcmd(0x0c);      //显示开，关光标
+ 118   1          delay1(5);
+ 119   1          lcd_wcmd(0x06);      //移动光标
+ 120   1          delay1(5);
+ 121   1          lcd_wcmd(0x01);      //清除LCD的显示内容
+ 122   1          delay1(5);
+ 123   1      }
+ 124          
+ 125          /*******************************************************************/
+ 126          /*                                                                 */
+ 127          /*  设定显示位置                                                   */
+ 128          /*                                                                 */
+ 129          /*******************************************************************/
+ 130          
+ 131          void lcd_pos(uchar pos)
+ 132          {                          
+ 133   1        lcd_wcmd(pos | 0x80);  //数据指针=80+地址变量
+ 134   1      }
+ 135          
+ 136          /*******************************************************************/
+ 137          main()
+ 138          {
+ 139   1         uchar m;
+ 140   1        
+ 141   1          IE = 0x81;                 //允许总中断中断,使能 INT0 外部中断
+ 142   1          TCON = 0x01;               //触发方式为脉冲负边沿触发
+ 143   1          
+ 144   1          IRIN=1;                    //I/O口初始化
+ 145   1          BEEP=1;
+ 146   1          RELAY=1; 
+ 147   1              
+ 148   1          delay1(10);                 //延时
+ 149   1          lcd_init();                //初始化LCD             
+ 150   1              
+ 151   1          lcd_pos(0);                //设置显示位置为第一行的第1个字符
+ 152   1           m = 0;
+ 153   1          while(cdis1[m] != '\0')
+ 154   1           {                         //显示字符
+ 155   2             lcd_wdat(cdis1[m]);
+ 156   2             m++;
+ 157   2           }
+ 158   1      
+ 159   1          lcd_pos(0x40);             //设置显示位置为第二行第1个字符
+ 160   1           m = 0;
+ 161   1          while(cdis2[m] != '\0')
+ 162   1           {
+ 163   2             lcd_wdat(cdis2[m]);      //显示字符
+ 164   2             m++;
+ 165   2           }
+ 166   1      
+ 167   1         while(1);
+ 168   1      
+ 169   1      } //end main
+ 170          /**********************************************************/
+ 171          void IR_IN(void) interrupt 0     //外部中断服务程序
+ 172          {
+ 173   1        unsigned char j,k,N=0;
+ 174   1           EX0 = 0;   
+ 175   1               delay(15);
+ 176   1               if (IRIN==1) 
+ 177   1           { EX0 =1;
+ 178   2                 return;
+C51 COMPILER V7.10   HC_IRLCD                                                              02/15/2010 14:59:09 PAGE 4   
+
+ 179   2                } 
+ 180   1                                 //确认IR信号出现
+ 181   1        while (!IRIN)            //等IR变为高电平，跳过9ms的前导低电平信号。
+ 182   1          {delay(1);}
+ 183   1      
+ 184   1       for (j=0;j<4;j++)         //收集四组数据
+ 185   1       { 
+ 186   2        for (k=0;k<8;k++)        //每组数据有8位
+ 187   2        {
+ 188   3         while (IRIN)            //等 IR 变为低电平，跳过4.5ms的前导高电平信号。
+ 189   3           {delay(1);}
+ 190   3          while (!IRIN)          //等 IR 变为高电平
+ 191   3           {delay(1);}
+ 192   3           while (IRIN)           //计算IR高电平时长
+ 193   3            {
+ 194   4          delay(1);
+ 195   4          N++;           
+ 196   4          if (N>=30)
+ 197   4               { EX0=1;
+ 198   5               return;}                  //0.14ms计数过长自动离开。
+ 199   4            }                        //高电平计数完毕                
+ 200   3           IRCOM[j]=IRCOM[j] >> 1;                  //数据最高位补“0”
+ 201   3           if (N>=8) {IRCOM[j] = IRCOM[j] | 0x80;}  //数据最高位补“1”
+ 202   3           N=0;
+ 203   3        }//end for k
+ 204   2       }//end for j
+ 205   1         
+ 206   1         if (IRCOM[2]!=~IRCOM[3])
+ 207   1         { EX0=1;
+ 208   2           return; }
+ 209   1      
+ 210   1         IRCOM[5]=IRCOM[2] & 0x0F;     //取键码的低四位
+ 211   1         IRCOM[6]=IRCOM[2] >> 4;       //右移4次，高四位变为低四位
+ 212   1      
+ 213   1         if(IRCOM[5]>9)
+ 214   1          { IRCOM[5]=IRCOM[5]+0x37;}
+ 215   1         else
+ 216   1                IRCOM[5]=IRCOM[5]+0x30;
+ 217   1      
+ 218   1         if(IRCOM[6]>9)
+ 219   1          { IRCOM[6]=IRCOM[6]+0x37;}
+ 220   1         else
+ 221   1                IRCOM[6]=IRCOM[6]+0x30;
+ 222   1      
+ 223   1           lcd_pos(0x4b);             
+ 224   1           lcd_wdat(IRCOM[6]);        //第一位数显示 
+ 225   1           lcd_pos(0x4c);             
+ 226   1           lcd_wdat(IRCOM[5]);        //第二位数显示
+ 227   1      
+ 228   1               Y0=0;
+ 229   1               switch(IRCOM[2])
+ 230   1               {
+ 231   2                 case 0x09: Y0=0x01; break;
+ 232   2                 case 0x1D: Y0=0x02; break;
+ 233   2                 case 0x1F: Y0=0x03; break;
+ 234   2                 case 0x0D: Y0=0x04; break;
+ 235   2                 case 0x19: Y0=0x05; break;
+ 236   2                 case 0x1B: Y0=0x06; break;
+ 237   2                 case 0x11: Y0=0x07; break;
+ 238   2                 case 0x15: Y0=0x08; break;
+ 239   2                 case 0x17: Y0=0x09; break;
+ 240   2      
+C51 COMPILER V7.10   HC_IRLCD                                                              02/15/2010 14:59:09 PAGE 5   
+
+ 241   2                case 0x13: RELAY=1; break;
+ 242   2                case 0x14: RELAY=1; break;
+ 243   2                case 0x51: RELAY=0; break;
+ 244   2               }
+ 245   1      
+ 246   1              if(Y0&0x01)RELAY=0; //打开继电器
+ 247   1              else RELAY=1;       //关闭继电器
+ 248   1      
+ 249   1          beep();
+ 250   1          EX0 = 1; 
+ 251   1      } 
+ 252          
+ 253          /**********************************************************/
+ 254          void beep(void)
+ 255          {
+ 256   1        unsigned char i;
+ 257   1        for (i=0;i<100;i++)
+ 258   1         {
+ 259   2         delay(4);
+ 260   2         BEEP=!BEEP;                 //BEEP取反
+ 261   2         } 
+ 262   1        BEEP=1;                      //关闭蜂鸣器
+ 263   1      }
+ 264          /**********************************************************/
+ 265          void delay(unsigned char x)    //x*0.14MS
+ 266          {
+ 267   1       unsigned char i;
+ 268   1        while(x--)
+ 269   1       {
+ 270   2        for (i = 0; i<13; i++) {}
+ 271   2       }
+ 272   1      }
+ 273          
+ 274          /**********************************************************/
+ 275          void delay1(int ms)
+ 276          {
+ 277   1       unsigned char y;
+ 278   1        while(ms--)
+ 279   1       {
+ 280   2        for(y = 0; y<250; y++)
+ 281   2        {
+ 282   3         _nop_();
+ 283   3         _nop_();
+ 284   3         _nop_();
+ 285   3         _nop_();
+ 286   3        }
+ 287   2       }
+ 288   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    655    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     42       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

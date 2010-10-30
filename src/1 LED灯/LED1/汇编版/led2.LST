@@ -1,0 +1,56 @@
+A51 MACRO ASSEMBLER  LED2                                                                 05/14/2010 17:14:38 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN led2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE led2.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+                       5     
+                       6             
+                       7             
+                       8     
+0000                   9             ORG 0000H           ;程序从此地址开始运行
+0000 020030           10             LJMP MAIN           ;跳转到 MAIN 程序处
+                      11     
+0030                  12             ORG 030H            ;MAIN 从030H处开始
+0030                  13     MAIN:   
+0030 75A000           14             MOV P2 ,#00H    ;P2为低电平 LED 灯亮
+0033 113C             15             ACALL DELAY             ;调用延时子程序
+0035 75A0FF           16             MOV P2 ,#0FFH
+0038 113C             17             ACALL DELAY
+003A 0130             18             AJMP MAIN        ;跳转到主程序处
+                      19     
+003C 7D04             20     DELAY:  MOV R5,#04H        ;将立即数传给寄存器R5
+003E 7EFF             21     F3:     MOV R6,#0FFH
+0040 7FFF             22     F2:     MOV R7,#0FFH
+0042 DFFE             23     F1:     DJNZ R7,F1             ;若为0程序向下执行，若不为0程序跳转到
+0044 DEFA             24             DJNZ R6,F2
+0046 DDF6             25             DJNZ R5,F3
+0048 22               26             RET
+                      27             END
+A51 MACRO ASSEMBLER  LED2                                                                 05/14/2010 17:14:38 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY. . . . . . .  C ADDR   003CH   A   
+F1 . . . . . . . .  C ADDR   0042H   A   
+F2 . . . . . . . .  C ADDR   0040H   A   
+F3 . . . . . . . .  C ADDR   003EH   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,104 @@
+C51 COMPILER V7.10   LED2                                                                  10/04/2010 21:20:42 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LED2
+OBJECT MODULE PLACED IN led2.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led2.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************************************************************************
+   2          *  标题:               74HC573输出使能试验(单片机直接实现位选 共阴极)             *
+   3          *                                                                                                                                                             *
+   4          *  连接方法：P0与J12 用8PIN排线连接      P16与JP11(P2) 用排线连接                                         *
+   5          ***********************************************************************************
+   6          *  目的：熟悉74HC573的LE输出使能控制                                                              *
+   7          *  请学员认真消化本例程，用573锁存器控制和单片机脚直接位选控制(非译码器控制)数码管*
+   8          ***********************************************************************************/
+   9          
+  10          
+  11          #include <reg52.h> 
+  12          #include <intrins.h>
+  13          
+  14          void delay(unsigned int i);      //函数声名
+  15          sbit LE = P1^0;  //定义输出使能控制脚在P1.0上
+  16          
+  17          char DelayCNT;//定义变量
+  18           
+  19          //此表为 LED 的字模, 共阴数码管 0-9  - 
+  20          unsigned char code   Disp_Tab[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40};  //段码控制
+  21          
+  22          //此表为8个数码管位选控制, 共阴数码管 1-8个  - 
+  23          unsigned char code   dispbit[8]={0xfe,0xfd,0xfb,0xf7,0xef,0xdF,0xbF,0x7F};    //位选控制   查表的方法控制
+  24          
+  25          /************主函数**********************/ 
+  26          main()
+  27          {  
+  28   1         unsigned int i,LedNumVal=1 ;    //变量定义
+  29   1         unsigned int LedOut[10];                //变量定义
+  30   1         
+  31   1         DelayCNT=0;
+  32   1      
+  33   1        while(1)
+  34   1        {      
+  35   2           if(++DelayCNT>=20)   //控制数字变化速度
+  36   2               {
+  37   3                      DelayCNT=0;               //20个扫描周期清零一次
+  38   3                  ++LedNumVal;          //每隔20个扫描周期加一次
+  39   3               }
+  40   2      
+  41   2               LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+  42   2           LedOut[1]=Disp_Tab[LedNumVal%1000/100]|0x80;
+  43   2           LedOut[2]=Disp_Tab[LedNumVal%100/10];
+  44   2           LedOut[3]=Disp_Tab[LedNumVal%10];
+  45   2               
+  46   2               LedOut[4]=Disp_Tab[LedNumVal%10000/1000];         //千位
+  47   2           LedOut[5]=Disp_Tab[LedNumVal%1000/100]|0x80;  //百位带小数点
+  48   2           LedOut[6]=Disp_Tab[LedNumVal%100/10];                 //十位
+  49   2           LedOut[7]=Disp_Tab[LedNumVal%10];             //个位        
+  50   2      
+  51   2         
+  52   2              
+  53   2               for( i=0; i<9; i++) 
+  54   2               {       
+  55   3                LE = 0;  //输出使能，锁存器不输出数据
+C51 COMPILER V7.10   LED2                                                                  10/04/2010 21:20:42 PAGE 2   
+
+  56   3            P0 = LedOut[i];
+  57   3            LE = 1;  //输出使能，锁存器将8位数据一口吐出
+  58   3                P2 = dispbit[i];   //使用查表法进行位选
+  59   3            
+  60   3                delay(150);            //扫描间隔时间   太长会数码管会有闪烁感
+  61   3                }
+  62   2            LE = 0; //锁存器不输出数据
+  63   2               
+  64   2        }   
+  65   1      }       
+  66          
+  67          /**************************************************************************
+  68          *
+  69          *                      延时处理
+  70          *
+  71          ****************************************************************************/
+  72          void delay(unsigned int i)
+  73          {
+  74   1          char j;
+  75   1          for(i; i > 0; i--)
+  76   1              for(j = 200; j > 0; j--);
+  77   1      }
+  78          
+  79          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    387    ----
+   CONSTANT SIZE    =     19    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,1279 @@
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+NO OBJECT MODULE REQUESTED
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE HC_IRLCD.SRC SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; HC_IRLCD.SRC generated from: HC_IRLCD.C
+                       2     ; COMPILER INVOKED BY:
+                       3     ;        C:\Keil\C51\BIN\C51.EXE HC_IRLCD.C BROWSE DEBUG OBJECTEXTEND
+                       4     
+                       5     $nomod51 
+                       6     
+                       7     NAME    HC_IRLCD
+                       8     
+  0094                 9     RELAY   BIT     090H.4
+  0080                10     P0      DATA    080H
+  0090                11     P1      DATA    090H
+  00A0                12     P2      DATA    0A0H
+  00B0                13     P3      DATA    0B0H
+  00B4                14     T0      BIT     0B0H.4
+  00D6                15     AC      BIT     0D0H.6
+  00B5                16     T1      BIT     0B0H.5
+  00AF                17     EA      BIT     0A8H.7
+  00A8                18     IE      DATA    0A8H
+  00B7                19     RD      BIT     0B0H.7
+  00AC                20     ES      BIT     0A8H.4
+  00B8                21     IP      DATA    0B8H
+  0098                22     RI      BIT     098H.0
+  00B2                23     INT0    BIT     0B0H.2
+  00D7                24     CY      BIT     0D0H.7
+  0095                25     BEEP    BIT     090H.5
+  0099                26     TI      BIT     098H.1
+  00B3                27     INT1    BIT     0B0H.3
+  00BC                28     PS      BIT     0B8H.4
+  0081                29     SP      DATA    081H
+  00D2                30     OV      BIT     0D0H.2
+  00B6                31     WR      BIT     0B0H.6
+  0099                32     SBUF    DATA    099H
+  0087                33     PCON    DATA    087H
+  00B2                34     IRIN    BIT     0B0H.2
+  0098                35     SCON    DATA    098H
+  0089                36     TMOD    DATA    089H
+  0088                37     TCON    DATA    088H
+  0089                38     IE0     BIT     088H.1
+  008B                39     IE1     BIT     088H.3
+  00F0                40     B       DATA    0F0H
+  00A7                41     LCD_EN  BIT     0A0H.7
+  00E0                42     ACC     DATA    0E0H
+  00A9                43     ET0     BIT     0A8H.1
+  00AB                44     ET1     BIT     0A8H.3
+  008D                45     TF0     BIT     088H.5
+  008F                46     TF1     BIT     088H.7
+  009A                47     RB8     BIT     098H.2
+  008C                48     TH0     DATA    08CH
+  00A8                49     EX0     BIT     0A8H.0
+  0088                50     IT0     BIT     088H.0
+  008D                51     TH1     DATA    08DH
+  009B                52     TB8     BIT     098H.3
+  00AA                53     EX1     BIT     0A8H.2
+  008A                54     IT1     BIT     088H.2
+  00D0                55     P       BIT     0D0H.0
+  009F                56     SM0     BIT     098H.7
+  008A                57     TL0     DATA    08AH
+  009E                58     SM1     BIT     098H.6
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     2
+
+  008B                59     TL1     DATA    08BH
+  009D                60     SM2     BIT     098H.5
+  00B9                61     PT0     BIT     0B8H.1
+  00BB                62     PT1     BIT     0B8H.3
+  00D3                63     RS0     BIT     0D0H.3
+  008C                64     TR0     BIT     088H.4
+  00D4                65     RS1     BIT     0D0H.4
+  008E                66     TR1     BIT     088H.6
+  00B8                67     PX0     BIT     0B8H.0
+  00A6                68     LCD_RS  BIT     0A0H.6
+  00BA                69     PX1     BIT     0B8H.2
+  0083                70     DPH     DATA    083H
+  00A5                71     LCD_RW  BIT     0A0H.5
+  0082                72     DPL     DATA    082H
+  009C                73     REN     BIT     098H.4
+  00B0                74     RXD     BIT     0B0H.0
+  00B1                75     TXD     BIT     0B0H.1
+  00D5                76     F0      BIT     0D0H.5
+  00D0                77     PSW     DATA    0D0H
+                      78     ?PR?lcd_busy?HC_IRLCD                    SEGMENT CODE 
+                      79     ?BI?lcd_busy?HC_IRLCD                    SEGMENT BIT OVERLAYABLE 
+                      80     ?PR?_lcd_wcmd?HC_IRLCD                   SEGMENT CODE 
+                      81     ?PR?_lcd_wdat?HC_IRLCD                   SEGMENT CODE 
+                      82     ?PR?lcd_init?HC_IRLCD                    SEGMENT CODE 
+                      83     ?PR?_lcd_pos?HC_IRLCD                    SEGMENT CODE 
+                      84     ?PR?main?HC_IRLCD    SEGMENT CODE 
+                      85     ?PR?IR_IN?HC_IRLCD   SEGMENT CODE 
+                      86     ?DT?IR_IN?HC_IRLCD   SEGMENT DATA OVERLAYABLE 
+                      87     ?PR?beep?HC_IRLCD    SEGMENT CODE 
+                      88     ?DT?beep?HC_IRLCD    SEGMENT DATA OVERLAYABLE 
+                      89     ?PR?_delay?HC_IRLCD  SEGMENT CODE 
+                      90     ?PR?_delay1?HC_IRLCD SEGMENT CODE 
+                      91     ?C_INITSEG           SEGMENT CODE 
+                      92     ?DT?HC_IRLCD         SEGMENT DATA 
+                      93             EXTRN   CODE (?C_STARTUP)
+                      94             PUBLIC  IRCOM
+                      95             PUBLIC  cdis2
+                      96             PUBLIC  cdis1
+                      97             PUBLIC  Y0
+                      98             PUBLIC  _delay1
+                      99             PUBLIC  _delay
+                     100             PUBLIC  beep
+                     101             PUBLIC  IR_IN
+                     102             PUBLIC  main
+                     103             PUBLIC  _lcd_pos
+                     104             PUBLIC  lcd_init
+                     105             PUBLIC  _lcd_wdat
+                     106             PUBLIC  _lcd_wcmd
+                     107             PUBLIC  lcd_busy
+                     108     
+----                 109             RSEG  ?DT?IR_IN?HC_IRLCD
+0000                 110     ?IR_IN?BYTE:
+0000                 111               j?645:   DS   1
+0001                 112               k?646:   DS   1
+0002                 113               N?647:   DS   1
+                     114     
+----                 115             RSEG  ?DT?beep?HC_IRLCD
+0000                 116     ?beep?BYTE:
+0000                 117               i?748:   DS   1
+                     118     
+----                 119             RSEG  ?BI?lcd_busy?HC_IRLCD
+0000                 120     ?lcd_busy?BIT:
+0000                 121          result?040:   DBIT   1
+                     122     
+----                 123             RSEG  ?DT?HC_IRLCD
+0000                 124                  Y0:   DS   1
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     3
+
+0001                 125               cdis1:   DS   17
+0012                 126               cdis2:   DS   17
+0023                 127               IRCOM:   DS   7
+                     128     
+----                 129             RSEG  ?C_INITSEG
+0000 11              130             DB      011H
+0001 00       F      131             DB      cdis1
+0002 2052454D        132             DB  ' ' ,'R' ,'E' ,'M' ,'O' ,'T' ,'E' ,' ' ,'C' ,'O' 
+0006 4F544520                
+000A 434F                    
+000C 4E54524F        133             DB  'N' ,'T' ,'R' ,'O' ,'L' ,' ' ,000H
+0010 4C2000                  
+                     134     
+                     135     
+0013 11              136             DB      011H
+0014 00       F      137             DB      cdis2
+0015 20204952        138             DB  ' ' ,' ' ,'I' ,'R' ,'-' ,'C' ,'O' ,'D' ,'E' ,':' 
+0019 2D434F44                
+001D 453A                    
+001F 202D2D2D        139             DB  ' ' ,'-' ,'-' ,'-' ,'-' ,'H' ,000H
+0023 2D4800                  
+                     140     
+                     141     
+                     142     ; /********************************************************************************
+                     143     ; *  描述:                                                                       *
+                     144     ; *         lcd1602显示 遥控键值读取器                                           *
+                     145     ; *         lcd1602显示 遥控器接p3.2                                             *
+                     146     ; *         喇叭接p1.5  继电器接p1.4                                             *
+                     147     ; *         17(40h)键按下，继电器吸合。19(04h)键按下，继电器关闭。               *
+                     148     ; *                                                                              *
+                     149     ; *******************************************************************************/
+                     150     ; #pragma SRC
+                     151     ; #include <reg51.h>
+                     152     ; #include <intrins.h>
+                     153     ; #define  NOP()   _nop_()   /* 定义空指令 */
+                     154     ; 
+                     155     ; #define uchar unsigned char
+                     156     ; #define uint  unsigned int
+                     157     ; 
+                     158     ; #define delayNOP(); {_nop_();_nop_();_nop_();_nop_();};
+                     159     ; 
+                     160     ; void delay(uchar x);  //x*0.14MS
+                     161     ; void delay1(int ms);
+                     162     ; void beep(void);
+                     163     ; 
+                     164     ; sbit IRIN = P3^2;         //红外接收器数据线
+                     165     ; sbit RELAY= P1^4;         //继电器驱动线
+                     166     ; sbit BEEP = P1^5;         //蜂鸣器驱动线
+                     167     ; 
+                     168     ; uchar IRCOM[7];
+                     169     ; 
+                     170     ; uchar cdis1[] = {" REMOTE CONTROL "};
+                     171     ; uchar cdis2[] = {"  IR-CODE: ----H"};
+                     172     ; 
+                     173     ; //LCD IO
+                     174     ; sbit LCD_RW = P2^5;
+                     175     ; sbit LCD_RS = P2^6;             
+                     176     ; sbit LCD_EN = P2^7;
+                     177     ; 
+                     178     ; 
+                     179     ; unsigned char Y0;
+                     180     ; 
+                     181     ; /*******************************************************************/
+                     182     ; /*                                                                 */
+                     183     ; /*检查LCD忙状态                                                    */
+                     184     ; /*lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。      */
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     4
+
+                     185     ; /*                                                                 */
+                     186     ; /*******************************************************************/ 
+                     187     ; 
+                     188     ; bit lcd_busy()
+                     189     
+----                 190             RSEG  ?PR?lcd_busy?HC_IRLCD
+0000                 191     lcd_busy:
+                     192                             ; SOURCE LINE # 47
+                     193     ;  {                          
+                     194                             ; SOURCE LINE # 48
+                     195     ;     bit result;
+                     196     ;     LCD_RS = 0;
+                     197                             ; SOURCE LINE # 50
+0000 C2A6            198             CLR     LCD_RS
+                     199     ;     LCD_RW = 1;
+                     200                             ; SOURCE LINE # 51
+0002 D2A5            201             SETB    LCD_RW
+                     202     ;     LCD_EN = 1;
+                     203                             ; SOURCE LINE # 52
+0004 D2A7            204             SETB    LCD_EN
+                     205     ;     delayNOP();
+                     206                             ; SOURCE LINE # 53
+0006 00              207             NOP     
+0007 00              208             NOP     
+0008 00              209             NOP     
+0009 00              210             NOP     
+                     211     ;     result = (bit)(P0&0x80);
+                     212                             ; SOURCE LINE # 54
+000A E580            213             MOV     A,P0
+000C 33              214             RLC     A
+000D 9200     F      215             MOV     result?040,C
+                     216     ;     LCD_EN = 0;
+                     217                             ; SOURCE LINE # 55
+000F C2A7            218             CLR     LCD_EN
+                     219     ;     return(result); 
+                     220                             ; SOURCE LINE # 56
+0011 A200     F      221             MOV     C,result?040
+                     222     ;  }
+                     223                             ; SOURCE LINE # 57
+0013                 224     ?C0001:
+0013 22              225             RET     
+                     226     ; END OF lcd_busy
+                     227     
+                     228     ; 
+                     229     ; /*******************************************************************/
+                     230     ; /*                                                                 */
+                     231     ; /*写指令数据到LCD                                                  */
+                     232     ; /*RS=L，RW=L，E=高脉冲，D0-D7=指令码。                             */
+                     233     ; /*                                                                 */
+                     234     ; /*******************************************************************/
+                     235     ; 
+                     236     ; void lcd_wcmd(uchar cmd)
+                     237     
+----                 238             RSEG  ?PR?_lcd_wcmd?HC_IRLCD
+0000                 239     _lcd_wcmd:
+                     240                             ; SOURCE LINE # 66
+                     241     ;---- Variable 'cmd?141' assigned to Register 'R7' ----
+                     242     ; 
+                     243     ; {                          
+                     244                             ; SOURCE LINE # 68
+0000                 245     ?C0002:
+                     246     ;    while(lcd_busy());
+                     247                             ; SOURCE LINE # 69
+0000 120000   F      248             LCALL   lcd_busy
+0003 40FB            249             JC      ?C0002
+0005                 250     ?C0003:
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     5
+
+                     251     ;     LCD_RS = 0;
+                     252                             ; SOURCE LINE # 70
+0005 C2A6            253             CLR     LCD_RS
+                     254     ;     LCD_RW = 0;
+                     255                             ; SOURCE LINE # 71
+0007 C2A5            256             CLR     LCD_RW
+                     257     ;     LCD_EN = 0;
+                     258                             ; SOURCE LINE # 72
+0009 C2A7            259             CLR     LCD_EN
+                     260     ;     _nop_();
+                     261                             ; SOURCE LINE # 73
+000B 00              262             NOP     
+                     263     ;     _nop_(); 
+                     264                             ; SOURCE LINE # 74
+000C 00              265             NOP     
+                     266     ;     P0 = cmd;
+                     267                             ; SOURCE LINE # 75
+000D 8F80            268             MOV     P0,R7
+                     269     ;     delayNOP();
+                     270                             ; SOURCE LINE # 76
+000F 00              271             NOP     
+0010 00              272             NOP     
+0011 00              273             NOP     
+0012 00              274             NOP     
+                     275     ;     LCD_EN = 1;
+                     276                             ; SOURCE LINE # 77
+0013 D2A7            277             SETB    LCD_EN
+                     278     ;     delayNOP();
+                     279                             ; SOURCE LINE # 78
+0015 00              280             NOP     
+0016 00              281             NOP     
+0017 00              282             NOP     
+0018 00              283             NOP     
+                     284     ;     LCD_EN = 0;  
+                     285                             ; SOURCE LINE # 79
+0019 C2A7            286             CLR     LCD_EN
+                     287     ; }
+                     288                             ; SOURCE LINE # 80
+001B 22              289             RET     
+                     290     ; END OF _lcd_wcmd
+                     291     
+                     292     ; 
+                     293     ; /*******************************************************************/
+                     294     ; /*                                                                 */
+                     295     ; /*写显示数据到LCD                                                  */
+                     296     ; /*RS=H，RW=L，E=高脉冲，D0-D7=数据。                               */
+                     297     ; /*                                                                 */
+                     298     ; /*******************************************************************/
+                     299     ; 
+                     300     ; void lcd_wdat(uchar dat)
+                     301     
+----                 302             RSEG  ?PR?_lcd_wdat?HC_IRLCD
+0000                 303     _lcd_wdat:
+                     304                             ; SOURCE LINE # 89
+                     305     ;---- Variable 'dat?242' assigned to Register 'R7' ----
+                     306     ; {                          
+                     307                             ; SOURCE LINE # 90
+0000                 308     ?C0005:
+                     309     ;    while(lcd_busy());
+                     310                             ; SOURCE LINE # 91
+0000 120000   F      311             LCALL   lcd_busy
+0003 40FB            312             JC      ?C0005
+0005                 313     ?C0006:
+                     314     ;     LCD_RS = 1;
+                     315                             ; SOURCE LINE # 92
+0005 D2A6            316             SETB    LCD_RS
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     6
+
+                     317     ;     LCD_RW = 0;
+                     318                             ; SOURCE LINE # 93
+0007 C2A5            319             CLR     LCD_RW
+                     320     ;     LCD_EN = 0;
+                     321                             ; SOURCE LINE # 94
+0009 C2A7            322             CLR     LCD_EN
+                     323     ;     P0 = dat;
+                     324                             ; SOURCE LINE # 95
+000B 8F80            325             MOV     P0,R7
+                     326     ;     delayNOP();
+                     327                             ; SOURCE LINE # 96
+000D 00              328             NOP     
+000E 00              329             NOP     
+000F 00              330             NOP     
+0010 00              331             NOP     
+                     332     ;     LCD_EN = 1;
+                     333                             ; SOURCE LINE # 97
+0011 D2A7            334             SETB    LCD_EN
+                     335     ;     delayNOP();
+                     336                             ; SOURCE LINE # 98
+0013 00              337             NOP     
+0014 00              338             NOP     
+0015 00              339             NOP     
+0016 00              340             NOP     
+                     341     ;     LCD_EN = 0; 
+                     342                             ; SOURCE LINE # 99
+0017 C2A7            343             CLR     LCD_EN
+                     344     ; }
+                     345                             ; SOURCE LINE # 100
+0019 22              346             RET     
+                     347     ; END OF _lcd_wdat
+                     348     
+                     349     ; 
+                     350     ; /*******************************************************************/
+                     351     ; /*                                                                 */
+                     352     ; /*  LCD初始化设定                                                  */
+                     353     ; /*                                                                 */
+                     354     ; /*******************************************************************/
+                     355     ; 
+                     356     ; void lcd_init()
+                     357     
+----                 358             RSEG  ?PR?lcd_init?HC_IRLCD
+0000                 359     lcd_init:
+                     360             USING   0
+                     361                             ; SOURCE LINE # 108
+                     362     ; { 
+                     363                             ; SOURCE LINE # 109
+                     364     ;     delay1(15);                   
+                     365                             ; SOURCE LINE # 110
+0000 7F0F            366             MOV     R7,#0FH
+0002 7E00            367             MOV     R6,#00H
+0004 120000   F      368             LCALL   _delay1
+                     369     ;     lcd_wcmd(0x38);      //16*2显示，5*7点阵，8位数据
+                     370                             ; SOURCE LINE # 111
+0007 7F38            371             MOV     R7,#038H
+0009 120000   F      372             LCALL   _lcd_wcmd
+                     373     ;     delay1(5);
+                     374                             ; SOURCE LINE # 112
+000C 120000   F      375             LCALL   L?0070
+                     376     ;     lcd_wcmd(0x38);         
+                     377                             ; SOURCE LINE # 113
+000F 7F38            378             MOV     R7,#038H
+0011 120000   F      379             LCALL   _lcd_wcmd
+                     380     ;     delay1(5);
+                     381                             ; SOURCE LINE # 114
+0014 120000   F      382             LCALL   L?0070
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     7
+
+                     383     ;     lcd_wcmd(0x38);         
+                     384                             ; SOURCE LINE # 115
+0017 7F38            385             MOV     R7,#038H
+0019 120000   F      386             LCALL   _lcd_wcmd
+                     387     ;     delay1(5);
+                     388                             ; SOURCE LINE # 116
+001C 120000   F      389             LCALL   L?0071
+                     390     ; 
+                     391     ;     lcd_wcmd(0x0c);      //显示开，关光标
+                     392                             ; SOURCE LINE # 118
+001F 7F0C            393             MOV     R7,#0CH
+0021 120000   F      394             LCALL   _lcd_wcmd
+                     395     ;     delay1(5);
+                     396                             ; SOURCE LINE # 119
+0024 120000   F      397             LCALL   L?0071
+                     398     ;     lcd_wcmd(0x06);      //移动光标
+                     399                             ; SOURCE LINE # 120
+0027 7F06            400             MOV     R7,#06H
+0029 120000   F      401             LCALL   _lcd_wcmd
+                     402     ;     delay1(5);
+                     403                             ; SOURCE LINE # 121
+002C 1F              404             DEC     R7
+002D 7E00            405             MOV     R6,#00H
+002F 120000   F      406             LCALL   _delay1
+                     407     ;     lcd_wcmd(0x01);      //清除LCD的显示内容
+                     408                             ; SOURCE LINE # 122
+0032 7F01            409             MOV     R7,#01H
+0034 120000   F      410             LCALL   _lcd_wcmd
+                     411     ;     delay1(5);
+                     412                             ; SOURCE LINE # 123
+0037 7F05            413             MOV     R7,#05H
+0039 7E00            414             MOV     R6,#00H
+003B 020000   F      415             LJMP    _delay1
+                     416     ; END OF lcd_init
+                     417     
+                     418     ; }
+                     419     ; 
+                     420     ; /*******************************************************************/
+                     421     ; /*                                                                 */
+                     422     ; /*  设定显示位置                                                   */
+                     423     ; /*                                                                 */
+                     424     ; /*******************************************************************/
+                     425     ; 
+                     426     ; void lcd_pos(uchar pos)
+                     427     
+----                 428             RSEG  ?PR?_lcd_pos?HC_IRLCD
+0000                 429     _lcd_pos:
+                     430             USING   0
+                     431                             ; SOURCE LINE # 132
+                     432     ;---- Variable 'pos?443' assigned to Register 'R7' ----
+                     433     ; {                          
+                     434                             ; SOURCE LINE # 133
+                     435     ;   lcd_wcmd(pos | 0x80);  //数据指针=80+地址变量
+                     436                             ; SOURCE LINE # 134
+0000 EF              437             MOV     A,R7
+0001 4480            438             ORL     A,#080H
+0003 FF              439             MOV     R7,A
+0004 020000   F      440             LJMP    _lcd_wcmd
+                     441     ; END OF _lcd_pos
+                     442     
+                     443     ; }
+                     444     ; 
+                     445     ; /*******************************************************************/
+                     446     ; main()
+                     447     
+----                 448             RSEG  ?PR?main?HC_IRLCD
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     8
+
+0000                 449     main:
+                     450             USING   0
+                     451                             ; SOURCE LINE # 138
+                     452     ; {
+                     453                             ; SOURCE LINE # 139
+                     454     ;    uchar m;
+                     455     ;   
+                     456     ;     IE = 0x81;                 //允许总中断中断,使能 INT0 外部中断
+                     457                             ; SOURCE LINE # 142
+0000 75A881          458             MOV     IE,#081H
+                     459     ;     TCON = 0x01;               //触发方式为脉冲负边沿触发
+                     460                             ; SOURCE LINE # 143
+0003 758801          461             MOV     TCON,#01H
+                     462     ;     
+                     463     ;     IRIN=1;                    //I/O口初始化
+                     464                             ; SOURCE LINE # 145
+0006 D2B2            465             SETB    IRIN
+                     466     ;     BEEP=1;
+                     467                             ; SOURCE LINE # 146
+0008 D295            468             SETB    BEEP
+                     469     ;     RELAY=1; 
+                     470                             ; SOURCE LINE # 147
+000A D294            471             SETB    RELAY
+                     472     ;       
+                     473     ;     delay1(10);                 //延时
+                     474                             ; SOURCE LINE # 149
+000C 7F0A            475             MOV     R7,#0AH
+000E 7E00            476             MOV     R6,#00H
+0010 120000   F      477             LCALL   _delay1
+                     478     ;     lcd_init();                //初始化LCD             
+                     479                             ; SOURCE LINE # 150
+0013 120000   F      480             LCALL   lcd_init
+                     481     ;         
+                     482     ;     lcd_pos(0);                //设置显示位置为第一行的第1个字符
+                     483                             ; SOURCE LINE # 152
+0016 E4              484             CLR     A
+0017 FF              485             MOV     R7,A
+0018 120000   F      486             LCALL   _lcd_pos
+                     487     ;      m = 0;
+                     488                             ; SOURCE LINE # 153
+                     489     ;---- Variable 'm?544' assigned to Register 'R6' ----
+001B E4              490             CLR     A
+001C FE              491             MOV     R6,A
+001D                 492     ?C0010:
+                     493     ;     while(cdis1[m] != '\0')
+                     494                             ; SOURCE LINE # 154
+001D 7400     F      495             MOV     A,#LOW (cdis1)
+001F 2E              496             ADD     A,R6
+0020 F8              497             MOV     R0,A
+0021 E6              498             MOV     A,@R0
+0022 FF              499             MOV     R7,A
+0023 6006            500             JZ      ?C0011
+                     501     ;      {                         //显示字符
+                     502                             ; SOURCE LINE # 155
+                     503     ;        lcd_wdat(cdis1[m]);
+                     504                             ; SOURCE LINE # 156
+0025 120000   F      505             LCALL   _lcd_wdat
+                     506     ;        m++;
+                     507                             ; SOURCE LINE # 157
+0028 0E              508             INC     R6
+                     509     ;      }
+                     510                             ; SOURCE LINE # 158
+0029 80F2            511             SJMP    ?C0010
+002B                 512     ?C0011:
+                     513     ; 
+                     514     ;     lcd_pos(0x40);             //设置显示位置为第二行第1个字符
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE     9
+
+                     515                             ; SOURCE LINE # 160
+002B 7F40            516             MOV     R7,#040H
+002D 120000   F      517             LCALL   _lcd_pos
+                     518     ;      m = 0;
+                     519                             ; SOURCE LINE # 161
+0030 E4              520             CLR     A
+0031 FE              521             MOV     R6,A
+0032                 522     ?C0012:
+                     523     ;     while(cdis2[m] != '\0')
+                     524                             ; SOURCE LINE # 162
+0032 7400     F      525             MOV     A,#LOW (cdis2)
+0034 2E              526             ADD     A,R6
+0035 F8              527             MOV     R0,A
+0036 E6              528             MOV     A,@R0
+0037 FF              529             MOV     R7,A
+0038 6006            530             JZ      ?C0014
+                     531     ;      {
+                     532                             ; SOURCE LINE # 163
+                     533     ;        lcd_wdat(cdis2[m]);      //显示字符
+                     534                             ; SOURCE LINE # 164
+003A 120000   F      535             LCALL   _lcd_wdat
+                     536     ;        m++;
+                     537                             ; SOURCE LINE # 165
+003D 0E              538             INC     R6
+                     539     ;      }
+                     540                             ; SOURCE LINE # 166
+003E 80F2            541             SJMP    ?C0012
+0040                 542     ?C0014:
+                     543     ; 
+                     544     ;    while(1);
+                     545                             ; SOURCE LINE # 168
+0040 80FE            546             SJMP    ?C0014
+                     547     ; END OF main
+                     548     
+----                 549     CSEG    AT      00003H
+0003 020000   F      550             LJMP    IR_IN
+                     551     
+                     552     ; 
+                     553     ; } //end main
+                     554     ; /**********************************************************/
+                     555     ; void IR_IN(void) interrupt 0 
+                     556     
+----                 557             RSEG  ?PR?IR_IN?HC_IRLCD
+                     558             USING   0
+0000                 559     IR_IN:
+0000 C0E0            560             PUSH    ACC
+0002 C0F0            561             PUSH    B
+0004 C083            562             PUSH    DPH
+0006 C082            563             PUSH    DPL
+0008 C0D0            564             PUSH    PSW
+000A 75D000          565             MOV     PSW,#00H
+000D C000            566             PUSH    AR0
+000F C001            567             PUSH    AR1
+0011 C002            568             PUSH    AR2
+0013 C003            569             PUSH    AR3
+0015 C004            570             PUSH    AR4
+0017 C005            571             PUSH    AR5
+0019 C006            572             PUSH    AR6
+001B C007            573             PUSH    AR7
+                     574             USING   0
+                     575                             ; SOURCE LINE # 172
+                     576     ; {
+                     577     ;   unsigned char j,k,N=0;
+                     578                             ; SOURCE LINE # 174
+001D 750000   F      579             MOV     N?647,#00H
+                     580     ;      EX0 = 0;   
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    10
+
+                     581                             ; SOURCE LINE # 175
+0020 C2A8            582             CLR     EX0
+                     583     ;        delay(15);
+                     584                             ; SOURCE LINE # 176
+0022 7F0F            585             MOV     R7,#0FH
+0024 120000   F      586             LCALL   _delay
+                     587     ;        if (IRIN==1) 
+                     588                             ; SOURCE LINE # 177
+0027 30B205          589             JNB     IRIN,?C0019
+                     590     ;      { EX0 =1;
+                     591                             ; SOURCE LINE # 178
+002A D2A8            592             SETB    EX0
+002C 020000   F      593             LJMP    ?C0018
+                     594     ;          return;
+                     595     ;         } 
+                     596                             ; SOURCE LINE # 180
+002F                 597     ?C0019:
+                     598     ;                            //确认IR信号出现
+                     599     ;   while (!IRIN)            //等IR变为高电平，跳过9ms的前导低电平信号。
+                     600                             ; SOURCE LINE # 182
+002F 20B207          601             JB      IRIN,?C0020
+                     602     ;     {delay(1);}
+                     603                             ; SOURCE LINE # 183
+0032 7F01            604             MOV     R7,#01H
+0034 120000   F      605             LCALL   _delay
+0037 80F6            606             SJMP    ?C0019
+0039                 607     ?C0020:
+                     608     ; 
+                     609     ;  for (j=0;j<4;j++)         //收集四组数据
+                     610                             ; SOURCE LINE # 185
+0039 750000   F      611             MOV     j?645,#00H
+003C                 612     ?C0021:
+                     613     ;  { 
+                     614                             ; SOURCE LINE # 186
+                     615     ;   for (k=0;k<8;k++)        //每组数据有8位
+                     616                             ; SOURCE LINE # 187
+003C 750000   F      617             MOV     k?646,#00H
+003F                 618     ?C0024:
+                     619     ;   {
+                     620                             ; SOURCE LINE # 188
+003F                 621     ?C0027:
+                     622     ;    while (IRIN)            //等 IR 变为低电平，跳过4.5ms的前导高电平信号。
+                     623                             ; SOURCE LINE # 189
+003F 30B207          624             JNB     IRIN,?C0029
+                     625     ;      {delay(1);}
+                     626                             ; SOURCE LINE # 190
+0042 7F01            627             MOV     R7,#01H
+0044 120000   F      628             LCALL   _delay
+0047 80F6            629             SJMP    ?C0027
+0049                 630     ?C0029:
+                     631     ;     while (!IRIN)          //等 IR 变为高电平
+                     632                             ; SOURCE LINE # 191
+0049 20B207          633             JB      IRIN,?C0031
+                     634     ;      {delay(1);}
+                     635                             ; SOURCE LINE # 192
+004C 7F01            636             MOV     R7,#01H
+004E 120000   F      637             LCALL   _delay
+0051 80F6            638             SJMP    ?C0029
+0053                 639     ?C0031:
+                     640     ;      while (IRIN)           //计算IR高电平时长
+                     641                             ; SOURCE LINE # 193
+0053 30B213          642             JNB     IRIN,?C0032
+                     643     ;       {
+                     644                             ; SOURCE LINE # 194
+                     645     ;     delay(1);
+                     646                             ; SOURCE LINE # 195
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    11
+
+0056 7F01            647             MOV     R7,#01H
+0058 120000   F      648             LCALL   _delay
+                     649     ;     N++;           
+                     650                             ; SOURCE LINE # 196
+005B 0500     F      651             INC     N?647
+                     652     ;     if (N>=30)
+                     653                             ; SOURCE LINE # 197
+005D E500     F      654             MOV     A,N?647
+005F C3              655             CLR     C
+0060 941E            656             SUBB    A,#01EH
+0062 40EF            657             JC      ?C0031
+                     658     ;        { EX0=1;
+                     659                             ; SOURCE LINE # 198
+0064 D2A8            660             SETB    EX0
+0066 020000   F      661             LJMP    ?C0018
+                     662     ;        return;}                  //0.14ms计数过长自动离开。
+                     663                             ; SOURCE LINE # 199
+                     664     ;       }                        //高电平计数完毕                
+                     665                             ; SOURCE LINE # 200
+0069                 666     ?C0032:
+                     667     ;      IRCOM[j]=IRCOM[j] >> 1;                  //数据最高位补“0”
+                     668                             ; SOURCE LINE # 201
+0069 7400     F      669             MOV     A,#LOW (IRCOM)
+006B 2500     F      670             ADD     A,j?645
+006D F8              671             MOV     R0,A
+006E C000            672             PUSH    AR0
+0070 E6              673             MOV     A,@R0
+0071 C3              674             CLR     C
+0072 13              675             RRC     A
+0073 D000            676             POP     AR0
+0075 F6              677             MOV     @R0,A
+                     678     ;      if (N>=8) {IRCOM[j] = IRCOM[j] | 0x80;}  //数据最高位补“1”
+                     679                             ; SOURCE LINE # 202
+0076 E500     F      680             MOV     A,N?647
+0078 C3              681             CLR     C
+0079 9408            682             SUBB    A,#08H
+007B 4009            683             JC      ?C0034
+007D 7400     F      684             MOV     A,#LOW (IRCOM)
+007F 2500     F      685             ADD     A,j?645
+0081 F8              686             MOV     R0,A
+0082 E6              687             MOV     A,@R0
+0083 4480            688             ORL     A,#080H
+0085 F6              689             MOV     @R0,A
+0086                 690     ?C0034:
+                     691     ;      N=0;
+                     692                             ; SOURCE LINE # 203
+0086 750000   F      693             MOV     N?647,#00H
+                     694     ;   }//end for k
+                     695                             ; SOURCE LINE # 204
+0089 0500     F      696             INC     k?646
+008B E500     F      697             MOV     A,k?646
+008D C3              698             CLR     C
+008E 9408            699             SUBB    A,#08H
+0090 40AD            700             JC      ?C0024
+                     701     ;  }//end for j
+                     702                             ; SOURCE LINE # 205
+0092                 703     ?C0023:
+0092 0500     F      704             INC     j?645
+0094 E500     F      705             MOV     A,j?645
+0096 C3              706             CLR     C
+0097 9404            707             SUBB    A,#04H
+0099 40A1            708             JC      ?C0021
+009B                 709     ?C0022:
+                     710     ;    
+                     711     ;    if (IRCOM[2]!=~IRCOM[3])
+                     712                             ; SOURCE LINE # 207
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    12
+
+009B E500     F      713             MOV     A,IRCOM+03H
+009D F4              714             CPL     A
+009E 6500     F      715             XRL     A,IRCOM+02H
+00A0 6005            716             JZ      ?C0035
+                     717     ;    { EX0=1;
+                     718                             ; SOURCE LINE # 208
+00A2 D2A8            719             SETB    EX0
+00A4 020000   F      720             LJMP    ?C0018
+                     721     ;      return; }
+                     722                             ; SOURCE LINE # 209
+00A7                 723     ?C0035:
+                     724     ; 
+                     725     ;    IRCOM[5]=IRCOM[2] & 0x0F;     //取键码的低四位
+                     726                             ; SOURCE LINE # 211
+00A7 E500     F      727             MOV     A,IRCOM+02H
+00A9 540F            728             ANL     A,#0FH
+00AB F500     F      729             MOV     IRCOM+05H,A
+                     730     ;    IRCOM[6]=IRCOM[2] >> 4;       //右移4次，高四位变为低四位
+                     731                             ; SOURCE LINE # 212
+00AD E500     F      732             MOV     A,IRCOM+02H
+00AF C4              733             SWAP    A
+00B0 540F            734             ANL     A,#0FH
+00B2 F500     F      735             MOV     IRCOM+06H,A
+                     736     ; 
+                     737     ;    if(IRCOM[5]>9)
+                     738                             ; SOURCE LINE # 214
+00B4 E500     F      739             MOV     A,IRCOM+05H
+00B6 D3              740             SETB    C
+00B7 9409            741             SUBB    A,#09H
+00B9 4004            742             JC      ?C0036
+                     743     ;     { IRCOM[5]=IRCOM[5]+0x37;}
+                     744                             ; SOURCE LINE # 215
+00BB 7437            745             MOV     A,#037H
+00BD 8002            746             SJMP    ?C0068
+00BF                 747     ?C0036:
+                     748     ;    else
+                     749     ;         IRCOM[5]=IRCOM[5]+0x30;
+                     750                             ; SOURCE LINE # 217
+00BF 7430            751             MOV     A,#030H
+00C1                 752     ?C0068:
+00C1 2500     F      753             ADD     A,IRCOM+05H
+00C3 F500     F      754             MOV     IRCOM+05H,A
+00C5                 755     ?C0037:
+                     756     ; 
+                     757     ;    if(IRCOM[6]>9)
+                     758                             ; SOURCE LINE # 219
+00C5 E500     F      759             MOV     A,IRCOM+06H
+00C7 D3              760             SETB    C
+00C8 9409            761             SUBB    A,#09H
+00CA 4004            762             JC      ?C0038
+                     763     ;     { IRCOM[6]=IRCOM[6]+0x37;}
+                     764                             ; SOURCE LINE # 220
+00CC 7437            765             MOV     A,#037H
+00CE 8002            766             SJMP    ?C0069
+00D0                 767     ?C0038:
+                     768     ;    else
+                     769     ;         IRCOM[6]=IRCOM[6]+0x30;
+                     770                             ; SOURCE LINE # 222
+00D0 7430            771             MOV     A,#030H
+00D2                 772     ?C0069:
+00D2 2500     F      773             ADD     A,IRCOM+06H
+00D4 F500     F      774             MOV     IRCOM+06H,A
+00D6                 775     ?C0039:
+                     776     ; 
+                     777     ;      lcd_pos(0x4b);             
+                     778                             ; SOURCE LINE # 224
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    13
+
+00D6 7F4B            779             MOV     R7,#04BH
+00D8 120000   F      780             LCALL   _lcd_pos
+                     781     ;      lcd_wdat(IRCOM[6]);        //第一位数显示 
+                     782                             ; SOURCE LINE # 225
+00DB AF00     F      783             MOV     R7,IRCOM+06H
+00DD 120000   F      784             LCALL   _lcd_wdat
+                     785     ;      lcd_pos(0x4c);             
+                     786                             ; SOURCE LINE # 226
+00E0 7F4C            787             MOV     R7,#04CH
+00E2 120000   F      788             LCALL   _lcd_pos
+                     789     ;      lcd_wdat(IRCOM[5]);        //第二位数显示
+                     790                             ; SOURCE LINE # 227
+00E5 AF00     F      791             MOV     R7,IRCOM+05H
+00E7 120000   F      792             LCALL   _lcd_wdat
+                     793     ; 
+                     794     ;        Y0=0;
+                     795                             ; SOURCE LINE # 229
+00EA 750000   F      796             MOV     Y0,#00H
+                     797     ;        switch(IRCOM[2])
+                     798                             ; SOURCE LINE # 230
+00ED E500     F      799             MOV     A,IRCOM+02H
+00EF 24F3            800             ADD     A,#0F3H
+00F1 602B            801             JZ      ?C0044
+00F3 24FC            802             ADD     A,#0FCH
+00F5 6036            803             JZ      ?C0047
+00F7 24FC            804             ADD     A,#0FCH
+00F9 6037            805             JZ      ?C0048
+00FB 24FC            806             ADD     A,#0FCH
+00FD 6024            807             JZ      ?C0045
+00FF 24FE            808             ADD     A,#0FEH
+0101 6025            809             JZ      ?C0046
+0103 24FE            810             ADD     A,#0FEH
+0105 600D            811             JZ      ?C0042
+0107 24FE            812             ADD     A,#0FEH
+0109 600E            813             JZ      ?C0043
+010B 24D3            814             ADD     A,#0D3H
+010D 7026            815             JNZ     ?C0040
+                     816     ;        {
+                     817                             ; SOURCE LINE # 231
+                     818     ;          case 0x4c: Y0=0x01; break;
+                     819                             ; SOURCE LINE # 232
+010F                 820     ?C0041:
+010F 750001   F      821             MOV     Y0,#01H
+0112 8021            822             SJMP    ?C0040
+                     823     ;          case 0x1D: Y0=0x02; break;
+                     824                             ; SOURCE LINE # 233
+0114                 825     ?C0042:
+0114 750002   F      826             MOV     Y0,#02H
+0117 801C            827             SJMP    ?C0040
+                     828     ;          case 0x1F: Y0=0x04; break;
+                     829                             ; SOURCE LINE # 234
+0119                 830     ?C0043:
+0119 750004   F      831             MOV     Y0,#04H
+011C 8017            832             SJMP    ?C0040
+                     833     ;          case 0x0D: Y0=0x08; break;
+                     834                             ; SOURCE LINE # 235
+011E                 835     ?C0044:
+011E 750008   F      836             MOV     Y0,#08H
+0121 8012            837             SJMP    ?C0040
+                     838     ;          case 0x19: Y0=0x10; break;
+                     839                             ; SOURCE LINE # 236
+0123                 840     ?C0045:
+0123 750010   F      841             MOV     Y0,#010H
+0126 800D            842             SJMP    ?C0040
+                     843     ;          case 0x1B: Y0=0x20; break;
+                     844                             ; SOURCE LINE # 237
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    14
+
+0128                 845     ?C0046:
+0128 750020   F      846             MOV     Y0,#020H
+012B 8008            847             SJMP    ?C0040
+                     848     ;          case 0x11: Y0=0x40; break;
+                     849                             ; SOURCE LINE # 238
+012D                 850     ?C0047:
+012D 750040   F      851             MOV     Y0,#040H
+0130 8003            852             SJMP    ?C0040
+                     853     ;          case 0x15: Y0=0x80; break;
+                     854                             ; SOURCE LINE # 239
+0132                 855     ?C0048:
+0132 750080   F      856             MOV     Y0,#080H
+                     857     ;        }
+                     858                             ; SOURCE LINE # 240
+0135                 859     ?C0040:
+                     860     ; 
+                     861     ;       if(Y0&0x01)RELAY=0; //打开继电器
+                     862                             ; SOURCE LINE # 242
+0135 E500     F      863             MOV     A,Y0
+0137 30E004          864             JNB     ACC.0,?C0049
+013A C294            865             CLR     RELAY
+013C 8002            866             SJMP    ?C0050
+013E                 867     ?C0049:
+                     868     ;       else RELAY=1;       //关闭继电器
+                     869                             ; SOURCE LINE # 243
+013E D294            870             SETB    RELAY
+0140                 871     ?C0050:
+                     872     ; 
+                     873     ;     beep();
+                     874                             ; SOURCE LINE # 245
+0140 120000          875             LCALL   beep
+*** _________________________________________^
+*** ERROR #A46 IN 875 (HC_IRLCD.SRC, LINE 875): CODE-ADDRESS EXPECTED
+                     876     ;     EX0 = 1; 
+                     877                             ; SOURCE LINE # 246
+0143 D2A8            878             SETB    EX0
+                     879     ; } 
+                     880                             ; SOURCE LINE # 247
+0145                 881     ?C0018:
+0145 D007            882             POP     AR7
+0147 D006            883             POP     AR6
+0149 D005            884             POP     AR5
+014B D004            885             POP     AR4
+014D D003            886             POP     AR3
+014F D002            887             POP     AR2
+0151 D001            888             POP     AR1
+0153 D000            889             POP     AR0
+0155 D0D0            890             POP     PSW
+0157 D082            891             POP     DPL
+0159 D083            892             POP     DPH
+015B D0F0            893             POP     B
+015D D0E0            894             POP     ACC
+015F 32              895             RETI    
+                     896     ; END OF IR_IN
+                     897     
+                     898     ; 
+                     899     ; /**********************************************************/
+                     900     ; void beep(void)
+                     901     
+----                 902             RSEG  ?PR?beep?HC_IRLCD
+0095                 903     beep:
+*** _________________________^
+*** ERROR #A8 IN 903 (HC_IRLCD.SRC, LINE 903): ATTEMPT TO DEFINE AN ALREADY DEFINED LABEL
+                     904             USING   0
+                     905                             ; SOURCE LINE # 250
+                     906     ; {
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    15
+
+                     907                             ; SOURCE LINE # 251
+                     908     ;   unsigned char i;
+                     909     ;   for (i=0;i<100;i++)
+                     910                             ; SOURCE LINE # 253
+0000 E4              911             CLR     A
+0001 F500     F      912             MOV     i?748,A
+0003                 913     ?C0051:
+                     914     ;    {
+                     915                             ; SOURCE LINE # 254
+                     916     ;    delay(4);
+                     917                             ; SOURCE LINE # 255
+0003 7F04            918             MOV     R7,#04H
+0005 120000   F      919             LCALL   _delay
+                     920     ;    BEEP=!BEEP;                 //BEEP取反
+                     921                             ; SOURCE LINE # 256
+0008 B295            922             CPL     BEEP
+                     923     ;    } 
+                     924                             ; SOURCE LINE # 257
+000A 0500     F      925             INC     i?748
+000C E500     F      926             MOV     A,i?748
+000E C3              927             CLR     C
+000F 9464            928             SUBB    A,#064H
+0011 40F0            929             JC      ?C0051
+0013                 930     ?C0052:
+                     931     ;   BEEP=1;                      //关闭蜂鸣器
+                     932                             ; SOURCE LINE # 258
+0013 D295            933             SETB    BEEP
+                     934     ; }
+                     935                             ; SOURCE LINE # 259
+0015 22              936             RET     
+                     937     ; END OF beep
+                     938     
+                     939     ; /**********************************************************/
+                     940     ; void delay(unsigned char x)    //x*0.14MS
+                     941     
+----                 942             RSEG  ?PR?_delay?HC_IRLCD
+0000                 943     _delay:
+                     944             USING   0
+                     945                             ; SOURCE LINE # 261
+                     946     ;---- Variable 'i?850' assigned to Register 'R6' ----
+                     947     ;---- Variable 'x?849' assigned to Register 'R7' ----
+                     948     ; {
+                     949                             ; SOURCE LINE # 262
+0000                 950     ?C0055:
+                     951     ;  unsigned char i;
+                     952     ;   while(x--)
+                     953                             ; SOURCE LINE # 264
+0000 AD07            954             MOV     R5,AR7
+0002 1F              955             DEC     R7
+0003 ED              956             MOV     A,R5
+0004 600B            957             JZ      ?C0060
+                     958     ;  {
+                     959                             ; SOURCE LINE # 265
+                     960     ;   for (i = 0; i<13; i++) {}
+                     961                             ; SOURCE LINE # 266
+0006 E4              962             CLR     A
+0007 FE              963             MOV     R6,A
+0008                 964     ?C0057:
+0008 EE              965             MOV     A,R6
+0009 C3              966             CLR     C
+000A 940D            967             SUBB    A,#0DH
+000C 50F2            968             JNC     ?C0055
+000E 0E              969             INC     R6
+000F 80F7            970             SJMP    ?C0057
+                     971     ;  }
+                     972                             ; SOURCE LINE # 267
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    16
+
+                     973     ; }
+                     974                             ; SOURCE LINE # 268
+0011                 975     ?C0060:
+0011 22              976             RET     
+                     977     ; END OF _delay
+                     978     
+                     979     ; 
+                     980     ; /**********************************************************/
+                     981     ; void delay1(int ms)
+                     982     
+----                 983             RSEG  ?PR?_delay1?HC_IRLCD
+0000                 984     L?0070:
+                     985             USING   0
+0000                 986     L?0071:
+0000 7F05            987             MOV     R7,#05H
+0002 7E00            988             MOV     R6,#00H
+0004                 989     _delay1:
+                     990             USING   0
+                     991                             ; SOURCE LINE # 271
+                     992     ;---- Variable 'y?952' assigned to Register 'R5' ----
+                     993     ;---- Variable 'ms?951' assigned to Register 'R6/R7' ----
+                     994     ; {
+                     995                             ; SOURCE LINE # 272
+0004                 996     ?C0061:
+                     997     ;  unsigned char y;
+                     998     ;   while(ms--)
+                     999                             ; SOURCE LINE # 274
+0004 EF             1000             MOV     A,R7
+0005 1F             1001             DEC     R7
+0006 AA06           1002             MOV     R2,AR6
+0008 7001           1003             JNZ     ?C0067
+000A 1E             1004             DEC     R6
+000B                1005     ?C0067:
+000B 4A             1006             ORL     A,R2
+000C 600F           1007             JZ      ?C0066
+                    1008     ;  {
+                    1009                             ; SOURCE LINE # 275
+                    1010     ;   for(y = 0; y<250; y++)
+                    1011                             ; SOURCE LINE # 276
+000E E4             1012             CLR     A
+000F FD             1013             MOV     R5,A
+0010                1014     ?C0063:
+0010 ED             1015             MOV     A,R5
+0011 C3             1016             CLR     C
+0012 94FA           1017             SUBB    A,#0FAH
+0014 50EE           1018             JNC     ?C0061
+                    1019     ;   {
+                    1020                             ; SOURCE LINE # 277
+                    1021     ;    _nop_();
+                    1022                             ; SOURCE LINE # 278
+0016 00             1023             NOP     
+                    1024     ;    _nop_();
+                    1025                             ; SOURCE LINE # 279
+0017 00             1026             NOP     
+                    1027     ;    _nop_();
+                    1028                             ; SOURCE LINE # 280
+0018 00             1029             NOP     
+                    1030     ;    _nop_();
+                    1031                             ; SOURCE LINE # 281
+0019 00             1032             NOP     
+                    1033     ;   }
+                    1034                             ; SOURCE LINE # 282
+001A 0D             1035             INC     R5
+001B 80F3           1036             SJMP    ?C0063
+                    1037     ;  }
+                    1038                             ; SOURCE LINE # 283
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    17
+
+                    1039     ; }
+                    1040                             ; SOURCE LINE # 284
+001D                1041     ?C0066:
+001D 22             1042             RET     
+                    1043     ; END OF _delay1
+                    1044     
+                    1045             END
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    18
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                 T Y P E  V A L U E   ATTRIBUTES
+
+?BEEP?BYTE . . . . . .  D ADDR   0000H   R   SEG=?DT?BEEP?HC_IRLCD
+?BI?LCD_BUSY?HC_IRLCD.  B SEG    0001H       REL=UNIT
+?C0001 . . . . . . . .  C ADDR   0013H   R   SEG=?PR?LCD_BUSY?HC_IRLCD
+?C0002 . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_LCD_WCMD?HC_IRLCD
+?C0003 . . . . . . . .  C ADDR   0005H   R   SEG=?PR?_LCD_WCMD?HC_IRLCD
+?C0005 . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_LCD_WDAT?HC_IRLCD
+?C0006 . . . . . . . .  C ADDR   0005H   R   SEG=?PR?_LCD_WDAT?HC_IRLCD
+?C0010 . . . . . . . .  C ADDR   001DH   R   SEG=?PR?MAIN?HC_IRLCD
+?C0011 . . . . . . . .  C ADDR   002BH   R   SEG=?PR?MAIN?HC_IRLCD
+?C0012 . . . . . . . .  C ADDR   0032H   R   SEG=?PR?MAIN?HC_IRLCD
+?C0014 . . . . . . . .  C ADDR   0040H   R   SEG=?PR?MAIN?HC_IRLCD
+?C0018 . . . . . . . .  C ADDR   0145H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0019 . . . . . . . .  C ADDR   002FH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0020 . . . . . . . .  C ADDR   0039H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0021 . . . . . . . .  C ADDR   003CH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0022 . . . . . . . .  C ADDR   009BH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0023 . . . . . . . .  C ADDR   0092H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0024 . . . . . . . .  C ADDR   003FH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0027 . . . . . . . .  C ADDR   003FH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0029 . . . . . . . .  C ADDR   0049H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0031 . . . . . . . .  C ADDR   0053H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0032 . . . . . . . .  C ADDR   0069H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0034 . . . . . . . .  C ADDR   0086H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0035 . . . . . . . .  C ADDR   00A7H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0036 . . . . . . . .  C ADDR   00BFH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0037 . . . . . . . .  C ADDR   00C5H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0038 . . . . . . . .  C ADDR   00D0H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0039 . . . . . . . .  C ADDR   00D6H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0040 . . . . . . . .  C ADDR   0135H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0041 . . . . . . . .  C ADDR   010FH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0042 . . . . . . . .  C ADDR   0114H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0043 . . . . . . . .  C ADDR   0119H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0044 . . . . . . . .  C ADDR   011EH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0045 . . . . . . . .  C ADDR   0123H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0046 . . . . . . . .  C ADDR   0128H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0047 . . . . . . . .  C ADDR   012DH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0048 . . . . . . . .  C ADDR   0132H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0049 . . . . . . . .  C ADDR   013EH   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0050 . . . . . . . .  C ADDR   0140H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0051 . . . . . . . .  C ADDR   0003H   R   SEG=?PR?BEEP?HC_IRLCD
+?C0052 . . . . . . . .  C ADDR   0013H   R   SEG=?PR?BEEP?HC_IRLCD
+?C0055 . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_DELAY?HC_IRLCD
+?C0057 . . . . . . . .  C ADDR   0008H   R   SEG=?PR?_DELAY?HC_IRLCD
+?C0060 . . . . . . . .  C ADDR   0011H   R   SEG=?PR?_DELAY?HC_IRLCD
+?C0061 . . . . . . . .  C ADDR   0004H   R   SEG=?PR?_DELAY1?HC_IRLCD
+?C0063 . . . . . . . .  C ADDR   0010H   R   SEG=?PR?_DELAY1?HC_IRLCD
+?C0066 . . . . . . . .  C ADDR   001DH   R   SEG=?PR?_DELAY1?HC_IRLCD
+?C0067 . . . . . . . .  C ADDR   000BH   R   SEG=?PR?_DELAY1?HC_IRLCD
+?C0068 . . . . . . . .  C ADDR   00C1H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C0069 . . . . . . . .  C ADDR   00D2H   R   SEG=?PR?IR_IN?HC_IRLCD
+?C_INITSEG . . . . . .  C SEG    0026H       REL=UNIT
+?C_STARTUP . . . . . .  C ADDR   -----       EXT
+?DT?BEEP?HC_IRLCD. . .  D SEG    0001H       REL=UNIT
+?DT?HC_IRLCD . . . . .  D SEG    002AH       REL=UNIT
+?DT?IR_IN?HC_IRLCD . .  D SEG    0003H       REL=UNIT
+?IR_IN?BYTE. . . . . .  D ADDR   0000H   R   SEG=?DT?IR_IN?HC_IRLCD
+?LCD_BUSY?BIT. . . . .  B ADDR   0000H.0 R   SEG=?BI?LCD_BUSY?HC_IRLCD
+?PR?BEEP?HC_IRLCD. . .  C SEG    0016H       REL=UNIT
+?PR?IR_IN?HC_IRLCD . .  C SEG    0160H       REL=UNIT
+?PR?LCD_BUSY?HC_IRLCD.  C SEG    0014H       REL=UNIT
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    19
+
+?PR?LCD_INIT?HC_IRLCD.  C SEG    003EH       REL=UNIT
+?PR?MAIN?HC_IRLCD. . .  C SEG    0042H       REL=UNIT
+?PR?_DELAY1?HC_IRLCD .  C SEG    001EH       REL=UNIT
+?PR?_DELAY?HC_IRLCD. .  C SEG    0012H       REL=UNIT
+?PR?_LCD_POS?HC_IRLCD.  C SEG    0007H       REL=UNIT
+?PR?_LCD_WCMD?HC_IRLCD  C SEG    001CH       REL=UNIT
+?PR?_LCD_WDAT?HC_IRLCD  C SEG    001AH       REL=UNIT
+AC . . . . . . . . . .  B ADDR   00D0H.6 A   
+ACC. . . . . . . . . .  D ADDR   00E0H   A   
+AR0. . . . . . . . . .  D ADDR   0000H   A   
+AR1. . . . . . . . . .  D ADDR   0001H   A   
+AR2. . . . . . . . . .  D ADDR   0002H   A   
+AR3. . . . . . . . . .  D ADDR   0003H   A   
+AR4. . . . . . . . . .  D ADDR   0004H   A   
+AR5. . . . . . . . . .  D ADDR   0005H   A   
+AR6. . . . . . . . . .  D ADDR   0006H   A   
+AR7. . . . . . . . . .  D ADDR   0007H   A   
+B. . . . . . . . . . .  D ADDR   00F0H   A   
+BEEP . . . . . . . . .  B ADDR   0090H.5 A   
+CDIS1. . . . . . . . .  D ADDR   0001H   R   SEG=?DT?HC_IRLCD
+CDIS2. . . . . . . . .  D ADDR   0012H   R   SEG=?DT?HC_IRLCD
+CY . . . . . . . . . .  B ADDR   00D0H.7 A   
+DPH. . . . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . . . .  D ADDR   0082H   A   
+EA . . . . . . . . . .  B ADDR   00A8H.7 A   
+ES . . . . . . . . . .  B ADDR   00A8H.4 A   
+ET0. . . . . . . . . .  B ADDR   00A8H.1 A   
+ET1. . . . . . . . . .  B ADDR   00A8H.3 A   
+EX0. . . . . . . . . .  B ADDR   00A8H.0 A   
+EX1. . . . . . . . . .  B ADDR   00A8H.2 A   
+F0 . . . . . . . . . .  B ADDR   00D0H.5 A   
+HC_IRLCD . . . . . . .  N NUMB   -----       
+I?748. . . . . . . . .  D ADDR   0000H   R   SEG=?DT?BEEP?HC_IRLCD
+IE . . . . . . . . . .  D ADDR   00A8H   A   
+IE0. . . . . . . . . .  B ADDR   0088H.1 A   
+IE1. . . . . . . . . .  B ADDR   0088H.3 A   
+INT0 . . . . . . . . .  B ADDR   00B0H.2 A   
+INT1 . . . . . . . . .  B ADDR   00B0H.3 A   
+IP . . . . . . . . . .  D ADDR   00B8H   A   
+IRCOM. . . . . . . . .  D ADDR   0023H   R   SEG=?DT?HC_IRLCD
+IRIN . . . . . . . . .  B ADDR   00B0H.2 A   
+IR_IN. . . . . . . . .  C ADDR   0000H   R   SEG=?PR?IR_IN?HC_IRLCD
+IT0. . . . . . . . . .  B ADDR   0088H.0 A   
+IT1. . . . . . . . . .  B ADDR   0088H.2 A   
+J?645. . . . . . . . .  D ADDR   0000H   R   SEG=?DT?IR_IN?HC_IRLCD
+K?646. . . . . . . . .  D ADDR   0001H   R   SEG=?DT?IR_IN?HC_IRLCD
+L?0070 . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_DELAY1?HC_IRLCD
+L?0071 . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_DELAY1?HC_IRLCD
+LCD_BUSY . . . . . . .  C ADDR   0000H   R   SEG=?PR?LCD_BUSY?HC_IRLCD
+LCD_EN . . . . . . . .  B ADDR   00A0H.7 A   
+LCD_INIT . . . . . . .  C ADDR   0000H   R   SEG=?PR?LCD_INIT?HC_IRLCD
+LCD_RS . . . . . . . .  B ADDR   00A0H.6 A   
+LCD_RW . . . . . . . .  B ADDR   00A0H.5 A   
+MAIN . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?MAIN?HC_IRLCD
+N?647. . . . . . . . .  D ADDR   0002H   R   SEG=?DT?IR_IN?HC_IRLCD
+OV . . . . . . . . . .  B ADDR   00D0H.2 A   
+P. . . . . . . . . . .  B ADDR   00D0H.0 A   
+P0 . . . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . . . .  D ADDR   00B0H   A   
+PCON . . . . . . . . .  D ADDR   0087H   A   
+PS . . . . . . . . . .  B ADDR   00B8H.4 A   
+PSW. . . . . . . . . .  D ADDR   00D0H   A   
+PT0. . . . . . . . . .  B ADDR   00B8H.1 A   
+PT1. . . . . . . . . .  B ADDR   00B8H.3 A   
+A51 MACRO ASSEMBLER  HC_IRLCD                                                             09/13/2009 23:30:26 PAGE    20
+
+PX0. . . . . . . . . .  B ADDR   00B8H.0 A   
+PX1. . . . . . . . . .  B ADDR   00B8H.2 A   
+RB8. . . . . . . . . .  B ADDR   0098H.2 A   
+RD . . . . . . . . . .  B ADDR   00B0H.7 A   
+RELAY. . . . . . . . .  B ADDR   0090H.4 A   
+REN. . . . . . . . . .  B ADDR   0098H.4 A   
+RESULT?040 . . . . . .  B ADDR   0000H.0 R   SEG=?BI?LCD_BUSY?HC_IRLCD
+RI . . . . . . . . . .  B ADDR   0098H.0 A   
+RS0. . . . . . . . . .  B ADDR   00D0H.3 A   
+RS1. . . . . . . . . .  B ADDR   00D0H.4 A   
+RXD. . . . . . . . . .  B ADDR   00B0H.0 A   
+SBUF . . . . . . . . .  D ADDR   0099H   A   
+SCON . . . . . . . . .  D ADDR   0098H   A   
+SM0. . . . . . . . . .  B ADDR   0098H.7 A   
+SM1. . . . . . . . . .  B ADDR   0098H.6 A   
+SM2. . . . . . . . . .  B ADDR   0098H.5 A   
+SP . . . . . . . . . .  D ADDR   0081H   A   
+T0 . . . . . . . . . .  B ADDR   00B0H.4 A   
+T1 . . . . . . . . . .  B ADDR   00B0H.5 A   
+TB8. . . . . . . . . .  B ADDR   0098H.3 A   
+TCON . . . . . . . . .  D ADDR   0088H   A   
+TF0. . . . . . . . . .  B ADDR   0088H.5 A   
+TF1. . . . . . . . . .  B ADDR   0088H.7 A   
+TH0. . . . . . . . . .  D ADDR   008CH   A   
+TH1. . . . . . . . . .  D ADDR   008DH   A   
+TI . . . . . . . . . .  B ADDR   0098H.1 A   
+TL0. . . . . . . . . .  D ADDR   008AH   A   
+TL1. . . . . . . . . .  D ADDR   008BH   A   
+TMOD . . . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . . . .  B ADDR   0088H.4 A   
+TR1. . . . . . . . . .  B ADDR   0088H.6 A   
+TXD. . . . . . . . . .  B ADDR   00B0H.1 A   
+WR . . . . . . . . . .  B ADDR   00B0H.6 A   
+Y0 . . . . . . . . . .  D ADDR   0000H   R   SEG=?DT?HC_IRLCD
+_DELAY . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_DELAY?HC_IRLCD
+_DELAY1. . . . . . . .  C ADDR   0004H   R   SEG=?PR?_DELAY1?HC_IRLCD
+_LCD_POS . . . . . . .  C ADDR   0000H   R   SEG=?PR?_LCD_POS?HC_IRLCD
+_LCD_WCMD. . . . . . .  C ADDR   0000H   R   SEG=?PR?_LCD_WCMD?HC_IRLCD
+_LCD_WDAT. . . . . . .  C ADDR   0000H   R   SEG=?PR?_LCD_WDAT?HC_IRLCD
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 2 ERROR(S)

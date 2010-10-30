@@ -1,0 +1,144 @@
+C51 COMPILER V7.10   INT0_INT1                                                             05/10/2010 11:50:40 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE INT0_INT1
+OBJECT MODULE PLACED IN INT0+INT1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE INT0+INT1.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *  标题:                  试验数码管上显示外部中断计数                         *
+   3          *                                                                                                                                                          *
+   4          *  连接方法：JP10 （P0）与J12  JP9(P3)与JP5  用8PIN排线连接                                        *
+   5             P3.2和P3.3外部中断输入  由两个四位数码管分别显示计数                        *
+   6                                                                                                                                                                     *
+   7          ********************************************************************************
+   8          *                                                                                                                      *
+   9          * 请学员认真消化本例程，用单片机脚直接控制数码管和外部中断使用                 *
+  10          ********************************************************************************/
+  11          
+  12          
+  13          #include < reg51.h >
+  14          #include <intrins.h>
+  15          
+  16          sbit LS138A=P2^2;  
+  17          sbit LS138B=P2^3;
+  18          sbit LS138C=P2^4; 
+  19          
+  20          unsigned int LedNumVal_1,LedNumVal_2,LedOut[8];
+  21          
+  22          //此表为 LED 的字模, 共阴数码管 0-9  - 
+  23          unsigned char code Disp_Tab[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40}; 
+  24          
+  25          
+  26          void delay(unsigned int i)
+  27          {
+  28   1          char j;
+  29   1          for(i; i > 0; i--)
+  30   1              for(j = 200; j > 0; j--);
+  31   1      }
+  32          
+  33          
+  34          void main(void)
+  35          {  unsigned char i;
+  36   1      
+  37   1         P0=0xff;
+  38   1         P1=0xff;
+  39   1         P2=0xff;
+  40   1      
+  41   1      
+  42   1      // IT0=0;       //低电平触发
+  43   1         IT0=1;       //下降沿触发
+  44   1         EX0=1;
+  45   1      
+  46   1      
+  47   1         
+  48   1      // IT1=0;       //低电平触发
+  49   1         IT1=1;       //下降沿触发
+  50   1         EX1=1;
+  51   1         EA=1;
+  52   1      
+  53   1      
+  54   1         while(1)
+  55   1         {    
+C51 COMPILER V7.10   INT0_INT1                                                             05/10/2010 11:50:40 PAGE 2   
+
+  56   2           LedOut[0]=Disp_Tab[LedNumVal_1%10000/1000];
+  57   2           LedOut[1]=Disp_Tab[LedNumVal_1%1000/100]|0x80;       //0x7f小数点
+  58   2           LedOut[2]=Disp_Tab[LedNumVal_1%100/10];
+  59   2           LedOut[3]=Disp_Tab[LedNumVal_1%10];
+  60   2      
+  61   2               LedOut[4]=Disp_Tab[LedNumVal_2%10000/1000];
+  62   2           LedOut[5]=Disp_Tab[LedNumVal_2%1000/100];
+  63   2           LedOut[6]=Disp_Tab[LedNumVal_2%100/10];
+  64   2           LedOut[7]=Disp_Tab[LedNumVal_2%10];
+  65   2      
+  66   2      
+  67   2               for( i=0; i<8; i++) 
+  68   2               {       P0 = LedOut[i];
+  69   3                              
+  70   3                switch(i)                                       
+  71   3                   {      
+  72   4                              case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+  73   4                      case 1:LS138A=1; LS138B=0; LS138C=0; break;                     
+  74   4                      case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+  75   4                      case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+  76   4                              case 4:LS138A=0; LS138B=0; LS138C=1; break;
+  77   4                              case 5:LS138A=1; LS138B=0; LS138C=1; break;
+  78   4                              case 6:LS138A=0; LS138B=1; LS138C=1; break;
+  79   4                              case 7:LS138A=1; LS138B=1; LS138C=1; break;
+  80   4                              
+  81   4                   }
+  82   3      
+  83   3                      delay(150);
+  84   3               }
+  85   2       
+  86   2      
+  87   2         }
+  88   1      
+  89   1      }
+  90          
+  91          
+  92          
+  93          /********************************************************
+  94          * INT0中断函数                                          *
+  95          ********************************************************/
+  96          void  counter0(void) interrupt 0
+  97          {
+  98   1        
+  99   1         EX0=0;
+ 100   1         delay(100);
+ 101   1         LedNumVal_1++;
+ 102   1         EX0=1;
+ 103   1      }
+ 104          /********************************************************
+ 105          * INT1中断函数                                          *
+ 106          ********************************************************/
+ 107          void  counter1(void) interrupt 2 
+ 108          {
+ 109   1         
+ 110   1         EX1=0;
+ 111   1         delay(100);
+ 112   1         LedNumVal_2++;
+ 113   1         EX1=1;
+ 114   1      }
+ 115          /********************************************************/
+ 116          
+ 117          
+C51 COMPILER V7.10   INT0_INT1                                                             05/10/2010 11:50:40 PAGE 3   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    550    ----
+   CONSTANT SIZE    =     11    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     20    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,366 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        07/25/2010  10:47:05  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE FREQ - LCD1602.obj TO FREQ - 1602
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  FREQ - LCD1602.obj (FREQ___LCD1602)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?LMUL)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?ULDIV)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?SLDIV)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  FREQ - 1602 (FREQ___LCD1602)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000EH     UNIT         ?DT?FREQ___LCD1602
+            DATA    0016H     0005H     UNIT         _DATA_GROUP_
+                    001BH     0005H                  *** GAP ***
+            BIT     0020H.0   0000H.1   UNIT         ?BI?FREQ___LCD1602
+            BIT     0020H.1   0000H.1   UNIT         _BIT_GROUP_
+                    0020H.2   0000H.6                *** GAP ***
+            IDATA   0021H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0007H     UNIT         ?PR?_LCD_POS?FREQ___LCD1602
+                    000AH     0001H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     000DH     UNIT         ?PR?_LCD_WDAT?FREQ___LCD1602
+            CODE    001BH     0003H     ABSOLUTE     
+            CODE    001EH     001DH     UNIT         ?C_INITSEG
+            CODE    003BH     0003H     ABSOLUTE     
+            CODE    003EH     011DH     UNIT         ?C?LIB_CODE
+            CODE    015BH     00BFH     UNIT         ?PR?MAIN?FREQ___LCD1602
+            CODE    021AH     008CH     UNIT         ?C_C51STARTUP
+            CODE    02A6H     0072H     UNIT         ?PR?PLAY?FREQ___LCD1602
+            CODE    0318H     0044H     UNIT         ?C?LDIV
+            CODE    035CH     0035H     UNIT         ?PR?LCD_INIT?FREQ___LCD1602
+            CODE    0391H     0022H     UNIT         ?CO?FREQ___LCD1602
+            CODE    03B3H     001FH     UNIT         ?PR?TIME0?FREQ___LCD1602
+            CODE    03D2H     0016H     UNIT         ?PR?_DELAYMS?FREQ___LCD1602
+            CODE    03E8H     0016H     UNIT         ?PR?_LCD_WCMD?FREQ___LCD1602
+            CODE    03FEH     0013H     UNIT         ?PR?LCD_BUSY?FREQ___LCD1602
+            CODE    0411H     000BH     UNIT         ?PR?DELAYNOP?FREQ___LCD1602
+            CODE    041CH     0003H     UNIT         ?PR?TIME1?FREQ___LCD1602
+
+
+
+OVERLAY MAP OF MODULE:   FREQ - 1602 (FREQ___LCD1602)
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:47:05  PAGE 2
+
+
+
+
+SEGMENT                                 BIT_GROUP          DATA_GROUP 
+  +--> CALLED SEGMENT                START    LENGTH     START    LENGTH
+------------------------------------------------------------------------
+?C_C51STARTUP                        -----    -----      -----    -----
+  +--> ?PR?MAIN?FREQ___LCD1602
+  +--> ?C_INITSEG
+
+?PR?MAIN?FREQ___LCD1602              -----    -----      0016H    0004H
+  +--> ?PR?LCD_INIT?FREQ___LCD1602
+  +--> ?PR?_LCD_POS?FREQ___LCD1602
+  +--> ?CO?FREQ___LCD1602
+  +--> ?PR?_LCD_WDAT?FREQ___LCD1602
+  +--> ?PR?PLAY?FREQ___LCD1602
+
+?PR?LCD_INIT?FREQ___LCD1602          -----    -----      -----    -----
+  +--> ?PR?_LCD_WCMD?FREQ___LCD1602
+  +--> ?PR?_DELAYMS?FREQ___LCD1602
+
+?PR?_LCD_WCMD?FREQ___LCD1602         -----    -----      -----    -----
+  +--> ?PR?_DELAYMS?FREQ___LCD1602
+  +--> ?PR?LCD_BUSY?FREQ___LCD1602
+  +--> ?PR?DELAYNOP?FREQ___LCD1602
+
+?PR?LCD_BUSY?FREQ___LCD1602          0020H.1  0000H.1    -----    -----
+  +--> ?PR?DELAYNOP?FREQ___LCD1602
+
+?PR?_LCD_POS?FREQ___LCD1602          -----    -----      -----    -----
+  +--> ?PR?_LCD_WCMD?FREQ___LCD1602
+
+?PR?_LCD_WDAT?FREQ___LCD1602         -----    -----      -----    -----
+  +--> ?PR?LCD_BUSY?FREQ___LCD1602
+  +--> ?PR?DELAYNOP?FREQ___LCD1602
+
+?PR?PLAY?FREQ___LCD1602              -----    -----      001AH    0001H
+  +--> ?PR?_LCD_POS?FREQ___LCD1602
+  +--> ?PR?_LCD_WDAT?FREQ___LCD1602
+
+
+
+SYMBOL TABLE OF MODULE:  FREQ - 1602 (FREQ___LCD1602)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        FREQ___LCD1602
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  C:0417H         PUBLIC        delayNOP
+  C:003BH         PUBLIC        reserve
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  D:0008H         PUBLIC        Count
+  D:00A8H         PUBLIC        IE
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:47:05  PAGE 3
+
+
+  D:00B8H         PUBLIC        IP
+  C:03F1H         PUBLIC        _lcd_wcmd
+  C:015BH         PUBLIC        main
+  C:000EH         PUBLIC        _lcd_wdat
+  D:0009H         PUBLIC        msec
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  C:02A6H         PUBLIC        play
+  D:000AH         PUBLIC        temp
+  B:0020H.0       PUBLIC        sec
+  C:03B3H         PUBLIC        Time0
+  C:041CH         PUBLIC        Time1
+  B:00A0H.7       PUBLIC        LCD_EN
+  C:0003H         PUBLIC        _lcd_pos
+  B:00A8H.1       PUBLIC        ET0
+  B:00A8H.3       PUBLIC        ET1
+  C:035CH         PUBLIC        lcd_init
+  D:008CH         PUBLIC        TH0
+  D:008DH         PUBLIC        TH1
+  D:008AH         PUBLIC        TL0
+  D:008BH         PUBLIC        TL1
+  C:03D2H         PUBLIC        _delayms
+  B:00B8H.3       PUBLIC        PT1
+  C:0391H         PUBLIC        cdis1
+  B:0088H.4       PUBLIC        TR0
+  C:03A2H         PUBLIC        cdis2
+  B:0088H.6       PUBLIC        TR1
+  B:00A0H.6       PUBLIC        LCD_RS
+  C:03FEH         PUBLIC        lcd_busy
+  B:00A0H.5       PUBLIC        LCD_RW
+  D:000EH         PUBLIC        Hdata
+  D:00C8H         PUBLIC        T2CON
+  D:000FH         PUBLIC        Ldata
+  D:0010H         PUBLIC        display
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          L?0045
+  -------         ENDPROC       L?0045
+  -------         PROC          DELAYNOP
+  C:0417H         LINE#         43
+  C:0417H         LINE#         44
+  C:0417H         LINE#         45
+  C:0418H         LINE#         46
+  C:0419H         LINE#         47
+  C:041AH         LINE#         48
+  C:041BH         LINE#         49
+  -------         ENDPROC       DELAYNOP
+  -------         PROC          _DELAYMS
+  D:0006H         SYMBOL        ms
+  -------         DO            
+  D:0005H         SYMBOL        n
+  -------         ENDDO         
+  C:03D2H         LINE#         56
+  C:03D2H         LINE#         57
+  C:03D2H         LINE#         59
+  C:03DCH         LINE#         60
+  C:03DCH         LINE#         61
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:47:05  PAGE 4
+
+
+  C:03E7H         LINE#         63
+  C:03E7H         LINE#         64
+  -------         ENDPROC       _DELAYMS
+  -------         PROC          LCD_BUSY
+  -------         DO            
+  B:0020H.1       SYMBOL        result
+  -------         ENDDO         
+  C:03FEH         LINE#         73
+  C:03FEH         LINE#         74
+  C:03FEH         LINE#         76
+  C:0400H         LINE#         77
+  C:0402H         LINE#         78
+  C:0404H         LINE#         79
+  C:0407H         LINE#         80
+  C:040CH         LINE#         81
+  C:040EH         LINE#         82
+  C:0410H         LINE#         83
+  -------         ENDPROC       LCD_BUSY
+  C:03EAH         SYMBOL        L?0044
+  -------         PROC          L?0043
+  -------         ENDPROC       L?0043
+  C:03EAH         SYMBOL        L?0044
+  -------         PROC          _LCD_WCMD
+  D:0007H         SYMBOL        cmd
+  C:03F1H         LINE#         91
+  C:03F1H         LINE#         92
+  C:03F1H         LINE#         93
+  C:03F6H         LINE#         95
+  C:03F8H         LINE#         96
+  C:03F8H         LINE#         97
+  C:03F8H         LINE#         98
+  C:03F8H         LINE#         99
+  C:03FBH         LINE#         100
+  C:03FDH         LINE#         101
+  -------         ENDPROC       _LCD_WCMD
+  -------         PROC          _LCD_WDAT
+  D:0007H         SYMBOL        dat
+  C:000EH         LINE#         109
+  C:000EH         LINE#         110
+  C:000EH         LINE#         111
+  C:0013H         LINE#         113
+  C:0015H         LINE#         114
+  C:0015H         LINE#         115
+  C:0015H         LINE#         116
+  C:0015H         LINE#         117
+  C:0018H         LINE#         118
+  C:001AH         LINE#         119
+  -------         ENDPROC       _LCD_WDAT
+  -------         PROC          LCD_INIT
+  C:035CH         LINE#         126
+  C:035CH         LINE#         127
+  C:035CH         LINE#         128
+  C:035EH         LINE#         130
+  C:0361H         LINE#         131
+  C:0361H         LINE#         132
+  C:0364H         LINE#         133
+  C:0364H         LINE#         134
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:47:05  PAGE 5
+
+
+  C:0367H         LINE#         135
+  C:036EH         LINE#         137
+  C:0373H         LINE#         138
+  C:037AH         LINE#         139
+  C:037FH         LINE#         140
+  C:0385H         LINE#         141
+  C:038AH         LINE#         142
+  -------         ENDPROC       LCD_INIT
+  -------         PROC          _LCD_POS
+  D:0007H         SYMBOL        pos
+  C:0003H         LINE#         151
+  C:0003H         LINE#         152
+  C:0003H         LINE#         153
+  -------         ENDPROC       _LCD_POS
+  -------         PROC          PLAY
+  -------         DO            
+  D:001AH         SYMBOL        n
+  -------         ENDDO         
+  C:02A6H         LINE#         161
+  C:02A6H         LINE#         162
+  C:02A6H         LINE#         165
+  C:02A9H         LINE#         167
+  C:02A9H         LINE#         168
+  C:02C5H         LINE#         169
+  C:02DEH         LINE#         170
+  C:02E5H         LINE#         171
+  C:02EBH         LINE#         173
+  C:02EEH         LINE#         175
+  C:02EEH         LINE#         176
+  C:02F7H         LINE#         177
+  C:02F9H         LINE#         179
+  C:02F9H         LINE#         180
+  C:02FCH         LINE#         182
+  C:0301H         LINE#         183
+  C:0309H         LINE#         184
+  C:0317H         LINE#         185
+  -------         ENDPROC       PLAY
+  -------         PROC          MAIN
+  -------         DO            
+  D:0006H         SYMBOL        m
+  D:0016H         SYMBOL        frq_num
+  -------         ENDDO         
+  C:015BH         LINE#         192
+  C:015BH         LINE#         193
+  C:015BH         LINE#         197
+  C:015EH         LINE#         199
+  C:0161H         LINE#         200
+  C:0166H         LINE#         201
+  C:0168H         LINE#         202
+  C:0175H         LINE#         204
+  C:017AH         LINE#         205
+  C:017CH         LINE#         206
+  C:0189H         LINE#         209
+  C:018CH         LINE#         211
+  C:018FH         LINE#         212
+  C:0192H         LINE#         213
+  C:0194H         LINE#         214
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:47:05  PAGE 6
+
+
+  C:0196H         LINE#         215
+  C:0198H         LINE#         216
+  C:019AH         LINE#         217
+  C:019CH         LINE#         218
+  C:019EH         LINE#         219
+  C:01A0H         LINE#         220
+  C:01A2H         LINE#         222
+  C:01A2H         LINE#         223
+  C:01A2H         LINE#         224
+  C:01A5H         LINE#         225
+  C:01A5H         LINE#         226
+  C:01A8H         LINE#         227
+  C:01ABH         LINE#         228
+  C:01FCH         LINE#         229
+  C:01FFH         LINE#         230
+  C:0201H         LINE#         231
+  C:0203H         LINE#         232
+  C:0205H         LINE#         233
+  C:0207H         LINE#         234
+  C:0209H         LINE#         235
+  C:0209H         LINE#         236
+  C:0215H         LINE#         237
+  C:0218H         LINE#         238
+  -------         ENDPROC       MAIN
+  -------         PROC          TIME0
+  C:03B3H         LINE#         246
+  C:03B7H         LINE#         248
+  C:03BAH         LINE#         249
+  C:03BDH         LINE#         250
+  C:03BFH         LINE#         251
+  C:03C4H         LINE#         253
+  C:03C4H         LINE#         254
+  C:03C6H         LINE#         255
+  C:03C8H         LINE#         256
+  C:03CBH         LINE#         257
+  C:03CDH         LINE#         258
+  C:03CDH         LINE#         259
+  -------         ENDPROC       TIME0
+  -------         PROC          TIME1
+  C:041CH         LINE#         266
+  C:041CH         LINE#         268
+  C:041EH         LINE#         269
+  -------         ENDPROC       TIME1
+  -------         ENDMOD        FREQ___LCD1602
+
+  -------         MODULE        ?C?LMUL
+  C:003EH         PUBLIC        ?C?LMUL
+  -------         ENDMOD        ?C?LMUL
+
+  -------         MODULE        ?C?ULDIV
+  C:00C9H         PUBLIC        ?C?ULDIV
+  -------         ENDMOD        ?C?ULDIV
+
+  -------         MODULE        ?C?SLDIV
+  C:0318H         PUBLIC        ?C?SLDIV
+  -------         ENDMOD        ?C?SLDIV
+
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:47:05  PAGE 7
+
+
+Program Size: data=28.2 xdata=0 code=1054
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

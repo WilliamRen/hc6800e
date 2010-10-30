@@ -1,0 +1,212 @@
+C51 COMPILER V7.10   步絖马达                                                              07/30/2010 11:29:47 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 步絖马达
+OBJECT MODULE PLACED IN 步进马达.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 步进马达.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************************************************************************
+   2          *  标题:  步进电机试验一                                                                                                                         *
+   3          *                                                                                                                                                                        *
+   4          *    通过本例程了解步进马达使用及驱动程序编写                                                                            *
+   5          *;   单双八拍工作方式：                                                                  *
+   6          *;   A-AB-B-BC-C-CD-D-DA (即一个脉冲,转 3.75 度)                                                                 *
+   7          *    J14短路冒需断开                                                                 *
+   8          *  请学员一定要消化掉本例程                                                              *
+   9                                                                                                                                   *
+  10          **************************************************************************************/  
+  11           #include "reg52.h"
+  12           //Motor
+  13          sbit A = P1^0;    //定义管脚
+  14          sbit b = P1^1;
+  15          sbit C = P1^2;
+  16          sbit D = P1^3;
+  17          
+  18           ///////////////////////////////////////
+  19          //步进电机驱动
+  20          unsigned char MotorStep=0;
+  21          unsigned int  MotorTimer = 0;
+  22          unsigned int  MotorDelay,Speed=1,TIM,CT;
+  23          
+  24          #define speed 8   // 调整速度 数值不要设的太低 低了会引起震动。
+  25          
+  26          /*****************************************************
+  27          *           初始化马达                                                           *
+  28          ******************************************************/
+  29          void InitMotor()
+  30          {
+  31   1        A = 1;
+  32   1        b = 1;
+  33   1        C = 1;
+  34   1        D = 1;
+  35   1      }
+  36          
+  37          
+  38           
+  39          void SetMotor()
+  40          {
+  41   1        //  if(Speed == 0) return;
+  42   1      
+  43   1          MotorDelay=Speed;   //调整速度
+  44   1          switch(MotorStep)
+  45   1          {
+  46   2             case 0:
+  47   2                if(TIM)   // A
+  48   2                {                                 
+  49   3                  A = 0;                  //0xf1  
+  50   3                  b = 1;
+  51   3                              C = 1;
+  52   3                  D = 1;
+  53   3                  MotorStep = 1;
+  54   3                              TIM=0;
+  55   3                }
+C51 COMPILER V7.10   步絖马达                                                              07/30/2010 11:29:47 PAGE 2   
+
+  56   2             break;
+  57   2      
+  58   2             case 1:           // AB
+  59   2               if(TIM)
+  60   2                {     
+  61   3                  A = 0;                 //0xf3 
+  62   3                  b = 0;
+  63   3                      C = 1;
+  64   3                  D = 1;
+  65   3                  MotorStep = 2;
+  66   3                              TIM=0;
+  67   3                }
+  68   2             break;
+  69   2      
+  70   2             case 2:     //B
+  71   2               if(TIM)
+  72   2                {
+  73   3                 
+  74   3                      A = 1;
+  75   3                  b = 0;                //0xf2 
+  76   3                  C = 1;
+  77   3                  D = 1;
+  78   3                 
+  79   3                  MotorStep = 3;
+  80   3                              TIM=0;
+  81   3                }
+  82   2             break;
+  83   2      
+  84   2      
+  85   2             case 3:          //BC
+  86   2               if(TIM)
+  87   2                {     
+  88   3                  A = 1;
+  89   3                  b = 0;                  //0xf6
+  90   3                  C = 0;
+  91   3                  D = 1;
+  92   3                  MotorStep = 4;
+  93   3                              TIM=0;
+  94   3                }
+  95   2             break;
+  96   2           case 4:             //C
+  97   2               if(TIM)
+  98   2                {     
+  99   3                  A = 1;
+ 100   3                  b = 1;                  //0xf4
+ 101   3                  C = 0;
+ 102   3                  D = 1;
+ 103   3                  MotorStep = 5;
+ 104   3                              TIM=0;
+ 105   3                 }
+ 106   2             break;
+ 107   2              case 5:                   //CD
+ 108   2               if(TIM)
+ 109   2                {     
+ 110   3                  A = 1;
+ 111   3                  b = 1;                  //0xfc
+ 112   3                  C = 0;
+ 113   3                  D = 0;
+ 114   3                  MotorStep = 6;
+ 115   3                              TIM=0;
+ 116   3                }
+ 117   2             break;
+C51 COMPILER V7.10   步絖马达                                                              07/30/2010 11:29:47 PAGE 3   
+
+ 118   2              case 6:                   //D
+ 119   2               if(TIM)
+ 120   2                {     
+ 121   3                  A = 1;
+ 122   3                  b = 1;                  //0xf8
+ 123   3                  C = 1;
+ 124   3                  D = 0;
+ 125   3                  MotorStep = 7;
+ 126   3                              TIM=0;
+ 127   3                }
+ 128   2             break;
+ 129   2              case 7:                 //DA
+ 130   2               if(TIM)
+ 131   2                {     
+ 132   3                  A = 0;
+ 133   3                  b = 1;                  //0xf9
+ 134   3                  C = 1;
+ 135   3                  D = 0;
+ 136   3                  MotorStep = 0;
+ 137   3                              TIM=0;
+ 138   3                }
+ 139   2             break;
+ 140   2              
+ 141   2              }
+ 142   1      
+ 143   1      }
+ 144          
+ 145          
+ 146          void system_Ini()
+ 147          {
+ 148   1          TMOD|= 0x11;
+ 149   1          TH0=0xDC; //11.0592M
+ 150   1          TL0=0x00;   
+ 151   1              IE = 0x8A;      
+ 152   1          TR0  = 1;
+ 153   1      
+ 154   1      
+ 155   1      }
+ 156          
+ 157          main() 
+ 158           { system_Ini();
+ 159   1         InitMotor();
+ 160   1          while(1)
+ 161   1              {
+ 162   2               SetMotor();
+ 163   2      
+ 164   2               }
+ 165   1      
+ 166   1      
+ 167   1      
+ 168   1        }
+ 169          
+ 170          /************************************************
+ 171          *                                                                                               *
+ 172          *             定时中断延时                                                  *
+ 173          ************************************************/
+ 174            void Tzd(void) interrupt 1
+ 175          {
+ 176   1         TH0 = 0xfe;    //11.0592
+ 177   1               TL0 = 0x33;
+ 178   1      
+ 179   1              if( CT++==speed) 
+C51 COMPILER V7.10   步絖马达                                                              07/30/2010 11:29:47 PAGE 4   
+
+ 180   1                {TIM=1;
+ 181   2                 CT=0;
+ 182   2                }
+ 183   1       }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    291    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     11    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

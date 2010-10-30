@@ -1,0 +1,668 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+G:\HC6800E-V2.8\单片机例程\16 红外线\遥控数码管\C语言\IR_LED.uv2
+Project File Date:  03/28/2009
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(39): warning C206: 'HC595SendData': missing function-prototype
+MAIN.C(39): error C267: 'HC595SendData': requires ANSI-style prototype
+MAIN.C(57): error C202: 'LedNumVal': undefined identifier
+MAIN.C(58): error C202: 'LedOut': undefined identifier
+MAIN.C(59): error C202: 'LedOut': undefined identifier
+MAIN.C(60): error C202: 'LedOut': undefined identifier
+MAIN.C(61): error C202: 'LedOut': undefined identifier
+MAIN.C(63): error C202: 'i': undefined identifier
+MAIN.C(65): error C202: 'i': undefined identifier
+MAIN.C(67): error C202: 'i': undefined identifier
+MAIN.C(69): error C202: 'LS138A': undefined identifier
+MAIN.C(69): error C202: 'LS138B': undefined identifier
+MAIN.C(69): error C202: 'LS138C': undefined identifier
+MAIN.C(70): error C202: 'LS138A': undefined identifier
+MAIN.C(70): error C202: 'LS138B': undefined identifier
+MAIN.C(70): error C202: 'LS138C': undefined identifier
+MAIN.C(71): error C202: 'LS138A': undefined identifier
+MAIN.C(71): error C202: 'LS138B': undefined identifier
+MAIN.C(71): error C202: 'LS138C': undefined identifier
+MAIN.C(72): error C202: 'LS138A': undefined identifier
+MAIN.C(72): error C202: 'LS138B': undefined identifier
+MAIN.C(72): error C202: 'LS138C': undefined identifier
+compiling IR.C...
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(39): warning C206: 'HC595SendData': missing function-prototype
+MAIN.C(39): error C267: 'HC595SendData': requires ANSI-style prototype
+MAIN.C(57): error C202: 'LedNumVal': undefined identifier
+MAIN.C(58): error C202: 'LedOut': undefined identifier
+MAIN.C(59): error C202: 'LedOut': undefined identifier
+MAIN.C(60): error C202: 'LedOut': undefined identifier
+MAIN.C(61): error C202: 'LedOut': undefined identifier
+MAIN.C(63): error C202: 'i': undefined identifier
+MAIN.C(65): error C202: 'i': undefined identifier
+MAIN.C(67): error C202: 'i': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(31): error C279: 'Disp_Tab': multiple initialization
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(31): error C279: 'Disp_Tab': multiple initialization
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(19): error C100: unprintable character 0xA1 skipped
+MAIN.C(19): error C100: unprintable character 0xA2 skipped
+MAIN.C(19): error C100: unprintable character 0xA1 skipped
+MAIN.C(19): error C100: unprintable character 0xA2 skipped
+MAIN.C(31): error C279: 'Disp_Tab': multiple initialization
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(44): warning C206: 'HC595SendData': missing function-prototype
+MAIN.C(44): error C267: 'HC595SendData': requires ANSI-style prototype
+MAIN.C(62): error C202: 'Temperature': undefined identifier
+MAIN.C(68): error C202: 'i': undefined identifier
+MAIN.C(70): error C202: 'i': undefined identifier
+MAIN.C(72): error C202: 'i': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(37): warning C280: 'HC595SendVal': unreferenced local variable
+MAIN.C(60): error C202: 'Temperature': undefined identifier
+MAIN.C(66): error C202: 'i': undefined identifier
+MAIN.C(68): error C202: 'i': undefined identifier
+MAIN.C(70): error C202: 'i': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(60): error C202: 'Temperature': undefined identifier
+MAIN.C(66): error C202: 'i': undefined identifier
+MAIN.C(68): error C202: 'i': undefined identifier
+MAIN.C(70): error C202: 'i': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(66): error C202: 'i': undefined identifier
+MAIN.C(68): error C202: 'i': undefined identifier
+MAIN.C(70): error C202: 'i': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DISPLAY?MAIN
+Program Size: data=45.0 xdata=0 code=1026
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=1029
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(58): warning C280: 'Key_Val': unreferenced local variable
+linking...
+Program Size: data=47.0 xdata=0 code=1032
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=46.0 xdata=0 code=1036
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=46.0 xdata=0 code=1029
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=46.0 xdata=0 code=1029
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(56): warning C280: 'Key_Val': unreferenced local variable
+linking...
+Program Size: data=47.0 xdata=0 code=1033
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(56): warning C280: 'Key_Val': unreferenced local variable
+linking...
+Program Size: data=47.0 xdata=0 code=1023
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(56): warning C280: 'Key_Val': unreferenced local variable
+linking...
+Program Size: data=47.0 xdata=0 code=1028
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=46.0 xdata=0 code=1024
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(42): error C202: 'LED7Code': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(42): error C202: 'LED7Code': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(40): warning C280: 'LED7': unreferenced local variable
+linking...
+Program Size: data=46.0 xdata=0 code=1001
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+MAIN.C(40): warning C280: 'LED7': unreferenced local variable
+compiling IR.C...
+linking...
+Program Size: data=46.0 xdata=0 code=1001
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(40): warning C280: 'LED7': unreferenced local variable
+linking...
+Program Size: data=46.0 xdata=0 code=1001
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(40): warning C280: 'LED7': unreferenced local variable
+linking...
+Program Size: data=46.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(41): warning C280: 'LED7': unreferenced local variable
+linking...
+Program Size: data=46.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(41): warning C280: 'LED7': unreferenced local variable
+linking...
+Program Size: data=46.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+MAIN.C(41): warning C280: 'LED7': unreferenced local variable
+compiling IR.C...
+linking...
+Program Size: data=46.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(41): warning C280: 'LED7': unreferenced local variable
+linking...
+Program Size: data=46.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 00ECH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0116H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 011BH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0120H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0125H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 012AH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 012FH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0134H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0139H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 013EH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0143H
+Program Size: data=43.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 12 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 00ECH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0116H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 011BH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0120H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0125H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 012AH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 012FH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0134H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0139H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 013EH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0143H
+Program Size: data=43.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 12 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 00ECH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0116H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 011BH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0120H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0125H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 012AH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 012FH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0134H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0139H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 013EH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  Y0
+    MODULE:  IR.obj (IR)
+    ADDRESS: 0143H
+Program Size: data=43.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 12 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=996
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=1006
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=1001
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=871
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?BEEP?IR
+Program Size: data=45.0 xdata=0 code=867
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=851
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=851
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=851
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+MAIN.C(19): error C100: unprintable character 0xA1 skipped
+MAIN.C(19): error C100: unprintable character 0xA2 skipped
+MAIN.C(19): error C100: unprintable character 0xA1 skipped
+MAIN.C(19): error C100: unprintable character 0xA2 skipped
+MAIN.C(33): error C279: 'Disp_Tab': multiple initialization
+Target not created
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=856
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=851
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+IR.C(25): error C202: 'RELAY': undefined identifier
+IR.C(81): error C202: 'RELAY': undefined identifier
+IR.C(82): error C202: 'RELAY': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling IR.C...
+IR.C(24): error C202: 'RELAY': undefined identifier
+IR.C(80): error C202: 'RELAY': undefined identifier
+IR.C(81): error C202: 'RELAY': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=849
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+IR.C(81): error C202: 'RELAY': undefined identifier
+IR.C(82): error C202: 'RELAY': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=45.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=45.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=43.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=43.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=838
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.C...
+linking...
+Program Size: data=43.0 xdata=0 code=843
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=843
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=795
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.C...
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=795
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=790
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=795
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=795
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=789
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=784
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=789
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling IR.C...
+linking...
+Program Size: data=43.0 xdata=0 code=784
+creating hex file from "IR_LED"...
+"IR_LED" - 0 Error(s), 0 Warning(s).

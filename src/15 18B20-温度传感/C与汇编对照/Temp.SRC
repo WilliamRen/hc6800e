@@ -1,0 +1,1126 @@
+; Temp.SRC generated from: Temp.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE Temp.c BROWSE DEBUG OBJECTEXTEND
+
+$NOMOD51
+
+NAME	TEMP
+
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+T2	BIT	090H.0
+EA	BIT	0A8H.7
+IE	DATA	0A8H
+EXF2	BIT	0C8H.6
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+RCAP2H	DATA	0CBH
+PS	BIT	0B8H.4
+SP	DATA	081H
+T2EX	BIT	090H.1
+OV	BIT	0D0H.2
+RCAP2L	DATA	0CAH
+C_T2	BIT	0C8H.1
+WR	BIT	0B0H.6
+RCLK	BIT	0C8H.5
+TCLK	BIT	0C8H.4
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+CP_RL2	BIT	0C8H.0
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+ET2	BIT	0A8H.5
+TF1	BIT	088H.7
+TF2	BIT	0C8H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+TH2	DATA	0CDH
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+D18B20	BIT	0B0H.3
+SM2	BIT	098H.5
+TL2	DATA	0CCH
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+PT2	BIT	0B8H.5
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+TR2	BIT	0C8H.2
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+DPL	DATA	082H
+EXEN2	BIT	0C8H.3
+REN	BIT	098H.4
+T2CON	DATA	0C8H
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+?PR?_TempDelay?TEMP  SEGMENT CODE 
+?PR?Init18b20?TEMP   SEGMENT CODE 
+?PR?_WriteByte?TEMP  SEGMENT CODE 
+?PR?ReadByte?TEMP    SEGMENT CODE 
+?PR?_read_bytes?TEMP SEGMENT CODE 
+?PR?_CRC?TEMP        SEGMENT CODE 
+?PR?GemTemp?TEMP     SEGMENT CODE 
+?PR?Config18b20?TEMP SEGMENT CODE 
+?PR?ReadID?TEMP      SEGMENT CODE 
+?PR?TemperatuerResult?TEMP               SEGMENT CODE 
+?PR?GetTemp?TEMP     SEGMENT CODE 
+?PR?T1zd?TEMP        SEGMENT CODE 
+?C_INITSEG           SEGMENT CODE 
+?CO?TEMP             SEGMENT CODE 
+?ID?TEMP             SEGMENT IDATA 
+?BI?TEMP             SEGMENT BIT 
+?DT?TEMP             SEGMENT DATA 
+?ID?_WriteByte?TEMP  SEGMENT IDATA OVERLAYABLE 
+?ID?ReadByte?TEMP    SEGMENT IDATA OVERLAYABLE 
+?ID?_read_bytes?TEMP SEGMENT IDATA OVERLAYABLE 
+?ID?_CRC?TEMP        SEGMENT IDATA OVERLAYABLE 
+	PUBLIC	p
+	PUBLIC	TIM
+	PUBLIC	id_buff
+	PUBLIC	D
+	PUBLIC	temp_buff
+	PUBLIC	crc_data
+	PUBLIC	TempTick
+	PUBLIC	flag
+	PUBLIC	Temperature
+	PUBLIC	CrcTable
+	PUBLIC	T1zd
+	PUBLIC	GetTemp
+	PUBLIC	TemperatuerResult
+	PUBLIC	ReadID
+	PUBLIC	Config18b20
+	PUBLIC	GemTemp
+	PUBLIC	_CRC
+	PUBLIC	_read_bytes
+	PUBLIC	ReadByte
+	PUBLIC	_WriteByte
+	PUBLIC	Init18b20
+	PUBLIC	_TempDelay
+
+	RSEG  ?ID?TEMP
+    Temperature:   DS   2
+       crc_data:   DS   1
+      temp_buff:   DS   9
+              D:   DS   20
+        id_buff:   DS   8
+
+	RSEG  ?BI?TEMP
+           flag:   DBIT   1
+
+	RSEG  ?DT?TEMP
+       TempTick:   DS   2
+            TIM:   DS   1
+              p:   DS   1
+
+	RSEG  ?ID?_WriteByte?TEMP
+          i?242:   DS   1
+
+	RSEG  ?ID?ReadByte?TEMP
+          i?343:   DS   1
+
+	RSEG  ?ID?ReadByte?TEMP
+          u?344:   DS   1
+
+	RSEG  ?ID?_read_bytes?TEMP
+          i?446:   DS   1
+
+	RSEG  ?ID?_CRC?TEMP
+          i?548:   DS   1
+
+	RSEG  ?ID?_CRC?TEMP
+   crc_data?549:   DS   1
+
+	RSEG  ?CO?TEMP
+CrcTable:
+	DB	000H
+	DB	05EH
+	DB	0BCH
+	DB	0E2H
+	DB	061H
+	DB	03FH
+	DB	0DDH
+	DB	083H
+	DB	0C2H
+	DB	09CH
+	DB	07EH
+	DB	020H
+	DB	0A3H
+	DB	0FDH
+	DB	01FH
+	DB	041H
+	DB	09DH
+	DB	0C3H
+	DB	021H
+	DB	07FH
+	DB	0FCH
+	DB	0A2H
+	DB	040H
+	DB	01EH
+	DB	05FH
+	DB	001H
+	DB	0E3H
+	DB	0BDH
+	DB	03EH
+	DB	060H
+	DB	082H
+	DB	0DCH
+	DB	023H
+	DB	07DH
+	DB	09FH
+	DB	0C1H
+	DB	042H
+	DB	01CH
+	DB	0FEH
+	DB	0A0H
+	DB	0E1H
+	DB	0BFH
+	DB	05DH
+	DB	003H
+	DB	080H
+	DB	0DEH
+	DB	03CH
+	DB	062H
+	DB	0BEH
+	DB	0E0H
+	DB	002H
+	DB	05CH
+	DB	0DFH
+	DB	081H
+	DB	063H
+	DB	03DH
+	DB	07CH
+	DB	022H
+	DB	0C0H
+	DB	09EH
+	DB	01DH
+	DB	043H
+	DB	0A1H
+	DB	0FFH
+	DB	046H
+	DB	018H
+	DB	0FAH
+	DB	0A4H
+	DB	027H
+	DB	079H
+	DB	09BH
+	DB	0C5H
+	DB	084H
+	DB	0DAH
+	DB	038H
+	DB	066H
+	DB	0E5H
+	DB	0BBH
+	DB	059H
+	DB	007H
+	DB	0DBH
+	DB	085H
+	DB	067H
+	DB	039H
+	DB	0BAH
+	DB	0E4H
+	DB	006H
+	DB	058H
+	DB	019H
+	DB	047H
+	DB	0A5H
+	DB	0FBH
+	DB	078H
+	DB	026H
+	DB	0C4H
+	DB	09AH
+	DB	065H
+	DB	03BH
+	DB	0D9H
+	DB	087H
+	DB	004H
+	DB	05AH
+	DB	0B8H
+	DB	0E6H
+	DB	0A7H
+	DB	0F9H
+	DB	01BH
+	DB	045H
+	DB	0C6H
+	DB	098H
+	DB	07AH
+	DB	024H
+	DB	0F8H
+	DB	0A6H
+	DB	044H
+	DB	01AH
+	DB	099H
+	DB	0C7H
+	DB	025H
+	DB	07BH
+	DB	03AH
+	DB	064H
+	DB	086H
+	DB	0D8H
+	DB	05BH
+	DB	005H
+	DB	0E7H
+	DB	0B9H
+	DB	08CH
+	DB	0D2H
+	DB	030H
+	DB	06EH
+	DB	0EDH
+	DB	0B3H
+	DB	051H
+	DB	00FH
+	DB	04EH
+	DB	010H
+	DB	0F2H
+	DB	0ACH
+	DB	02FH
+	DB	071H
+	DB	093H
+	DB	0CDH
+	DB	011H
+	DB	04FH
+	DB	0ADH
+	DB	0F3H
+	DB	070H
+	DB	02EH
+	DB	0CCH
+	DB	092H
+	DB	0D3H
+	DB	08DH
+	DB	06FH
+	DB	031H
+	DB	0B2H
+	DB	0ECH
+	DB	00EH
+	DB	050H
+	DB	0AFH
+	DB	0F1H
+	DB	013H
+	DB	04DH
+	DB	0CEH
+	DB	090H
+	DB	072H
+	DB	02CH
+	DB	06DH
+	DB	033H
+	DB	0D1H
+	DB	08FH
+	DB	00CH
+	DB	052H
+	DB	0B0H
+	DB	0EEH
+	DB	032H
+	DB	06CH
+	DB	08EH
+	DB	0D0H
+	DB	053H
+	DB	00DH
+	DB	0EFH
+	DB	0B1H
+	DB	0F0H
+	DB	0AEH
+	DB	04CH
+	DB	012H
+	DB	091H
+	DB	0CFH
+	DB	02DH
+	DB	073H
+	DB	0CAH
+	DB	094H
+	DB	076H
+	DB	028H
+	DB	0ABH
+	DB	0F5H
+	DB	017H
+	DB	049H
+	DB	008H
+	DB	056H
+	DB	0B4H
+	DB	0EAH
+	DB	069H
+	DB	037H
+	DB	0D5H
+	DB	08BH
+	DB	057H
+	DB	009H
+	DB	0EBH
+	DB	0B5H
+	DB	036H
+	DB	068H
+	DB	08AH
+	DB	0D4H
+	DB	095H
+	DB	0CBH
+	DB	029H
+	DB	077H
+	DB	0F4H
+	DB	0AAH
+	DB	048H
+	DB	016H
+	DB	0E9H
+	DB	0B7H
+	DB	055H
+	DB	00BH
+	DB	088H
+	DB	0D6H
+	DB	034H
+	DB	06AH
+	DB	02BH
+	DB	075H
+	DB	097H
+	DB	0C9H
+	DB	04AH
+	DB	014H
+	DB	0F6H
+	DB	0A8H
+	DB	074H
+	DB	02AH
+	DB	0C8H
+	DB	096H
+	DB	015H
+	DB	04BH
+	DB	0A9H
+	DB	0F7H
+	DB	0B6H
+	DB	0E8H
+	DB	00AH
+	DB	054H
+	DB	0D7H
+	DB	089H
+	DB	06BH
+	DB	035H
+
+
+	RSEG  ?C_INITSEG
+	DB	002H
+	DB	TempTick
+	DW	00000H
+
+;  
+;  /*************************此部分为18B20的驱动程序*************************************/
+
+; #include <reg52.H>
+; #include <intrins.h>
+; 
+; sbit    D18B20=P3^3;
+; #define  NOP()   _nop_()   /* 定义空指令 */
+; #define  _Nop()  _nop_()   /*定义空指令*/
+; 
+; void TempDelay (unsigned char idata us);
+; void Init18b20 (void);
+; void WriteByte (unsigned char idata wr);  //单字节写入
+; void read_bytes (unsigned char idata j);
+; unsigned char CRC (unsigned char j);
+; void GemTemp (void);
+; void Config18b20 (void);
+; void ReadID (void);
+; void TemperatuerResult(void);
+; 
+; 
+; bit  flag;
+; unsigned int  idata Temperature,D[10];
+; unsigned char idata temp_buff[9]; //存储读取的字节，read scratchpad为9字节，read rom ID为8字节
+; unsigned char idata id_buff[8];
+; unsigned char idata *p,TIM;
+; unsigned char idata crc_data;
+; 
+; 
+; unsigned char code CrcTable [256]={
+; 0,  94, 188,  226,  97,  63,  221,  131,  194,  156,  126,  32,  163,  253,  31,  65,
+; 157,  195,  33,  127,  252,  162,  64,  30,  95,  1,  227,  189,  62,  96,  130,  220,
+; 35,  125,  159,  193,  66,  28,  254,  160,  225,  191,  93,  3,  128,  222,  60,  98,
+; 190,  224,  2,  92,  223,  129,  99,  61,  124,  34,  192,  158,  29,  67,  161,  255,
+; 70,  24,  250,  164,  39,  121,  155,  197,  132,  218,  56,  102,  229,  187,  89,  7,
+; 219,  133, 103,  57,  186,  228,  6,  88,  25,  71,  165,  251,  120,  38,  196,  154,
+; 101,  59, 217,  135,  4,  90,  184,  230,  167,  249,  27,  69,  198,  152,  122,  36,
+; 248,  166, 68,  26,  153,  199,  37,  123,  58,  100,  134,  216,  91,  5,  231,  185,
+; 140,  210, 48,  110,  237,  179,  81,  15,  78,  16,  242,  172,  47,  113,  147,  205,
+; 17,  79,  173,  243,  112,  46,  204,  146,  211,  141,  111,  49,  178,  236,  14,  80,
+; 175,  241, 19,  77,  206,  144,  114,  44,  109,  51,  209,  143,  12,  82,  176,  238,
+; 50,  108,  142,  208,  83,  13,  239,  177,  240,  174,  76,  18,  145,  207,  45,  115,
+; 202,  148, 118,  40,  171,  245,  23,  73,  8,  86,  180,  234,  105,  55,  213, 139,
+; 87,  9,  235,  181,  54,  104,  138,  212,  149,  203,  41,  119,  244,  170,  72,  22,
+; 233,  183,  85,  11,  136,  214,  52,  106,  43,  117,  151,  201,  74,  20,  246,  168,
+; 116,  42,  200,  150,  21,  75,  169,  247,  182,  232,  10,  84,  215,  137,  107,  53}; 
+; //
+; /************************************************************
+; *Function:延时处理
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void TempDelay (unsigned char idata us)
+
+	RSEG  ?PR?_TempDelay?TEMP
+_TempDelay:
+	USING	0
+			; SOURCE LINE # 54
+;---- Variable 'us?040' assigned to Register 'R7' ----
+; {
+			; SOURCE LINE # 55
+?C0001:
+; 	while(us--);
+			; SOURCE LINE # 56
+	MOV  	R6,AR7
+	DEC  	R7
+	MOV  	A,R6
+	JNZ  	?C0001
+; }
+			; SOURCE LINE # 57
+?C0003:
+	RET  	
+; END OF _TempDelay
+
+; 
+; /************************************************************
+; *Function:18B20初始化
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void Init18b20 (void)
+
+	RSEG  ?PR?Init18b20?TEMP
+Init18b20:
+	USING	0
+			; SOURCE LINE # 65
+; {
+			; SOURCE LINE # 66
+; 	D18B20=1;
+			; SOURCE LINE # 67
+	SETB 	D18B20
+; 	_nop_();
+			; SOURCE LINE # 68
+	NOP  	
+; 	D18B20=0;
+			; SOURCE LINE # 69
+	CLR  	D18B20
+; 	TempDelay(40);   //delay 530 uS//80
+			; SOURCE LINE # 70
+	MOV  	R7,#028H
+	LCALL	_TempDelay
+; 	_nop_();
+			; SOURCE LINE # 71
+	NOP  	
+; 	D18B20=1;
+			; SOURCE LINE # 72
+	SETB 	D18B20
+; 	TempDelay(7);   //delay 100 uS//14
+			; SOURCE LINE # 73
+	MOV  	R7,#07H
+	LCALL	_TempDelay
+; 	_nop_();
+			; SOURCE LINE # 74
+	NOP  	
+; 	_nop_();
+			; SOURCE LINE # 75
+	NOP  	
+; 	_nop_();
+			; SOURCE LINE # 76
+	NOP  	
+; 	
+; 	if(D18B20==0)
+			; SOURCE LINE # 78
+	JB   	D18B20,?C0004
+; 		flag = 1;   //detect 1820 success!
+			; SOURCE LINE # 79
+	SETB 	flag
+	SJMP 	?C0005
+?C0004:
+; 	else
+; 		flag = 0;    //detect 1820 fail!
+			; SOURCE LINE # 81
+	CLR  	flag
+?C0005:
+; 	TempDelay(10);       //20
+			; SOURCE LINE # 82
+	MOV  	R7,#0AH
+	LCALL	_TempDelay
+; 	_nop_();
+			; SOURCE LINE # 83
+	NOP  	
+; 	_nop_();
+			; SOURCE LINE # 84
+	NOP  	
+; 	D18B20 = 1;
+			; SOURCE LINE # 85
+	SETB 	D18B20
+; }
+			; SOURCE LINE # 86
+	RET  	
+; END OF Init18b20
+
+; 
+; /************************************************************
+; *Function:向18B20写入一个字节
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void WriteByte (unsigned char idata wr)  //单字节写入
+
+	RSEG  ?PR?_WriteByte?TEMP
+L?0032:
+	USING	0
+L?0033:
+	LCALL	Init18b20
+	MOV  	R7,#0CCH
+_WriteByte:
+	USING	0
+			; SOURCE LINE # 94
+;---- Variable 'wr?241' assigned to Register 'R5' ----
+	MOV  	R5,AR7
+; {
+			; SOURCE LINE # 95
+; 	unsigned char idata i;
+; 	for (i=0;i<8;i++)
+			; SOURCE LINE # 97
+	CLR  	A
+	MOV  	R0,#LOW (i?242)
+	MOV  	@R0,A
+?C0007:
+; 	{
+			; SOURCE LINE # 98
+; 		D18B20 = 0;
+			; SOURCE LINE # 99
+	CLR  	D18B20
+; 		_nop_();
+			; SOURCE LINE # 100
+	NOP  	
+; 		D18B20=wr&0x01;
+			; SOURCE LINE # 101
+	MOV  	A,R5
+	RRC  	A
+	MOV  	D18B20,C
+; 		TempDelay(3);   //delay 45 uS //5
+			; SOURCE LINE # 102
+	MOV  	R7,#03H
+	LCALL	_TempDelay
+; 		_nop_();
+			; SOURCE LINE # 103
+	NOP  	
+; 		_nop_();
+			; SOURCE LINE # 104
+	NOP  	
+; 		D18B20=1;
+			; SOURCE LINE # 105
+	SETB 	D18B20
+; 		wr >>= 1;
+			; SOURCE LINE # 106
+	MOV  	A,R5
+	CLR  	C
+	RRC  	A
+	MOV  	R5,A
+; 	}
+			; SOURCE LINE # 107
+	MOV  	R0,#LOW (i?242)
+	INC  	@R0
+	MOV  	A,@R0
+	CLR  	C
+	SUBB 	A,#08H
+	JC   	?C0007
+; }
+			; SOURCE LINE # 108
+?C0010:
+	RET  	
+; END OF _WriteByte
+
+; 
+; /************************************************************
+; *Function:读18B20的一个字节
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; unsigned char ReadByte (void)     //读取单字节
+
+	RSEG  ?PR?ReadByte?TEMP
+ReadByte:
+	USING	0
+			; SOURCE LINE # 116
+; {
+			; SOURCE LINE # 117
+; 	unsigned char idata i,u=0;
+			; SOURCE LINE # 118
+	CLR  	A
+	MOV  	R0,#LOW (u?344)
+	MOV  	@R0,A
+; 	for(i=0;i<8;i++)
+			; SOURCE LINE # 119
+	DEC  	R0
+	MOV  	@R0,A
+?C0011:
+; 	{
+			; SOURCE LINE # 120
+; 		D18B20 = 0;
+			; SOURCE LINE # 121
+	CLR  	D18B20
+; 		u >>= 1;
+			; SOURCE LINE # 122
+	MOV  	R0,#LOW (u?344)
+	MOV  	A,@R0
+	CLR  	C
+	RRC  	A
+	MOV  	@R0,A
+; 		D18B20 = 1;
+			; SOURCE LINE # 123
+	SETB 	D18B20
+; 		if(D18B20==1)
+			; SOURCE LINE # 124
+	JNB  	D18B20,?C0014
+; 		u |= 0x80;
+			; SOURCE LINE # 125
+	MOV  	A,@R0
+	ORL  	A,#080H
+	MOV  	@R0,A
+?C0014:
+; 		TempDelay (2);
+			; SOURCE LINE # 126
+	MOV  	R7,#02H
+	LCALL	_TempDelay
+; 		_nop_();
+			; SOURCE LINE # 127
+	NOP  	
+; 	}
+			; SOURCE LINE # 128
+	MOV  	R0,#LOW (i?343)
+	INC  	@R0
+	MOV  	A,@R0
+	CLR  	C
+	SUBB 	A,#08H
+	JC   	?C0011
+?C0012:
+; 	return(u);
+			; SOURCE LINE # 129
+	MOV  	R0,#LOW (u?344)
+	MOV  	A,@R0
+	MOV  	R7,A
+; }
+			; SOURCE LINE # 130
+?C0015:
+	RET  	
+; END OF ReadByte
+
+; 
+; /************************************************************
+; *Function:读18B20
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void read_bytes (unsigned char idata j)
+
+	RSEG  ?PR?_read_bytes?TEMP
+_read_bytes:
+	USING	0
+			; SOURCE LINE # 138
+;---- Variable 'j?445' assigned to Register 'R5' ----
+	MOV  	R5,AR7
+; {
+			; SOURCE LINE # 139
+; 	 unsigned char idata i;
+; 	 for(i=0;i<j;i++)
+			; SOURCE LINE # 141
+	CLR  	A
+	MOV  	R0,#LOW (i?446)
+	MOV  	@R0,A
+?C0016:
+	MOV  	R0,#LOW (i?446)
+	MOV  	A,@R0
+	CLR  	C
+	SUBB 	A,R5
+	JNC  	?C0019
+; 	 {
+			; SOURCE LINE # 142
+; 		  *p = ReadByte();
+			; SOURCE LINE # 143
+	LCALL	ReadByte
+	MOV  	R0,p
+	MOV  	@R0,AR7
+; 		  p++;
+			; SOURCE LINE # 144
+	INC  	p
+; 	 }
+			; SOURCE LINE # 145
+	MOV  	R0,#LOW (i?446)
+	INC  	@R0
+	SJMP 	?C0016
+; }
+			; SOURCE LINE # 146
+?C0019:
+	RET  	
+; END OF _read_bytes
+
+; 
+; /************************************************************
+; *Function:CRC校验
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; unsigned char CRC (unsigned char j)
+
+	RSEG  ?PR?_CRC?TEMP
+_CRC:
+	USING	0
+			; SOURCE LINE # 154
+;---- Variable 'j?547' assigned to Register 'R7' ----
+; {
+			; SOURCE LINE # 155
+;    	unsigned char idata i,crc_data=0;
+			; SOURCE LINE # 156
+	CLR  	A
+	MOV  	R0,#LOW (crc_data?549)
+	MOV  	@R0,A
+;   	for(i=0;i<j;i++)  //查表校验
+			; SOURCE LINE # 157
+	DEC  	R0
+	MOV  	@R0,A
+?C0020:
+	MOV  	R0,#LOW (i?548)
+	MOV  	A,@R0
+	MOV  	R6,A
+	CLR  	C
+	SUBB 	A,R7
+	JNC  	?C0021
+;     	crc_data = CrcTable[crc_data^temp_buff[i]];
+			; SOURCE LINE # 158
+	MOV  	A,#LOW (temp_buff)
+	ADD  	A,R6
+	MOV  	R1,A
+	INC  	R0
+	MOV  	A,@R0
+	XRL  	A,@R1
+	MOV  	DPTR,#CrcTable
+	MOVC 	A,@A+DPTR
+	MOV  	@R0,A
+	DEC  	R0
+	INC  	@R0
+	SJMP 	?C0020
+?C0021:
+;     return (crc_data);
+			; SOURCE LINE # 159
+	MOV  	R0,#LOW (crc_data?549)
+	MOV  	A,@R0
+	MOV  	R7,A
+; }
+			; SOURCE LINE # 160
+?C0023:
+	RET  	
+; END OF _CRC
+
+; 
+; /************************************************************
+; *Function:读取温度
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void GemTemp (void)
+
+	RSEG  ?PR?GemTemp?TEMP
+GemTemp:
+	USING	0
+			; SOURCE LINE # 168
+; {
+			; SOURCE LINE # 169
+;    read_bytes (9);
+			; SOURCE LINE # 170
+	MOV  	R7,#09H
+	LCALL	_read_bytes
+;    if (CRC(9)==0) //校验正确
+			; SOURCE LINE # 171
+	MOV  	R7,#09H
+	LCALL	_CRC
+	MOV  	A,R7
+	JNZ  	?C0025
+;    {
+			; SOURCE LINE # 172
+; 	    Temperature = temp_buff[1]*0x100 + temp_buff[0];
+			; SOURCE LINE # 173
+	MOV  	R0,#LOW (temp_buff+01H)
+	MOV  	A,@R0
+	MOV  	R6,A
+	DEC  	R0
+	MOV  	A,@R0
+	MOV  	R4,#00H
+	ADD  	A,#00H
+	MOV  	R0,#LOW (Temperature+01H)
+	MOV  	@R0,A
+	MOV  	A,R4
+	ADDC 	A,R6
+	DEC  	R0
+	MOV  	@R0,A
+; //	    Temperature *= 0.625;
+; 		Temperature /= 16;
+			; SOURCE LINE # 175
+	MOV  	R1,#LOW (Temperature)
+	MOV  	A,@R1
+	SWAP 	A
+	MOV  	R0,A
+	ANL  	A,#0F0H
+	XCH  	A,R0
+	XRL  	A,R0
+	MOV  	@R1,A
+	INC  	R1
+	MOV  	A,@R1
+	SWAP 	A
+	ANL  	A,#0FH
+	ORL  	A,R0
+	MOV  	@R1,A
+; 		TempDelay(1);
+			; SOURCE LINE # 176
+	MOV  	R7,#01H
+	LCALL	_TempDelay
+;     }
+			; SOURCE LINE # 177
+; }
+			; SOURCE LINE # 178
+?C0025:
+	RET  	
+; END OF GemTemp
+
+; 
+; /************************************************************
+; *Function:内部配置
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void Config18b20 (void)  //重新配置报警限定值和分辨率
+
+	RSEG  ?PR?Config18b20?TEMP
+Config18b20:
+	USING	0
+			; SOURCE LINE # 186
+; {
+			; SOURCE LINE # 187
+;      Init18b20();
+			; SOURCE LINE # 188
+;      WriteByte(0xcc);  //skip rom
+			; SOURCE LINE # 189
+	LCALL	L?0032
+;      WriteByte(0x4e);  //write scratchpad
+			; SOURCE LINE # 190
+	MOV  	R7,#04EH
+	LCALL	_WriteByte
+;      WriteByte(0x19);  //上限
+			; SOURCE LINE # 191
+	MOV  	R7,#019H
+	LCALL	_WriteByte
+;      WriteByte(0x1a);  //下限
+			; SOURCE LINE # 192
+	MOV  	R7,#01AH
+	LCALL	_WriteByte
+;      WriteByte(0x7f);     //set 11 bit (0.125)
+			; SOURCE LINE # 193
+	MOV  	R7,#07FH
+	LCALL	_WriteByte
+;      Init18b20();
+			; SOURCE LINE # 194
+;      WriteByte(0xcc);  //skip rom
+			; SOURCE LINE # 195
+	LCALL	L?0032
+;      WriteByte(0x48);  //保存设定值
+			; SOURCE LINE # 196
+	MOV  	R7,#048H
+	LCALL	_WriteByte
+;      Init18b20();
+			; SOURCE LINE # 197
+;      WriteByte(0xcc);  //skip rom
+			; SOURCE LINE # 198
+	LCALL	L?0033
+;      WriteByte(0xb8);  //回调设定值
+			; SOURCE LINE # 199
+	MOV  	R7,#0B8H
+	LJMP 	_WriteByte
+; END OF Config18b20
+
+; }
+; 
+; /************************************************************
+; *Function:读18B20ID
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void ReadID (void)//读取器件 id
+
+	RSEG  ?PR?ReadID?TEMP
+ReadID:
+	USING	0
+			; SOURCE LINE # 208
+; {
+			; SOURCE LINE # 209
+; 	Init18b20();
+			; SOURCE LINE # 210
+	LCALL	Init18b20
+; 	WriteByte(0x33);  //read rom
+			; SOURCE LINE # 211
+	MOV  	R7,#033H
+	LCALL	_WriteByte
+; 	read_bytes(8);
+			; SOURCE LINE # 212
+	MOV  	R7,#08H
+	LJMP 	_read_bytes
+; END OF ReadID
+
+; }
+; 
+; /************************************************************
+; *Function:18B20ID全处理
+; *parameter:
+; *Return:
+; *Modify:
+; *************************************************************/
+; void TemperatuerResult(void)
+
+	RSEG  ?PR?TemperatuerResult?TEMP
+TemperatuerResult:
+	USING	0
+			; SOURCE LINE # 221
+; {
+			; SOURCE LINE # 222
+;   	p = id_buff;
+			; SOURCE LINE # 223
+	MOV  	p,#LOW (id_buff)
+;   	ReadID();
+			; SOURCE LINE # 224
+	LCALL	ReadID
+;   	Config18b20();
+			; SOURCE LINE # 225
+	LCALL	Config18b20
+; 	Init18b20 ();
+			; SOURCE LINE # 226
+; 	WriteByte(0xcc);   //skip rom
+			; SOURCE LINE # 227
+	LCALL	L?0033
+; 	WriteByte(0x44);   //Temperature convert
+			; SOURCE LINE # 228
+	MOV  	R7,#044H
+	LCALL	_WriteByte
+; 
+; 	Init18b20 ();
+			; SOURCE LINE # 230
+; 	WriteByte(0xcc);   //skip rom
+			; SOURCE LINE # 231
+	LCALL	L?0033
+; 	WriteByte(0xbe);   //read Temperature
+			; SOURCE LINE # 232
+	MOV  	R7,#0BEH
+	LCALL	_WriteByte
+; 	p = temp_buff;
+			; SOURCE LINE # 233
+	MOV  	p,#LOW (temp_buff)
+; 	GemTemp();
+			; SOURCE LINE # 234
+	LJMP 	GemTemp
+; END OF TemperatuerResult
+
+; }
+; 
+; unsigned int TempTick=0;
+; void GetTemp()
+
+	RSEG  ?PR?GetTemp?TEMP
+GetTemp:
+	USING	0
+			; SOURCE LINE # 238
+; {       
+			; SOURCE LINE # 239
+;      if(TIM==1)
+			; SOURCE LINE # 240
+	MOV  	A,TIM
+	CJNE 	A,#01H,?C0030
+; 	{  TIM=0;
+			; SOURCE LINE # 241
+	CLR  	A
+	MOV  	TIM,A
+; 	   TemperatuerResult();
+			; SOURCE LINE # 242
+	LCALL	TemperatuerResult
+; 	   D[5]=Temperature;
+			; SOURCE LINE # 243
+	MOV  	R0,#LOW (Temperature)
+	MOV  	A,@R0
+	MOV  	R6,A
+	INC  	R0
+	MOV  	A,@R0
+	MOV  	R7,A
+	MOV  	R0,#LOW (D+0AH)
+	MOV  	@R0,AR6
+	INC  	R0
+	MOV  	@R0,AR7
+; 	}
+			; SOURCE LINE # 244
+; 
+; }
+			; SOURCE LINE # 246
+?C0030:
+	RET  	
+; END OF GetTemp
+
+CSEG	AT	0001BH
+	LJMP	T1zd
+
+; 
+; /*************************************
+;  [ t1 (0.5ms)中断] 中断中做 PWM 输出
+;   ------------1000/(0.02ms*250)=200Hz
+; *************************************/
+; void T1zd(void) interrupt 3 
+
+	RSEG  ?PR?T1zd?TEMP
+	USING	0
+T1zd:
+			; SOURCE LINE # 252
+; {
+;    TH1 = 0xfe;    //11.0592
+			; SOURCE LINE # 254
+	MOV  	TH1,#0FEH
+;    TL1 = 0x33;
+			; SOURCE LINE # 255
+	MOV  	TL1,#033H
+;    TIM++;
+			; SOURCE LINE # 256
+	INC  	TIM
+; 
+; }
+			; SOURCE LINE # 258
+	RETI 	
+; END OF T1zd
+
+	END

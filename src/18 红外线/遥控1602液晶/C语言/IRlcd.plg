@@ -1,0 +1,113 @@
+<html>
+<body>
+<pre>
+<h1>µVision3 Build Log</h1>
+<h2>Project:</h2>
+G:\HC6800-V2.6\µ¥Æ¬»úÀý³Ì\ºìÍâÏß\Ò£¿Ø1602Òº¾§\CÓïÑÔ\IRlcd.uv2
+Project File Date:  03/26/2009
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling IRLCD.C...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling IRLCD.C...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=559
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling IRLCD.C...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling IRLCD.C...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling IRLCD.C...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?LCD_BUSY?IRLCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?IR_IN?IRLCD
+Program Size: data=20.2 xdata=0 code=562
+creating hex file from "IRlcd"...
+"IRlcd" - 0 Error(s), 1 Warning(s).

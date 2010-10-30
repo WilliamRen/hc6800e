@@ -1,0 +1,69 @@
+A51 MACRO ASSEMBLER  LED2                                                                 10/28/2009 23:13:00 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN LED2.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE LED2.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+                       5     
+                       6     
+                       7     
+0000                   8             ORG 0000H        ;程序从000H地址开始运行
+0000 0130              9             AJMP MAIN        ;跳转到 MAIN程序
+                      10     
+0030                  11             ORG 030H          ;MAIN程序从030H开始运行
+0030                  12     MAIN:   
+0030 75A0FE           13         MOV P2,#0FEH
+0033 115D             14             ACALL DEL          ;调用延时子程序
+0035 75A0FC           15             MOV P2,#0FCH
+0038 115D             16             ACALL DEL          ;调用延时子程序
+003A 75A0F8           17             MOV P2,#0F8H
+003D 115D             18             ACALL DEL
+003F 75A0F0           19             MOV P2,#0F0H
+0042 115D             20             ACALL DEL
+0044 75A0E0           21             MOV P2,#0E0H
+0047 115D             22             ACALL DEL
+0049 75A0C0           23             MOV P2,#0C0H
+004C 115D             24             ACALL DEL
+004E 75A080           25             MOV P2,#080H
+0051 115D             26             ACALL DEL
+0053 75A000           27             MOV P2,#000H
+0056 115D             28             ACALL DEL
+0058 75A0FF           29             MOV P2,#0FFH
+005B 0130             30             AJMP MAIN          ;跳转到MAIN程序
+                      31     
+                      32     ; 延时子程序
+005D 7D02             33     DEL:    MOV R5,#02H
+005F 7EF0             34     DEL1:   MOV R6,#0F0H
+0061 7FF0             35     DEL2:   MOV R7,#0F0H
+0063 DFFE             36     DEL3:   DJNZ R7, DEL3
+0065 DEFA             37             DJNZ R6, DEL2
+0067 DDF6             38             DJNZ R5, DEL1
+0069 22               39             RET
+                      40             END
+A51 MACRO ASSEMBLER  LED2                                                                 10/28/2009 23:13:00 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DEL. . . . . . . .  C ADDR   005DH   A   
+DEL1 . . . . . . .  C ADDR   005FH   A   
+DEL2 . . . . . . .  C ADDR   0061H   A   
+DEL3 . . . . . . .  C ADDR   0063H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

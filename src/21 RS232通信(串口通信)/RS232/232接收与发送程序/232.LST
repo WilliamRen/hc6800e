@@ -1,0 +1,88 @@
+C51 COMPILER V7.10   232                                                                   10/24/2008 19:24:30 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 232
+OBJECT MODULE PLACED IN 232.OBJ
+COMPILER INVOKED BY: D:\Program Files\Keil\C51\BIN\C51.EXE 232.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           /*******************************************************************************
+   2          *  标题:                  RS232串口通信试验(接受与发送)                                      *
+   3          
+   4          *  1.通过本例程了解串口的基本原理及使用 ,理解并掌握对串口进行初始化
+   5          
+   6             2.请使用串口调试助手（Baud 19200、数据位8、停止位1、效验位无）做为上位机来做收发试验。
+   7               在调试助手字符串输入框中输入数字和字符，按发送按钮，然后观察接受窗口的变化。也可以用
+   8                   调试助手自动循环发送。 
+   9                                                                                                *
+  10          * 请学员认真消化本例程，学会用C语言操作串口                                               *
+  11          ********************************************************************************/
+  12          
+  13          #include <REG52.H>
+  14          
+  15          sbit BEEP = P1^4;
+  16          bit Flag;
+  17          unsigned int ReData,SenData;
+  18          
+  19          
+  20          void main (void) {
+  21   1      
+  22   1      
+  23   1              SCON = 0x50;      //REN=1允许串行接受状态，串口工作模式1                   
+  24   1                  TMOD|= 0x20;      //定时器工作方式2                    
+  25   1                      PCON|= 0x80;                                                          
+  26   1                      TH1  = 0xFD;     //baud*2  /* reload value 19200、数据位8、停止位1。效验位无          
+  27   1                      TR1  = 1;                                                             
+  28   1                      ES   = 1;        //开串口中断                  
+  29   1                      EA   = 1;        // 开总中断 
+  30   1                      BEEP=1;
+  31   1                 // IE = 0x0;
+  32   1         
+  33   1              while(1)
+  34   1          { 
+  35   2              
+  36   2                if (Flag==1)
+  37   2                {
+  38   3                   SBUF=SenData;                   //SUBF接受/发送缓冲器
+  39   3                  while(TI==0);
+  40   3               TI=0;
+  41   3                       Flag=0;
+  42   3                }
+  43   2      
+  44   2       }
+  45   1       
+  46   1      }
+  47          
+  48          /****************************************************
+  49                         串口中断程序
+  50          ******************************************************/
+  51          void ser_int (void) interrupt 4 using 1
+  52          {
+  53   1       
+  54   1      
+  55   1       if(RI == 1)        //RI接受中断标志
+C51 COMPILER V7.10   232                                                                   10/24/2008 19:24:30 PAGE 2   
+
+  56   1       {
+  57   2              RI = 0;             //清除RI接受中断标志
+  58   2              ReData = SBUF;  //SUBF接受/发送缓冲器
+  59   2              SenData=ReData;
+  60   2              Flag=1;
+  61   2          
+  62   2       }
+  63   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     63    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

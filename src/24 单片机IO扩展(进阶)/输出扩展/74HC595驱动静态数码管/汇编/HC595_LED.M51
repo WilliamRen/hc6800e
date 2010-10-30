@@ -1,0 +1,89 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        11/02/2009  22:20:22  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE HC595_LED.obj TO HC595_LED RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  HC595_LED.obj (HC595_LED)
+
+
+LINK MAP OF MODULE:  HC595_LED (HC595_LED)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0110H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  HC595_LED (HC595_LED)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        HC595_LED
+  C:0066H         SYMBOL        DEL0
+  C:0068H         SYMBOL        DEL1
+  C:0064H         SYMBOL        DELAY
+  C:0030H         SYMBOL        INTI
+  C:0035H         SYMBOL        MAIN
+  B:00B0H.6       SYMBOL        MOSIO
+  C:004BH         SYMBOL        OUT_595
+  D:00B0H         SYMBOL        P3
+  B:00B0H.5       SYMBOL        R_CLK
+  B:00B0H.4       SYMBOL        S_CLK
+  C:0100H         SYMBOL        TAB
+  C:0055H         SYMBOL        WR_595
+  C:0058H         SYMBOL        WR_LOOP
+  C:0000H         LINE#         20
+  C:0030H         LINE#         25
+  C:0033H         LINE#         26
+  C:0035H         LINE#         29
+  C:0037H         LINE#         30
+  C:003AH         LINE#         31
+  C:003BH         LINE#         32
+  C:003CH         LINE#         33
+  C:003EH         LINE#         34
+  C:0040H         LINE#         35
+  C:0041H         LINE#         37
+  C:0043H         LINE#         38
+  C:0045H         LINE#         39
+  C:0047H         LINE#         40
+  C:0049H         LINE#         41
+  C:004BH         LINE#         46
+  C:004EH         LINE#         47
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/02/2009  22:20:22  PAGE 2
+
+
+  C:0050H         LINE#         48
+  C:0051H         LINE#         49
+  C:0052H         LINE#         50
+  C:0054H         LINE#         51
+  C:0055H         LINE#         56
+  C:0057H         LINE#         57
+  C:0058H         LINE#         59
+  C:0059H         LINE#         60
+  C:005BH         LINE#         61
+  C:005DH         LINE#         62
+  C:005EH         LINE#         63
+  C:005FH         LINE#         64
+  C:0061H         LINE#         65
+  C:0063H         LINE#         66
+  C:0064H         LINE#         71
+  C:0066H         LINE#         73
+  C:0068H         LINE#         75
+  C:006AH         LINE#         76
+  C:006CH         LINE#         77
+  C:006EH         LINE#         78
+  C:0070H         LINE#         79
+  -------         ENDMOD        HC595_LED
+
+Program Size: data=8.0 xdata=0 code=272
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

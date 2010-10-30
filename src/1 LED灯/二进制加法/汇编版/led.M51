@@ -1,0 +1,54 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        10/28/2009  22:07:52  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE LED.obj TO led RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  LED.obj (LED)
+
+
+LINK MAP OF MODULE:  led (LED)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0047H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  led (LED)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        LED
+  C:003BH         SYMBOL        D1
+  C:003DH         SYMBOL        D2
+  C:0039H         SYMBOL        DELAY
+  C:0032H         SYMBOL        LOOP
+  C:0030H         SYMBOL        MAIN
+  D:00A0H         SYMBOL        P2
+  C:0000H         LINE#         12
+  C:0030H         LINE#         14
+  C:0032H         LINE#         15
+  C:0034H         LINE#         16
+  C:0036H         LINE#         17
+  C:0037H         LINE#         18
+  C:0039H         LINE#         20
+  C:003BH         LINE#         21
+  C:003DH         LINE#         22
+  C:003FH         LINE#         23
+  C:0041H         LINE#         24
+  C:0043H         LINE#         25
+  C:0045H         LINE#         26
+  -------         ENDMOD        LED
+
+Program Size: data=8.0 xdata=0 code=71
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,8 @@
+"STARTUP.obj",
+"main.obj",
+"Lcd.obj",
+"motor.obj",
+"I2C.obj",
+"2402.obj" 
+TO "TFT-char" 
+RAMSIZE(256) 

@@ -1,0 +1,635 @@
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN TemMain.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE TemMain.SRC SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; TemMain.SRC generated from: TemMain.c
+                       2     ; COMPILER INVOKED BY:
+                       3     ;        C:\Keil\C51\BIN\C51.EXE TemMain.c BROWSE DEBUG OBJECTEXTEND
+                       4     
+                       5     $nomod51 
+                       6     
+                       7     NAME    TEMMAIN
+                       8     
+  00A3                 9     LS138B  BIT     0A0H.3
+  00A4                10     LS138C  BIT     0A0H.4
+  0080                11     P0      DATA    080H
+  0090                12     P1      DATA    090H
+  00A0                13     P2      DATA    0A0H
+  00B0                14     P3      DATA    0B0H
+  00B4                15     T0      BIT     0B0H.4
+  00D6                16     AC      BIT     0D0H.6
+  00B5                17     T1      BIT     0B0H.5
+  0090                18     T2      BIT     090H.0
+  00AF                19     EA      BIT     0A8H.7
+  00A8                20     IE      DATA    0A8H
+  00CE                21     EXF2    BIT     0C8H.6
+  00B7                22     RD      BIT     0B0H.7
+  00AC                23     ES      BIT     0A8H.4
+  00B8                24     IP      DATA    0B8H
+  0098                25     RI      BIT     098H.0
+  00B2                26     INT0    BIT     0B0H.2
+  00D7                27     CY      BIT     0D0H.7
+  0099                28     TI      BIT     098H.1
+  00B3                29     INT1    BIT     0B0H.3
+  00CB                30     RCAP2H  DATA    0CBH
+  00BC                31     PS      BIT     0B8H.4
+  0081                32     SP      DATA    081H
+  0091                33     T2EX    BIT     090H.1
+  00D2                34     OV      BIT     0D0H.2
+  00CA                35     RCAP2L  DATA    0CAH
+  00C9                36     C_T2    BIT     0C8H.1
+  00B6                37     WR      BIT     0B0H.6
+  00CD                38     RCLK    BIT     0C8H.5
+  00CC                39     TCLK    BIT     0C8H.4
+  0099                40     SBUF    DATA    099H
+  0087                41     PCON    DATA    087H
+  0098                42     SCON    DATA    098H
+  0089                43     TMOD    DATA    089H
+  0088                44     TCON    DATA    088H
+  0089                45     IE0     BIT     088H.1
+  008B                46     IE1     BIT     088H.3
+  00F0                47     B       DATA    0F0H
+  00C8                48     CP_RL2  BIT     0C8H.0
+  00E0                49     ACC     DATA    0E0H
+  00A9                50     ET0     BIT     0A8H.1
+  00AB                51     ET1     BIT     0A8H.3
+  008D                52     TF0     BIT     088H.5
+  00AD                53     ET2     BIT     0A8H.5
+  008F                54     TF1     BIT     088H.7
+  00CF                55     TF2     BIT     0C8H.7
+  009A                56     RB8     BIT     098H.2
+  008C                57     TH0     DATA    08CH
+  00A8                58     EX0     BIT     0A8H.0
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     2
+
+  0088                59     IT0     BIT     088H.0
+  008D                60     TH1     DATA    08DH
+  009B                61     TB8     BIT     098H.3
+  00AA                62     EX1     BIT     0A8H.2
+  008A                63     IT1     BIT     088H.2
+  00CD                64     TH2     DATA    0CDH
+  00D0                65     P       BIT     0D0H.0
+  009F                66     SM0     BIT     098H.7
+  008A                67     TL0     DATA    08AH
+  009E                68     SM1     BIT     098H.6
+  008B                69     TL1     DATA    08BH
+  009D                70     SM2     BIT     098H.5
+  00CC                71     TL2     DATA    0CCH
+  00B9                72     PT0     BIT     0B8H.1
+  00BB                73     PT1     BIT     0B8H.3
+  00D3                74     RS0     BIT     0D0H.3
+  00BD                75     PT2     BIT     0B8H.5
+  008C                76     TR0     BIT     088H.4
+  00D4                77     RS1     BIT     0D0H.4
+  008E                78     TR1     BIT     088H.6
+  00CA                79     TR2     BIT     0C8H.2
+  00B8                80     PX0     BIT     0B8H.0
+  00BA                81     PX1     BIT     0B8H.2
+  0083                82     DPH     DATA    083H
+  0082                83     DPL     DATA    082H
+  00CB                84     EXEN2   BIT     0C8H.3
+  009C                85     REN     BIT     098H.4
+  00C8                86     T2CON   DATA    0C8H
+  00B0                87     RXD     BIT     0B0H.0
+  00B1                88     TXD     BIT     0B0H.1
+  00D5                89     F0      BIT     0D0H.5
+  00D0                90     PSW     DATA    0D0H
+  00A2                91     LS138A  BIT     0A0H.2
+                      92     ?PR?system_Ini?TEMMAIN                   SEGMENT CODE 
+                      93     ?PR?main?TEMMAIN     SEGMENT CODE 
+                      94     ?DT?main?TEMMAIN     SEGMENT DATA OVERLAYABLE 
+                      95     ?CO?TEMMAIN          SEGMENT CODE 
+                      96     ?DT?TEMMAIN          SEGMENT DATA 
+                      97             EXTRN   IDATA (Temperature)
+                      98             EXTRN   CODE (_HC595SendData)
+                      99             EXTRN   CODE (GetTemp)
+                     100             EXTRN   CODE (?C_STARTUP)
+                     101             EXTRN   CODE (?C?ULDIV)
+                     102             EXTRN   CODE (?C?LLDIDATA)
+                     103             EXTRN   CODE (?C?LSHL)
+                     104             PUBLIC  LedNumVal
+                     105             PUBLIC  HC595SendVal
+                     106             PUBLIC  LedOut
+                     107             PUBLIC  Disp_Tab
+                     108             PUBLIC  main
+                     109             PUBLIC  system_Ini
+                     110     
+----                 111             RSEG  ?DT?main?TEMMAIN
+0000                 112     ?main?BYTE:
+0000                 113               i?140:   DS   1
+                     114     
+----                 115             RSEG  ?DT?TEMMAIN
+0000                 116              LedOut:   DS   20
+0014                 117        HC595SendVal:   DS   4
+0018                 118           LedNumVal:   DS   4
+                     119     
+----                 120             RSEG  ?CO?TEMMAIN
+0000                 121     Disp_Tab:
+0000 C0              122             DB      0C0H
+0001 F9              123             DB      0F9H
+0002 A4              124             DB      0A4H
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     3
+
+0003 B0              125             DB      0B0H
+0004 99              126             DB      099H
+0005 92              127             DB      092H
+0006 82              128             DB      082H
+0007 F8              129             DB      0F8H
+0008 80              130             DB      080H
+0009 90              131             DB      090H
+000A 88              132             DB      088H
+000B 83              133             DB      083H
+000C C6              134             DB      0C6H
+000D A1              135             DB      0A1H
+000E 86              136             DB      086H
+000F BF              137             DB      0BFH
+0010 C7              138             DB      0C7H
+0011 8C              139             DB      08CH
+0012 C1              140             DB      0C1H
+0013 FF              141             DB      0FFH
+0014 F7              142             DB      0F7H
+                     143     
+                     144     ;  /*******************************************************************************
+                     145     ; *  标题:                  试验数码管上显示温度                                  *
+                     146     ; *                                                                                        
+                                                                                              *
+                     147     ; *********************************************************************************
+                     148     ; *  1.通过本例程了解 DLASS18b20的基本原理和使用 ,理解并掌握18B20驱动程序的编写 *
+                     149     ; *  2.了解掌握I2C总线接口的工作原理及一般编程方法。                                       
+                                                  *
+                     150     ; *    插上18B20 观察数码管的实际温度显示                                                  
+                                                                  *
+                     151     ; *                                    *                                                   
+                                                                  *
+                     152     ; * 请学员认真消化本例程，懂DLASS18b20在C语言中的操作                               *
+                     153     ; ********************************************************************************/
+                     154     
+                     155     ; #include <reg52.H>
+                     156     ; 
+                     157     ; extern GetTemp();                                                                        
+                             //声明引用外部函数
+                     158     ; extern unsigned int  idata Temperature;                     // 声明引用外部变量
+                     159     ; extern void HC595SendData(unsigned int SendVal);        //声明引用外部函数
+                     160     ; 
+                     161     ; //else IO
+                     162     ; sbit    LS138A=P2^2;       //管脚定义
+                     163     ; sbit    LS138B=P2^3;
+                     164     ; sbit    LS138C=P2^4; 
+                     165     ; 
+                     166     ; 
+                     167     ; // 此表为 LED 的字模            // 0    1    2    3    4    5    6   7    8    9    A    
+                             b    c    d    E    -    L   P    U    Hidden  _ (20)
+                     168     ; unsigned char code  Disp_Tab[] = { 0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90,0x88
+                             ,0x83,0xC6,0xA1,0x86,0xbf,0xc7,0x8c,0xc1, 0xff,  0xf7 }; 
+                     169     ; unsigned long HC595SendVal, LedOut[5],LedNumVal;
+                     170     ; 
+                     171     ; 
+                     172     ; void system_Ini()
+                     173     
+----                 174             RSEG  ?PR?system_Ini?TEMMAIN
+0000                 175     system_Ini:
+                     176                             ; SOURCE LINE # 29
+                     177     ; {
+                     178                             ; SOURCE LINE # 30
+                     179     ;     TMOD|= 0x11;
+                     180                             ; SOURCE LINE # 31
+0000 438911          181             ORL     TMOD,#011H
+                     182     ;     TH1=0xDC; //11.0592M
+                     183                             ; SOURCE LINE # 32
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     4
+
+0003 758DDC          184             MOV     TH1,#0DCH
+                     185     ;     TL1=0x00; 
+                     186                             ; SOURCE LINE # 33
+0006 E4              187             CLR     A
+0007 F58B            188             MOV     TL1,A
+                     189     ;       IE = 0x8A;      
+                     190                             ; SOURCE LINE # 34
+0009 75A88A          191             MOV     IE,#08AH
+                     192     ;     TR1  = 1;
+                     193                             ; SOURCE LINE # 35
+000C D28E            194             SETB    TR1
+                     195     ; 
+                     196     ; 
+                     197     ; }
+                     198                             ; SOURCE LINE # 38
+000E 22              199             RET     
+                     200     ; END OF system_Ini
+                     201     
+                     202     ; 
+                     203     ; main()
+                     204     
+----                 205             RSEG  ?PR?main?TEMMAIN
+0000                 206     main:
+                     207             USING   0
+                     208                             ; SOURCE LINE # 40
+                     209     ; { unsigned char i; 
+                     210                             ; SOURCE LINE # 41
+                     211     ;   system_Ini();
+                     212                             ; SOURCE LINE # 42
+0000 120000   F      213             LCALL   system_Ini
+0003                 214     ?C0002:
+                     215     ;     while(1)
+                     216                             ; SOURCE LINE # 43
+                     217     ;    {  
+                     218                             ; SOURCE LINE # 44
+                     219     ;         GetTemp();
+                     220                             ; SOURCE LINE # 45
+0003 120000   F      221             LCALL   GetTemp
+                     222     ; 
+                     223     ;         /********以下将读18b20的数据送到LED数码管显示*************/
+                     224     ;        LedNumVal=Temperature;   
+                     225                             ; SOURCE LINE # 48
+0006 7800     F      226             MOV     R0,#LOW (Temperature)
+0008 E6              227             MOV     A,@R0
+0009 FE              228             MOV     R6,A
+000A 08              229             INC     R0
+000B E6              230             MOV     A,@R0
+000C FF              231             MOV     R7,A
+000D E4              232             CLR     A
+000E 8F00     F      233             MOV     LedNumVal+03H,R7
+0010 8E00     F      234             MOV     LedNumVal+02H,R6
+0012 F500     F      235             MOV     LedNumVal+01H,A
+0014 F500     F      236             MOV     LedNumVal,A
+                     237     ;         LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+                     238                             ; SOURCE LINE # 49
+0016 7B10            239             MOV     R3,#010H
+0018 7A27            240             MOV     R2,#027H
+001A F9              241             MOV     R1,A
+001B F8              242             MOV     R0,A
+001C AD00     F      243             MOV     R5,LedNumVal+01H
+001E AC00     F      244             MOV     R4,LedNumVal
+0020 120000   F      245             LCALL   ?C?ULDIV
+0023 AC00            246             MOV     R4,AR0
+0025 AD01            247             MOV     R5,AR1
+0027 AE02            248             MOV     R6,AR2
+0029 AF03            249             MOV     R7,AR3
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     5
+
+002B E4              250             CLR     A
+002C 7BE8            251             MOV     R3,#0E8H
+002E 7A03            252             MOV     R2,#03H
+0030 F9              253             MOV     R1,A
+0031 F8              254             MOV     R0,A
+0032 120000   F      255             LCALL   ?C?ULDIV
+0035 7400     F      256             MOV     A,#LOW (Disp_Tab)
+0037 2F              257             ADD     A,R7
+0038 F582            258             MOV     DPL,A
+003A 7400     F      259             MOV     A,#HIGH (Disp_Tab)
+003C 3E              260             ADDC    A,R6
+003D F583            261             MOV     DPH,A
+003F E4              262             CLR     A
+0040 93              263             MOVC    A,@A+DPTR
+0041 FF              264             MOV     R7,A
+0042 E4              265             CLR     A
+0043 8F00     F      266             MOV     LedOut+03H,R7
+0045 F500     F      267             MOV     LedOut+02H,A
+0047 F500     F      268             MOV     LedOut+01H,A
+0049 F500     F      269             MOV     LedOut,A
+                     270     ;       LedOut[1]=Disp_Tab[LedNumVal%1000/100];
+                     271                             ; SOURCE LINE # 50
+004B 7BE8            272             MOV     R3,#0E8H
+004D 7A03            273             MOV     R2,#03H
+004F F9              274             MOV     R1,A
+0050 F8              275             MOV     R0,A
+0051 AF00     F      276             MOV     R7,LedNumVal+03H
+0053 AE00     F      277             MOV     R6,LedNumVal+02H
+0055 AD00     F      278             MOV     R5,LedNumVal+01H
+0057 AC00     F      279             MOV     R4,LedNumVal
+0059 120000   F      280             LCALL   ?C?ULDIV
+005C AC00            281             MOV     R4,AR0
+005E AD01            282             MOV     R5,AR1
+0060 AE02            283             MOV     R6,AR2
+0062 AF03            284             MOV     R7,AR3
+0064 E4              285             CLR     A
+0065 7B64            286             MOV     R3,#064H
+0067 FA              287             MOV     R2,A
+0068 F9              288             MOV     R1,A
+0069 F8              289             MOV     R0,A
+006A 120000   F      290             LCALL   ?C?ULDIV
+006D 7400     F      291             MOV     A,#LOW (Disp_Tab)
+006F 2F              292             ADD     A,R7
+0070 F582            293             MOV     DPL,A
+0072 7400     F      294             MOV     A,#HIGH (Disp_Tab)
+0074 3E              295             ADDC    A,R6
+0075 F583            296             MOV     DPH,A
+0077 E4              297             CLR     A
+0078 93              298             MOVC    A,@A+DPTR
+0079 FF              299             MOV     R7,A
+007A E4              300             CLR     A
+007B 8F00     F      301             MOV     LedOut+07H,R7
+007D F500     F      302             MOV     LedOut+06H,A
+007F F500     F      303             MOV     LedOut+05H,A
+0081 F500     F      304             MOV     LedOut+04H,A
+                     305     ;       LedOut[2]=Disp_Tab[LedNumVal%100/10];
+                     306                             ; SOURCE LINE # 51
+0083 7B64            307             MOV     R3,#064H
+0085 FA              308             MOV     R2,A
+0086 F9              309             MOV     R1,A
+0087 F8              310             MOV     R0,A
+0088 AF00     F      311             MOV     R7,LedNumVal+03H
+008A AE00     F      312             MOV     R6,LedNumVal+02H
+008C AD00     F      313             MOV     R5,LedNumVal+01H
+008E AC00     F      314             MOV     R4,LedNumVal
+0090 120000   F      315             LCALL   ?C?ULDIV
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     6
+
+0093 AC00            316             MOV     R4,AR0
+0095 AD01            317             MOV     R5,AR1
+0097 AE02            318             MOV     R6,AR2
+0099 AF03            319             MOV     R7,AR3
+009B E4              320             CLR     A
+009C 7B0A            321             MOV     R3,#0AH
+009E FA              322             MOV     R2,A
+009F F9              323             MOV     R1,A
+00A0 F8              324             MOV     R0,A
+00A1 120000   F      325             LCALL   ?C?ULDIV
+00A4 7400     F      326             MOV     A,#LOW (Disp_Tab)
+00A6 2F              327             ADD     A,R7
+00A7 F582            328             MOV     DPL,A
+00A9 7400     F      329             MOV     A,#HIGH (Disp_Tab)
+00AB 3E              330             ADDC    A,R6
+00AC F583            331             MOV     DPH,A
+00AE E4              332             CLR     A
+00AF 93              333             MOVC    A,@A+DPTR
+00B0 FF              334             MOV     R7,A
+00B1 E4              335             CLR     A
+00B2 8F00     F      336             MOV     LedOut+0BH,R7
+00B4 F500     F      337             MOV     LedOut+0AH,A
+00B6 F500     F      338             MOV     LedOut+09H,A
+00B8 F500     F      339             MOV     LedOut+08H,A
+                     340     ;       LedOut[3]=Disp_Tab[LedNumVal%10]; 
+                     341                             ; SOURCE LINE # 52
+00BA 7B0A            342             MOV     R3,#0AH
+00BC FA              343             MOV     R2,A
+00BD F9              344             MOV     R1,A
+00BE F8              345             MOV     R0,A
+00BF AF00     F      346             MOV     R7,LedNumVal+03H
+00C1 AE00     F      347             MOV     R6,LedNumVal+02H
+00C3 AD00     F      348             MOV     R5,LedNumVal+01H
+00C5 AC00     F      349             MOV     R4,LedNumVal
+00C7 120000   F      350             LCALL   ?C?ULDIV
+00CA 7400     F      351             MOV     A,#LOW (Disp_Tab)
+00CC 2B              352             ADD     A,R3
+00CD F582            353             MOV     DPL,A
+00CF 7400     F      354             MOV     A,#HIGH (Disp_Tab)
+00D1 3A              355             ADDC    A,R2
+00D2 F583            356             MOV     DPH,A
+00D4 E4              357             CLR     A
+00D5 93              358             MOVC    A,@A+DPTR
+00D6 FF              359             MOV     R7,A
+00D7 E4              360             CLR     A
+00D8 8F00     F      361             MOV     LedOut+0FH,R7
+00DA F500     F      362             MOV     LedOut+0EH,A
+00DC F500     F      363             MOV     LedOut+0DH,A
+00DE F500     F      364             MOV     LedOut+0CH,A
+                     365     ;         
+                     366     ;     for(i=0; i<5; i++) 
+                     367                             ; SOURCE LINE # 54
+00E0 F500     F      368             MOV     i?140,A
+00E2                 369     ?C0004:
+                     370     ;         {             
+                     371                             ; SOURCE LINE # 55
+                     372     ;               
+                     373     ;           HC595SendVal=  LedOut[i];
+                     374                             ; SOURCE LINE # 57
+00E2 E500     F      375             MOV     A,i?140
+00E4 25E0            376             ADD     A,ACC
+00E6 25E0            377             ADD     A,ACC
+00E8 2400     F      378             ADD     A,#LOW (LedOut)
+00EA F8              379             MOV     R0,A
+00EB 120000   F      380             LCALL   ?C?LLDIDATA
+00EE 8F00     F      381             MOV     HC595SendVal+03H,R7
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     7
+
+00F0 8E00     F      382             MOV     HC595SendVal+02H,R6
+00F2 8D00     F      383             MOV     HC595SendVal+01H,R5
+00F4 8C00     F      384             MOV     HC595SendVal,R4
+                     385     ;           HC595SendVal<<=8;
+                     386                             ; SOURCE LINE # 58
+00F6 7808            387             MOV     R0,#08H
+00F8 120000   F      388             LCALL   ?C?LSHL
+00FB 8F00     F      389             MOV     HC595SendVal+03H,R7
+00FD 8E00     F      390             MOV     HC595SendVal+02H,R6
+00FF 8D00     F      391             MOV     HC595SendVal+01H,R5
+0101 8C00     F      392             MOV     HC595SendVal,R4
+                     393     ;           HC595SendData(HC595SendVal);        
+                     394                             ; SOURCE LINE # 59
+0103 120000   F      395             LCALL   _HC595SendData
+                     396     ;       
+                     397     ;               switch(i)                                         
+                     398                             ; SOURCE LINE # 61
+0106 E500     F      399             MOV     A,i?140
+0108 14              400             DEC     A
+0109 6011            401             JZ      ?C0009
+010B 14              402             DEC     A
+010C 6016            403             JZ      ?C0010
+010E 14              404             DEC     A
+010F 6017            405             JZ      ?C0011
+0111 14              406             DEC     A
+0112 601C            407             JZ      ?C0012
+0114 2404            408             ADD     A,#04H
+0116 701E            409             JNZ     ?C0006
+                     410     ;          {        
+                     411                             ; SOURCE LINE # 62
+                     412     ;                       case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+                     413                             ; SOURCE LINE # 63
+0118                 414     ?C0008:
+0118 C2A2            415             CLR     LS138A
+011A 8002            416             SJMP    ?C0014
+                     417     ;             case 1:LS138A=1; LS138B=0; LS138C=0; break;               
+                     418                             ; SOURCE LINE # 64
+011C                 419     ?C0009:
+011C D2A2            420             SETB    LS138A
+011E                 421     ?C0014:
+011E C2A3            422             CLR     LS138B
+0120 C2A4            423             CLR     LS138C
+0122 8012            424             SJMP    ?C0006
+                     425     ;             case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+                     426                             ; SOURCE LINE # 65
+0124                 427     ?C0010:
+0124 C2A2            428             CLR     LS138A
+0126 8002            429             SJMP    ?C0015
+                     430     ;             case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+                     431                             ; SOURCE LINE # 66
+0128                 432     ?C0011:
+0128 D2A2            433             SETB    LS138A
+012A                 434     ?C0015:
+012A D2A3            435             SETB    LS138B
+012C C2A4            436             CLR     LS138C
+012E 8006            437             SJMP    ?C0006
+                     438     ;                       case 4:LS138A=0; LS138B=0; LS138C=1; break;
+                     439                             ; SOURCE LINE # 67
+0130                 440     ?C0012:
+0130 C2A2            441             CLR     LS138A
+0132 C2A3            442             CLR     LS138B
+0134 D2A4            443             SETB    LS138C
+                     444     ;          }
+                     445                             ; SOURCE LINE # 68
+                     446     ;                
+                     447     ;       //      delay(3);
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     8
+
+                     448     ;         }
+                     449                             ; SOURCE LINE # 71
+0136                 450     ?C0006:
+0136 0500     F      451             INC     i?140
+0138 E500     F      452             MOV     A,i?140
+013A C3              453             CLR     C
+013B 9405            454             SUBB    A,#05H
+013D 40A3            455             JC      ?C0004
+013F                 456     ?C0005:
+                     457     ; 
+                     458     ;           LS138A=1; LS138B=1; LS138C=1;    
+                     459                             ; SOURCE LINE # 73
+013F D2A2            460             SETB    LS138A
+0141 D2A3            461             SETB    LS138B
+0143 D2A4            462             SETB    LS138C
+                     463     ; 
+                     464     ; 
+                     465     ;     }
+                     466                             ; SOURCE LINE # 76
+0145 020000   F      467             LJMP    ?C0002
+                     468     ; END OF main
+                     469     
+                     470             END
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE     9
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                 T Y P E  V A L U E   ATTRIBUTES
+
+?C0002 . . . . . . . .  C ADDR   0003H   R   SEG=?PR?MAIN?TEMMAIN
+?C0004 . . . . . . . .  C ADDR   00E2H   R   SEG=?PR?MAIN?TEMMAIN
+?C0005 . . . . . . . .  C ADDR   013FH   R   SEG=?PR?MAIN?TEMMAIN
+?C0006 . . . . . . . .  C ADDR   0136H   R   SEG=?PR?MAIN?TEMMAIN
+?C0008 . . . . . . . .  C ADDR   0118H   R   SEG=?PR?MAIN?TEMMAIN
+?C0009 . . . . . . . .  C ADDR   011CH   R   SEG=?PR?MAIN?TEMMAIN
+?C0010 . . . . . . . .  C ADDR   0124H   R   SEG=?PR?MAIN?TEMMAIN
+?C0011 . . . . . . . .  C ADDR   0128H   R   SEG=?PR?MAIN?TEMMAIN
+?C0012 . . . . . . . .  C ADDR   0130H   R   SEG=?PR?MAIN?TEMMAIN
+?C0014 . . . . . . . .  C ADDR   011EH   R   SEG=?PR?MAIN?TEMMAIN
+?C0015 . . . . . . . .  C ADDR   012AH   R   SEG=?PR?MAIN?TEMMAIN
+?C?LLDIDATA. . . . . .  C ADDR   -----       EXT
+?C?LSHL. . . . . . . .  C ADDR   -----       EXT
+?C?ULDIV . . . . . . .  C ADDR   -----       EXT
+?CO?TEMMAIN. . . . . .  C SEG    0015H       REL=UNIT
+?C_STARTUP . . . . . .  C ADDR   -----       EXT
+?DT?MAIN?TEMMAIN . . .  D SEG    0001H       REL=UNIT
+?DT?TEMMAIN. . . . . .  D SEG    001CH       REL=UNIT
+?MAIN?BYTE . . . . . .  D ADDR   0000H   R   SEG=?DT?MAIN?TEMMAIN
+?PR?MAIN?TEMMAIN . . .  C SEG    0148H       REL=UNIT
+?PR?SYSTEM_INI?TEMMAIN  C SEG    000FH       REL=UNIT
+AC . . . . . . . . . .  B ADDR   00D0H.6 A   
+ACC. . . . . . . . . .  D ADDR   00E0H   A   
+AR0. . . . . . . . . .  D ADDR   0000H   A   
+AR1. . . . . . . . . .  D ADDR   0001H   A   
+AR2. . . . . . . . . .  D ADDR   0002H   A   
+AR3. . . . . . . . . .  D ADDR   0003H   A   
+B. . . . . . . . . . .  D ADDR   00F0H   A   
+CP_RL2 . . . . . . . .  B ADDR   00C8H.0 A   
+CY . . . . . . . . . .  B ADDR   00D0H.7 A   
+C_T2 . . . . . . . . .  B ADDR   00C8H.1 A   
+DISP_TAB . . . . . . .  C ADDR   0000H   R   SEG=?CO?TEMMAIN
+DPH. . . . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . . . .  D ADDR   0082H   A   
+EA . . . . . . . . . .  B ADDR   00A8H.7 A   
+ES . . . . . . . . . .  B ADDR   00A8H.4 A   
+ET0. . . . . . . . . .  B ADDR   00A8H.1 A   
+ET1. . . . . . . . . .  B ADDR   00A8H.3 A   
+ET2. . . . . . . . . .  B ADDR   00A8H.5 A   
+EX0. . . . . . . . . .  B ADDR   00A8H.0 A   
+EX1. . . . . . . . . .  B ADDR   00A8H.2 A   
+EXEN2. . . . . . . . .  B ADDR   00C8H.3 A   
+EXF2 . . . . . . . . .  B ADDR   00C8H.6 A   
+F0 . . . . . . . . . .  B ADDR   00D0H.5 A   
+GETTEMP. . . . . . . .  C ADDR   -----       EXT
+HC595SENDVAL . . . . .  D ADDR   0014H   R   SEG=?DT?TEMMAIN
+I?140. . . . . . . . .  D ADDR   0000H   R   SEG=?DT?MAIN?TEMMAIN
+IE . . . . . . . . . .  D ADDR   00A8H   A   
+IE0. . . . . . . . . .  B ADDR   0088H.1 A   
+IE1. . . . . . . . . .  B ADDR   0088H.3 A   
+INT0 . . . . . . . . .  B ADDR   00B0H.2 A   
+INT1 . . . . . . . . .  B ADDR   00B0H.3 A   
+IP . . . . . . . . . .  D ADDR   00B8H   A   
+IT0. . . . . . . . . .  B ADDR   0088H.0 A   
+IT1. . . . . . . . . .  B ADDR   0088H.2 A   
+LEDNUMVAL. . . . . . .  D ADDR   0018H   R   SEG=?DT?TEMMAIN
+LEDOUT . . . . . . . .  D ADDR   0000H   R   SEG=?DT?TEMMAIN
+LS138A . . . . . . . .  B ADDR   00A0H.2 A   
+LS138B . . . . . . . .  B ADDR   00A0H.3 A   
+LS138C . . . . . . . .  B ADDR   00A0H.4 A   
+A51 MACRO ASSEMBLER  TEMMAIN                                                              09/16/2009 23:33:52 PAGE    10
+
+MAIN . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?MAIN?TEMMAIN
+OV . . . . . . . . . .  B ADDR   00D0H.2 A   
+P. . . . . . . . . . .  B ADDR   00D0H.0 A   
+P0 . . . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . . . .  D ADDR   00B0H   A   
+PCON . . . . . . . . .  D ADDR   0087H   A   
+PS . . . . . . . . . .  B ADDR   00B8H.4 A   
+PSW. . . . . . . . . .  D ADDR   00D0H   A   
+PT0. . . . . . . . . .  B ADDR   00B8H.1 A   
+PT1. . . . . . . . . .  B ADDR   00B8H.3 A   
+PT2. . . . . . . . . .  B ADDR   00B8H.5 A   
+PX0. . . . . . . . . .  B ADDR   00B8H.0 A   
+PX1. . . . . . . . . .  B ADDR   00B8H.2 A   
+RB8. . . . . . . . . .  B ADDR   0098H.2 A   
+RCAP2H . . . . . . . .  D ADDR   00CBH   A   
+RCAP2L . . . . . . . .  D ADDR   00CAH   A   
+RCLK . . . . . . . . .  B ADDR   00C8H.5 A   
+RD . . . . . . . . . .  B ADDR   00B0H.7 A   
+REN. . . . . . . . . .  B ADDR   0098H.4 A   
+RI . . . . . . . . . .  B ADDR   0098H.0 A   
+RS0. . . . . . . . . .  B ADDR   00D0H.3 A   
+RS1. . . . . . . . . .  B ADDR   00D0H.4 A   
+RXD. . . . . . . . . .  B ADDR   00B0H.0 A   
+SBUF . . . . . . . . .  D ADDR   0099H   A   
+SCON . . . . . . . . .  D ADDR   0098H   A   
+SM0. . . . . . . . . .  B ADDR   0098H.7 A   
+SM1. . . . . . . . . .  B ADDR   0098H.6 A   
+SM2. . . . . . . . . .  B ADDR   0098H.5 A   
+SP . . . . . . . . . .  D ADDR   0081H   A   
+SYSTEM_INI . . . . . .  C ADDR   0000H   R   SEG=?PR?SYSTEM_INI?TEMMAIN
+T0 . . . . . . . . . .  B ADDR   00B0H.4 A   
+T1 . . . . . . . . . .  B ADDR   00B0H.5 A   
+T2 . . . . . . . . . .  B ADDR   0090H.0 A   
+T2CON. . . . . . . . .  D ADDR   00C8H   A   
+T2EX . . . . . . . . .  B ADDR   0090H.1 A   
+TB8. . . . . . . . . .  B ADDR   0098H.3 A   
+TCLK . . . . . . . . .  B ADDR   00C8H.4 A   
+TCON . . . . . . . . .  D ADDR   0088H   A   
+TEMMAIN. . . . . . . .  N NUMB   -----       
+TEMPERATURE. . . . . .  I ADDR   -----       EXT
+TF0. . . . . . . . . .  B ADDR   0088H.5 A   
+TF1. . . . . . . . . .  B ADDR   0088H.7 A   
+TF2. . . . . . . . . .  B ADDR   00C8H.7 A   
+TH0. . . . . . . . . .  D ADDR   008CH   A   
+TH1. . . . . . . . . .  D ADDR   008DH   A   
+TH2. . . . . . . . . .  D ADDR   00CDH   A   
+TI . . . . . . . . . .  B ADDR   0098H.1 A   
+TL0. . . . . . . . . .  D ADDR   008AH   A   
+TL1. . . . . . . . . .  D ADDR   008BH   A   
+TL2. . . . . . . . . .  D ADDR   00CCH   A   
+TMOD . . . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . . . .  B ADDR   0088H.4 A   
+TR1. . . . . . . . . .  B ADDR   0088H.6 A   
+TR2. . . . . . . . . .  B ADDR   00C8H.2 A   
+TXD. . . . . . . . . .  B ADDR   00B0H.1 A   
+WR . . . . . . . . . .  B ADDR   00B0H.6 A   
+_HC595SENDDATA . . . .  C ADDR   -----       EXT
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

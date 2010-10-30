@@ -1,0 +1,80 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        11/03/2009  18:13:33  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE BLED.obj TO BLED RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  BLED.obj (BLED)
+
+
+LINK MAP OF MODULE:  BLED (BLED)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     006AH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  BLED (BLED)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        BLED
+  B:0080H.0       SYMBOL        K1
+  C:004EH         SYMBOL        K1_PROG
+  B:0080H.1       SYMBOL        K2
+  C:0053H         SYMBOL        K2_PROG
+  B:0080H.2       SYMBOL        K3
+  C:0058H         SYMBOL        K3_PROG
+  B:0080H.3       SYMBOL        K4
+  C:005DH         SYMBOL        K4_PROG
+  B:0080H.4       SYMBOL        K5
+  C:0062H         SYMBOL        K5_PROG
+  B:0080H.5       SYMBOL        K6
+  C:0066H         SYMBOL        K6_PROG
+  C:0033H         SYMBOL        LOOP
+  C:0030H         SYMBOL        MAIN
+  D:0080H         SYMBOL        P0
+  D:0090H         SYMBOL        P1
+  D:00A0H         SYMBOL        P2
+  D:0081H         SYMBOL        SP
+  C:0000H         LINE#         17
+  C:0030H         LINE#         21
+  C:0033H         LINE#         24
+  C:0036H         LINE#         25
+  C:0039H         LINE#         26
+  C:003CH         LINE#         27
+  C:003FH         LINE#         28
+  C:0042H         LINE#         29
+  C:0045H         LINE#         30
+  C:0047H         LINE#         31
+  C:004AH         LINE#         32
+  C:004CH         LINE#         34
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/03/2009  18:13:33  PAGE 2
+
+
+  C:004EH         LINE#         36
+  C:0051H         LINE#         37
+  C:0053H         LINE#         39
+  C:0056H         LINE#         40
+  C:0058H         LINE#         42
+  C:005BH         LINE#         43
+  C:005DH         LINE#         45
+  C:0060H         LINE#         46
+  C:0062H         LINE#         48
+  C:0064H         LINE#         49
+  C:0066H         LINE#         51
+  C:0068H         LINE#         52
+  -------         ENDMOD        BLED
+
+Program Size: data=8.0 xdata=0 code=106
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

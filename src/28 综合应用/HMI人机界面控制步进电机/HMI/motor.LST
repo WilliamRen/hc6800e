@@ -1,0 +1,250 @@
+C51 COMPILER V7.10   MOTOR                                                                 09/26/2010 20:27:21 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MOTOR
+OBJECT MODULE PLACED IN motor.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE motor.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************************************************************************
+   2          *  标题:                   五轴控制步进电机试验                                                                          *
+   3          *                                                                                                                                                                        *
+   4          *    通过本例程了解步进马达使用及驱动程序编写                                                                            *
+   5          *;   单双八拍工作方式：                                                                  *
+   6          *;   A-AB-B-BC-C-CD-D-DA-A (即一个脉冲,转 3.75 度)                                                               *
+   7          *    J14短路冒需断开 ,通过排线连接步进马达数据接口                                       *
+   8          *    请学员一定要消化掉本例程，领会指针的经典应用，                                      *
+   9          * 现象：5个步进马达以不同加速度运行，运行到不同圈数后停止                            *                      
+             -                                                                           *
+  10          **************************************************************************************/  
+  11          #include "reg52.h"
+  12          
+  13          unsigned char TickOut(unsigned int * tick, unsigned int tickCnt);
+  14          //unsigned char  Acceleration( unsigned int *Base_Tim,  unsigned int Delay_Tim,unsigned int * Flag , unsig
+             -ned char* Speed) ;
+  15          void MotorRun(unsigned int *pD);
+  16          
+  17          unsigned int Tick_10ms = 0;    //时间片计数器
+  18          
+  19          unsigned char code  FFW_L[8]={~0xfe,~0xfc,~0xfd,~0xf9,~0xfb,~0xf3,~0xf7,~0xf6};   //低四位 马达相序变化表
+  20          unsigned char code  FFW_H[8]={~0xef,~0xcf,~0xdf,~0x9f,~0xbf,~0x3f,~0x7f,~0x6f};   //高四位 马达相序变化表
+  21          
+  22          unsigned int xdata  MotorTimer1 = 0 , MotorTimer2 = 0, MotorTimer3 = 0, MotorTimer4 = 0, MotorTimer5 = 0;       
+             -      //马达转速基时
+  23          unsigned int xdata  MotorDelay1 = 0 , MotorDelay2 = 0, MotorDelay3 = 0, MotorDelay4 = 0, MotorDelay5 = 0; 
+             -TIM,CT;        //马达转速
+  24          
+  25          unsigned  int  xdata Delay_Tim1 =0,     Delay_Tim2 =0,   Delay_Tim3 =0,   Delay_Tim4 =0,   Delay_Tim5 =0;  //马
+             -达加速度
+  26          unsigned  int  xdata Base_T1 = 0,       Base_T2 = 0,     Base_T3 = 0,     Base_T4 = 0,   Base_T5 = 0;    //马达加速度基
+             -时
+  27          unsigned  char xdata speed1 = 8,        speed2 = 8,       speed3 = 8,      speed4 = 8,    speed5 = 8;  //马达转速
+  28          unsigned  int  xdata Acc_Flg1 =0,       Acc_Flg2 =0,  Acc_Flg3 =0,      Acc_Flg4 =0,  Acc_Flg5 =0;         //加减速标志
+  29          
+  30          
+  31          
+  32          /*****************************************************
+  33          *           步进马达1                                                            *
+  34          ******************************************************/
+  35           
+  36          unsigned char SetMotor1(unsigned int step,unsigned int Speed ) //step 马达的步数  Speed马达速度
+  37          {
+  38   1         static unsigned int Circle;    //马达步数
+  39   1         static unsigned char ret ;
+  40   1         MotorDelay1 = 70-Speed;
+  41   1          if (Circle <= step)
+  42   1         {  
+  43   2             if (TickOut(&MotorTimer1 , MotorDelay1))
+  44   2                 { static char i;
+  45   3                       ret = (FFW_L[i]&0x0f);   //查表取马达相序
+  46   3                       if (i++ == 7) i = 0;
+  47   3                       ++Circle;
+  48   3                 }
+  49   2          }
+C51 COMPILER V7.10   MOTOR                                                                 09/26/2010 20:27:21 PAGE 2   
+
+  50   1      
+  51   1         return ret;
+  52   1      }
+  53          
+  54          /*****************************************************
+  55          *           步进马达2                                                            *
+  56          ******************************************************/
+  57          unsigned char SetMotor2(unsigned int step,unsigned int Speed )   //step 马达的步数  Speed马达速度
+  58          {  static unsigned int Circle ;  //马达步数
+  59   1         static unsigned char ret ;
+  60   1         MotorDelay2 = 70-Speed;
+  61   1        if (Circle <= step)
+  62   1        {   if(TickOut(&MotorTimer2 , MotorDelay2))
+  63   2           { static char i;
+  64   3                  ret = (FFW_H[i]&0xF0);       //查表取马达相序
+  65   3                      if (i++ == 7) i = 0;
+  66   3                  ++Circle;
+  67   3               }
+  68   2        }
+  69   1      
+  70   1        return  ret;
+  71   1      }
+  72          
+  73          /*****************************************************
+  74          *           步进马达3                                                            *
+  75          ******************************************************/
+  76          unsigned char SetMotor3(unsigned int step,unsigned int Speed)    //step 马达的步数  Speed马达速度
+  77          {  static unsigned int Circle ;   //马达步数
+  78   1         static unsigned char ret ;
+  79   1         MotorDelay3 = 70-Speed;
+  80   1         if(Circle <= step)
+  81   1         { if (TickOut(&MotorTimer3 , MotorDelay3))
+  82   2           { static char i;
+  83   3                 ret = FFW_L[i]&0x1f;    //查表取马达相序
+  84   3                 if (i++ == 7) i = 0;
+  85   3                  ++Circle;
+  86   3           }
+  87   2         }
+  88   1         return ret;
+  89   1      }
+  90          
+  91          /*****************************************************
+  92          *           步进马达4                                                            *
+  93          ******************************************************/
+  94          unsigned char SetMotor4(unsigned int step,unsigned int Speed)   //step 马达的步数  Speed马达速度
+  95          {  static unsigned int Circle ;   //马达步数
+  96   1         static unsigned char ret ;
+  97   1         MotorDelay4 = 70-Speed;
+  98   1          if(Circle <= step)
+  99   1              {   if (TickOut(&MotorTimer4 , MotorDelay4))
+ 100   2                 { static char i;
+ 101   3                       ret = FFW_H[i]&0xf0;   //查表取马达相序
+ 102   3                       if (i++ == 7) i = 0;
+ 103   3                        ++Circle;
+ 104   3                 }
+ 105   2              }
+ 106   1         return ret;
+ 107   1      }
+ 108          
+ 109          /*****************************************************
+ 110          *           步进马达5                                                            *
+ 111          ******************************************************/
+C51 COMPILER V7.10   MOTOR                                                                 09/26/2010 20:27:21 PAGE 3   
+
+ 112          /*unsigned char SetMotor5(unsigned int step,unsigned int Speed)  //step 马达的步数  Speed马达速度
+ 113          {  static unsigned int Circle ;  //马达步数
+ 114             static unsigned char ret ;    
+ 115             MotorDelay5 = 70-Speed;
+ 116             if(Circle <= step)
+ 117             {    if (TickOut(&MotorTimer5 , MotorDelay5))
+ 118                     { static char i;
+ 119                           ret = FFW_L[i]&0x0f;    //查表取马达相序
+ 120                          if (i++ == 7) i = 0;
+ 121                          ++Circle;
+ 122                    }
+ 123                    
+ 124                  }
+ 125             return ret;
+ 126          }*/
+ 127          
+ 128          void MotorRun(unsigned int * pD)
+ 129          { 
+ 130   1         unsigned char ret1 , ret2 , ret3 , ret4 ; //ret5;
+ 131   1         
+ 132   1          //**************************步进马达1处理**************************
+ 133   1              Delay_Tim1 = 50;
+ 134   1              if(speed1 == 61)  Acc_Flg1 = 2;
+ 135   1              if(speed1 == 8)   Acc_Flg1 = 1 ;
+ 136   1              Acc_Flg1 = 1;
+ 137   1      //      Acceleration(&Base_T1 , Delay_Tim1, &Acc_Flg1  , &speed1);
+ 138   1          ret1 = SetMotor1(*(pD+2)*96 ,*(pD+1) ) ;     //参数设置步数  8个脉冲30度*100=3000度
+ 139   1      
+ 140   1              //**************************步进马达2处理**************************
+ 141   1              Delay_Tim2 = 250;
+ 142   1              Acc_Flg2 = 1;
+ 143   1      //      Acceleration(&Base_T2 , Delay_Tim2, &Acc_Flg2  , &speed2);
+ 144   1              ret2 = SetMotor2(*(pD+4)*96 , *(pD+3)) ;         //马达2
+ 145   1              P1 = ret1 | ret2 ;
+ 146   1      
+ 147   1              //**************************步进马达3处理**************************
+ 148   1              Delay_Tim3 = 500;
+ 149   1              Acc_Flg3 = 1;
+ 150   1              ret3 = SetMotor3(*(pD+6)*1500 ,*(pD+5)) ;        //马达3
+ 151   1              
+ 152   1              //**************************步进马达4处理**************************
+ 153   1              Delay_Tim4 = 750;
+ 154   1              Acc_Flg4 = 1;
+ 155   1              ret4 = SetMotor4(*(pD+8)*96 , *(pD+7)) ;         //马达4
+ 156   1              P0 =  ret3 | ret4 ;
+ 157   1              
+ 158   1              //**************************步进马达5处理**************************
+ 159   1      //      Delay_Tim5 = 1000;
+ 160   1      //      Acc_Flg5 = 1;
+ 161   1      //      ret5 = SetMotor5(8*2500 , Acceleration(&Base_T5 , Delay_Tim5, &Acc_Flg5  , &speed5));    //马达5
+ 162   1      //      P2 = ret5; 
+ 163   1      
+ 164   1       
+ 165   1      }
+ 166          
+ 167          /**************************************************************************
+ 168          *                                                                                                                                                 *
+ 169          *               各个马达的基时（相当于多个定时器）                                        *
+ 170          * 注意：体会指针的用法 ，多工定义任务同时工作，互不干扰                   *
+ 171          **************************************************************************/
+ 172          unsigned char TickOut(unsigned int * tick, unsigned int tickCnt)
+ 173          {
+C51 COMPILER V7.10   MOTOR                                                                 09/26/2010 20:27:21 PAGE 4   
+
+ 174   1           if(Tick_10ms - *tick >= tickCnt)  
+ 175   1           {
+ 176   2              *tick = Tick_10ms;
+ 177   2              return 1;
+ 178   2           }
+ 179   1           return 0;
+ 180   1      }
+ 181          
+ 182          
+ 183          /*************************************************************************
+ 184          *                                                                                                                                                *
+ 185          *                        调整加速度                                                                              *
+ 186          * 注意：体会指针的用法                                                   *
+ 187          **************************************************************************/
+ 188          /*unsigned char  Acceleration(unsigned int *Base_Tim, unsigned int Delay_Tim,  unsigned int * Flag , unsig
+             -ned char* Speed)
+ 189          {
+ 190                  if (TickOut(*&Base_Tim , Delay_Tim))     
+ 191                  {  
+ 192                    if((*Flag == 1) && (*Speed <= 61)) 
+ 193                    (*Speed)++ ;
+ 194          
+ 195                    if((*Flag == 2) && (*Speed >= 8)) 
+ 196                    (*Speed)--;
+ 197                   }
+ 198                    
+ 199                  return  *Speed;
+ 200          }*/
+ 201          
+ 202          
+ 203          /************************************************
+ 204          *                                                                                               *
+ 205          *             定时中断延时                                                  *
+ 206          ************************************************/
+ 207          /*  void Tzd(void) interrupt 1
+ 208          {
+ 209             TH0 = 0xfe;    //11.0592
+ 210             TL0 = 0x33;
+ 211          
+ 212             Tick_10ms++;    //10MS时钟
+ 213          
+ 214          }*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    606    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =     55    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

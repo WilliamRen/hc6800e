@@ -1,0 +1,65 @@
+C51 COMPILER V7.10   232                                                                   10/09/2008 21:23:56 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 232
+OBJECT MODULE PLACED IN 232.OBJ
+COMPILER INVOKED BY: D:\Program Files\Keil\C51\BIN\C51.EXE 232.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           /*******************************************************************************
+   2          *  标题:                  RS232串口通信试验(接收)                                      *
+   3          
+   4          *  1.通过本例程了解串口的基本原理及使用 ,理解并掌握对串口进行初始化
+   5          
+   6             2.请使用串口调试助手（Baud 19200、数据位8、停止位1、效验位无）做为上位机发给单片机，
+   7               如果在字符数字发送框发0X00蜂铃器就会叫，如果发0xff蜂铃器就停叫。 
+   8                                                                                                *
+   9          * 请学员认真消化本例程，学会用C语言操作串口                                               *
+  10          ********************************************************************************/
+  11          
+  12          #include <REG52.H>
+  13          #include <stdio.h>
+  14          sbit BEEP = P1^4;
+  15          unsigned char b;
+  16          
+  17          void main (void) {
+  18   1      
+  19   1      
+  20   1              SCON = 0x50;      //REN=1允许串行接受状态，串口工作模式1                   
+  21   1                  TMOD|= 0x20;      //定时器工作方式2                    
+  22   1                      PCON|= 0x80;                                                          
+  23   1                      TH1  = 0xFD;     //baud*2  /* reload value 19200、数据位8、停止位1。效验位无          
+  24   1                      TR1  = 1;                                                             
+  25   1                      ES   = 1;        //开串口中断                  
+  26   1                      EA   = 1;        // 开总中断 
+  27   1                      BEEP=1;
+  28   1                 // IE = 0x0;
+  29   1         
+  30   1              while(1)
+  31   1          { 
+  32   2              
+  33   2                if (RI)       //RI接受中断标志
+  34   2                {  RI=0;          //清除RI接受中断标志
+  35   3                   b=SBUF;    //SUBF接受/发送缓冲器
+  36   3             }
+  37   2               BEEP=b;
+  38   2        
+  39   2        
+  40   2       }
+  41   1       
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     36    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,322 @@
+C51 COMPILER V7.10   LCD                                                                   10/01/2010 19:15:05 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN Lcd.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE Lcd.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************************************************
+   2          *                                                                                         *
+   3          *                                  彩屏驱动程序                                                   *
+   4          *                                                                                                                 *
+   5          **********************************************************/
+   6          
+   7          #include <reg52.h>
+   8          #include "Lcd.h"
+   9          #include "char.h"
+  10          #include "chinese.h"
+  11          
+  12          
+  13          uint colors[]=
+  14          {
+  15            0xf800,0x07e0,0x001f,0xffe0,0x0000,0x07ff,0xf81f,0xffff
+  16          };
+  17          
+  18          /**********************************************************
+  19          
+  20           延时子函数
+  21          
+  22          **********************************************************/
+  23          void delay_ms(uint ms)
+  24          {
+  25   1        unsigned char k;
+  26   1      
+  27   1        while (ms--)
+  28   1        {
+  29   2          for (k = 0; k < 228; k++)
+  30   2            ;
+  31   2        }
+  32   1      }
+  33          
+  34          /**********************************************************
+  35          
+  36           写命令与数据子函数
+  37          
+  38          **********************************************************/
+  39          void LCD_Write(uchar type, uint value)  
+  40          {
+  41   1              LCD_CS = 0;
+  42   1              LCD_RS  = type;                 // 0: command    1: data
+  43   1              
+  44   1              LCD_WR  = 0;
+  45   1              DATA    = (uchar)value;;
+  46   1              LCD_WR  = 1;
+  47   1              LCD_CS = 1;
+  48   1      }
+  49          
+  50          /**********************************************************
+  51          
+  52           写8位数据子函数
+  53          
+  54          **********************************************************/
+  55          /*void LCD_Write_Data8(uchar value)    // color data
+C51 COMPILER V7.10   LCD                                                                   10/01/2010 19:15:05 PAGE 2   
+
+  56          {
+  57                  LCD_CS = 0;
+  58                  LCD_RS  = 1;
+  59                  LCD_WR  = 0;
+  60                  DATA    = value;
+  61                  LCD_WR  = 1;
+  62                  LCD_CS = 1;
+  63          }*/
+  64          
+  65          
+  66          /**********************************************************
+  67          
+  68           写16位数据子函数
+  69          
+  70          **********************************************************/
+  71          void LCD_Wirte_Data16(uint value)    // color data
+  72          {
+  73   1              LCD_CS = 0;
+  74   1          LCD_RS      = 1;
+  75   1              LCD_WR  = 0;
+  76   1              DATA    = (uchar)value;
+  77   1              LCD_WR  = 1;
+  78   1              LCD_WR  = 0;
+  79   1              DATA    = (uchar)(value>>8)     ;
+  80   1              LCD_WR  = 1;
+  81   1              LCD_CS = 1;
+  82   1      }
+  83          
+  84          /*********************************************************
+  85          
+  86           写寄存器子函数
+  87          
+  88          **********************************************************/
+  89          void Reg_Write(uint reg,uint value) 
+  90          {
+  91   1         LCD_Write(TYPE_LCD_COMMAND,reg);
+  92   1         LCD_Write(TYPE_LCD_DATA,value);
+  93   1      }
+  94          
+  95          
+  96          /**********************************************************
+  97          
+  98          设置显示窗口子函数
+  99          
+ 100          **********************************************************/
+ 101          void LCD_SetRamAddr(uint xStart, uint xEnd, uint yStart, uint yEnd) 
+ 102          {
+ 103   1         uint VerPos,HorPos,StartAddr;
+ 104   1      
+ 105   1         HorPos    = (uint)(xStart | (xEnd<<8));
+ 106   1         VerPos    = (uint)(yStart | (yEnd<<8));
+ 107   1         StartAddr = (uint)(xStart | (yStart<<8));
+ 108   1      
+ 109   1      
+ 110   1      
+ 111   1          Reg_Write(0x09, xStart);
+ 112   1          Reg_Write(0x10,yStart);
+ 113   1          Reg_Write(0x11,xEnd);
+ 114   1          Reg_Write(0x12,yEnd);
+ 115   1      
+ 116   1          Reg_Write(0x18, xStart); 
+ 117   1              Reg_Write(0x19, yStart); 
+C51 COMPILER V7.10   LCD                                                                   10/01/2010 19:15:05 PAGE 3   
+
+ 118   1          LCD_Write(TYPE_LCD_COMMAND,0x22);           // 0x22
+ 119   1      }
+ 120          
+ 121          
+ 122          /**********************************************************/
+ 123          void LCD_init(void)
+ 124          {       uint num;
+ 125   1              Reg_Write(0x0001,0x0002);       //MODE_SEL1
+ 126   1              Reg_Write(0x0002,0x0012);   //MODE_SEL2
+ 127   1              Reg_Write(0x0003,0x0000);   //MODE_SEL3
+ 128   1              Reg_Write(0x0004,0x0010);       //MODE_SEL3
+ 129   1              LCD_SetRamAddr(0,127, 0,159); 
+ 130   1              for(num=20480;num>0;num--)
+ 131   1              LCD_Wirte_Data16(0xffff);
+ 132   1         
+ 133   1              Reg_Write(0x0005,0x0008);   //VCO_MODE  
+ 134   1              Reg_Write(0x0007,0x007f);       //VCOMHT_CTRL
+ 135   1              Reg_Write(0x0008,0x0017);   //VCOMLT_CTRL       
+ 136   1              Reg_Write(0x0009,0x0000);   //write SRAM window start X point
+ 137   1              Reg_Write(0x0010,0x0000);   //write SRAM window start y point
+ 138   1              Reg_Write(0x0011,0x0083);   //write SRAM window end x point
+ 139   1              Reg_Write(0x0012,0x009f);   //write SRAM window end y point
+ 140   1              Reg_Write(0x0017,0x0000);   //SRAM contrl
+ 141   1              Reg_Write(0x0018,0x0000);   //SRAM x position
+ 142   1              Reg_Write(0x0019,0x0000);   //SRAM y position
+ 143   1              Reg_Write(0x0006,0x00c5);   //DAC_OP_CTRL2
+ 144   1              delay_ms(10); //延时
+ 145   1      
+ 146   1      }
+ 147          
+ 148          
+ 149          /**********************************************************
+ 150          
+ 151           清屏子函数
+ 152          
+ 153          **********************************************************/
+ 154          void  LCD_clear(uchar n)
+ 155          {
+ 156   1         uint num;
+ 157   1         
+ 158   1         LCD_SetRamAddr(0,127, 0,159);
+ 159   1      
+ 160   1         for(num=20480;num>0;num--)          //160*128=20480
+ 161   1         {
+ 162   2           LCD_Wirte_Data16(colors[n]);
+ 163   2         }
+ 164   1      }
+ 165          
+ 166          
+ 167          /**********************************************************
+ 168          
+ 169            字符显示子函数
+ 170          
+ 171          **********************************************************/
+ 172          void LCD_ShowChar(uchar x,uchar y,uint For_color,uint Bk_color, char ch)
+ 173          {       
+ 174   1         uchar temp;
+ 175   1         uchar pos,t;
+ 176   1         uchar  CHAR_W,CHAR_H;
+ 177   1         
+ 178   1         CHAR_W = 8;         //8*16
+ 179   1         CHAR_H = 16;
+C51 COMPILER V7.10   LCD                                                                   10/01/2010 19:15:05 PAGE 4   
+
+ 180   1      
+ 181   1         if(x>(LCD_SIZE_X-CHAR_W)||y>(LCD_SIZE_Y-CHAR_H))
+ 182   1         return;
+ 183   1         
+ 184   1         LCD_SetRamAddr(x, x+CHAR_W-1, y,y+CHAR_H-1);
+ 185   1         ch = ch-32;                       //按照ASCII编码顺序的到相应字母的编码
+ 186   1      
+ 187   1         for(pos=0;pos<CHAR_H;pos++)  
+ 188   1         {
+ 189   2            temp= Font8x16[ch][pos];
+ 190   2            
+ 191   2            for(t=0;t<CHAR_W;t++)
+ 192   2            {                 
+ 193   3                  if(temp&0x80)
+ 194   3                  LCD_Wirte_Data16(For_color);  //textcolor
+ 195   3                  else 
+ 196   3                  LCD_Wirte_Data16(Bk_color);  //backcolor
+ 197   3              temp<<=1; 
+ 198   3            }
+ 199   2                
+ 200   2         }
+ 201   1      }  
+ 202          
+ 203          /**********************************************************
+ 204           显示字符串子函数
+ 205          
+ 206           x,y:起点坐标  
+ 207           *p:字符串起始地址
+ 208          
+ 209          **********************************************************/
+ 210          void LCD_ShowString(uchar x,uchar y,uint For_color,uint Bk_color,char *p)
+ 211          {         
+ 212   1         while(*p!='\0')
+ 213   1         {       
+ 214   2           LCD_ShowChar(x,y,For_color,Bk_color,*p);
+ 215   2           x+=8;
+ 216   2           p++;
+ 217   2         }
+ 218   1      }
+ 219          
+ 220          /**********************************************************
+ 221          
+ 222            写汉字子函数
+ 223          
+ 224          **********************************************************/
+ 225          void ChineseChar(uint x,uint y,int size,uint For_color,uint Bk_color ,char c)
+ 226          {
+ 227   1         int e=0,i,j;
+ 228   1         int  ed;
+ 229   1         
+ 230   1         uint  ncols;
+ 231   1         uint  nrows;
+ 232   1         uint  nbytes;
+ 233   1      
+ 234   1         uchar *pfont;
+ 235   1         uchar *pchar;
+ 236   1         uchar *fonttable[]={(uchar *)hz12,(uchar *)hz16,(uchar *)hz24};
+ 237   1         
+ 238   1         pfont=(uchar *)fonttable[size];
+ 239   1      
+ 240   1         if(size==0)
+ 241   1         {
+C51 COMPILER V7.10   LCD                                                                   10/01/2010 19:15:05 PAGE 5   
+
+ 242   2           ncols =12-1;
+ 243   2           nrows =12-1;
+ 244   2           nbytes =24;         //(12*12)/72
+ 245   2         }
+ 246   1         else
+ 247   1         if(size==1)
+ 248   1         {
+ 249   2           ncols =16-1;
+ 250   2           nrows =16-1;
+ 251   2           nbytes =32;  //(16*16)/72
+ 252   2         }
+ 253   1         else
+ 254   1         if(size==2)
+ 255   1         {
+ 256   2           ncols =24-1;
+ 257   2           nrows =24-1;
+ 258   2           nbytes =72;   //(24*24)/72
+ 259   2         }
+ 260   1         
+ 261   1         pchar=pfont + (nbytes*(c-1));
+ 262   1      
+ 263   1         LCD_SetRamAddr(x, x+nrows, y,y+ncols);
+ 264   1         
+ 265   1         for(i=0;i<nbytes;i++)
+ 266   1         {
+ 267   2           ed=*pchar++;
+ 268   2               if(size==0)
+ 269   2               {
+ 270   3             if(i%2==0)
+ 271   3             e=8;
+ 272   3             else
+ 273   3             e=4;
+ 274   3               }
+ 275   2               else
+ 276   2               e=8;
+ 277   2           
+ 278   2           for(j=0;j<e;j++)
+ 279   2           if((ed>>j)&0x01)
+ 280   2           {
+ 281   3             LCD_Wirte_Data16(For_color);  //textcolor
+ 282   3               }
+ 283   2           else
+ 284   2           {
+ 285   3             LCD_Wirte_Data16(Bk_color);  //backcolor
+ 286   3               }
+ 287   2        }
+ 288   1      }
+ 289          
+ 290          /*********************************************************/
+ 291          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    977    ----
+   CONSTANT SIZE    =   1961    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16      65
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

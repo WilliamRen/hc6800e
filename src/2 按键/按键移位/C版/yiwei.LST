@@ -1,0 +1,90 @@
+C51 COMPILER V7.10   YIWEI                                                                 03/15/2010 15:49:51 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE YIWEI
+OBJECT MODULE PLACED IN yiwei.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE yiwei.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *           按键控制程序                                                                                   *
+   3          *  连接方法：JP10（P2） 与 JP1 （LED灯）连接，                                                             *
+   4          *            JP11（P0） 与 JP5（按键接口）连接                                 *
+   5          *         开始点亮P1LED                                                                *
+   6          *         按P01 LED向右移一位                                                  *
+   7          *         按P00 LED向左移一位                                                  *
+   8          *        连续按动按钮LED会不停的左移或右移                                                                                 *
+   9          *******************************************************************************/
+  10          #include <reg51.h>
+  11          #include <intrins.h>
+  12          unsigned char scan_key();
+  13          void proc_key(unsigned char key_v);
+  14          void delayms(unsigned char ms);
+  15          sbit    K1 = P0^0;      //对应按钮K1
+  16          sbit    K2 = P0^1;      //对应按钮K2
+  17          main()
+  18          {
+  19   1              unsigned char key_s,key_v;
+  20   1              key_v = 0x03;
+  21   1              P2 = 0xfe;
+  22   1              while(1)
+  23   1              {
+  24   2                      key_s = scan_key();
+  25   2                      if(key_s != key_v)
+  26   2                      {
+  27   3                              delayms(10);
+  28   3                              key_s = scan_key();
+  29   3                              if(key_s != key_v)
+  30   3                              {       
+  31   4                                      key_v = key_s;
+  32   4                                      proc_key(key_v);                                        
+  33   4                              }
+  34   3                      }
+  35   2              }       
+  36   1      }
+  37          unsigned char scan_key()
+  38          {
+  39   1              unsigned char key_s;
+  40   1              key_s = 0x00;
+  41   1              key_s |= K2;
+  42   1              key_s <<= 1;
+  43   1              key_s |= K1;
+  44   1              return key_s;           
+  45   1      }
+  46          void proc_key(unsigned char key_v)
+  47          {
+  48   1              if((key_v & 0x01) == 0)
+  49   1              {
+  50   2                      P2 = _cror_(P2,1);
+  51   2              }
+  52   1              else if((key_v & 0x02) == 0)
+  53   1              {
+  54   2                      P2 = _crol_(P2, 1);
+  55   2              }
+C51 COMPILER V7.10   YIWEI                                                                 03/15/2010 15:49:51 PAGE 2   
+
+  56   1      }
+  57          void delayms(unsigned char ms)          // 延时子程序
+  58          {                                               
+  59   1              unsigned char i;
+  60   1              while(ms--)
+  61   1              {
+  62   2                      for(i = 0; i < 120; i++);
+  63   2              }
+  64   1      }
+  65          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    111    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

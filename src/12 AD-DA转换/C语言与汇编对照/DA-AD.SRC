@@ -1,0 +1,879 @@
+; DA-AD.SRC generated from: DA-AD.C
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE DA-AD.C BROWSE DEBUG OBJECTEXTEND
+
+$NOMOD51
+
+NAME	DA_AD
+
+LS138B	BIT	0A0H.3
+LS138C	BIT	0A0H.4
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+T2	BIT	090H.0
+EA	BIT	0A8H.7
+IE	DATA	0A8H
+EXF2	BIT	0C8H.6
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+RCAP2H	DATA	0CBH
+PS	BIT	0B8H.4
+SP	DATA	081H
+T2EX	BIT	090H.1
+OV	BIT	0D0H.2
+RCAP2L	DATA	0CAH
+C_T2	BIT	0C8H.1
+WR	BIT	0B0H.6
+RCLK	BIT	0C8H.5
+TCLK	BIT	0C8H.4
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+CP_RL2	BIT	0C8H.0
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+ET2	BIT	0A8H.5
+TF1	BIT	088H.7
+TF2	BIT	0C8H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+TH2	DATA	0CDH
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+TL2	DATA	0CCH
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+PT2	BIT	0B8H.5
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+TR2	BIT	0C8H.2
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+DPL	DATA	082H
+EXEN2	BIT	0C8H.3
+REN	BIT	098H.4
+T2CON	DATA	0C8H
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+LS138A	BIT	0A0H.2
+?PR?_DACconversion?DA_AD                 SEGMENT CODE 
+?DT?_DACconversion?DA_AD                 SEGMENT DATA OVERLAYABLE 
+?PR?_ISendByte?DA_AD SEGMENT CODE 
+?DT?_ISendByte?DA_AD SEGMENT DATA OVERLAYABLE 
+?PR?_IRcvByte?DA_AD  SEGMENT CODE 
+?DT?_IRcvByte?DA_AD  SEGMENT DATA OVERLAYABLE 
+?PR?main?DA_AD       SEGMENT CODE 
+?DT?main?DA_AD       SEGMENT DATA OVERLAYABLE 
+?CO?DA_AD            SEGMENT CODE 
+?DT?DA_AD            SEGMENT DATA 
+?XD?DA_AD            SEGMENT XDATA 
+	EXTRN	CODE (_SendByte)
+	EXTRN	BIT (ack)
+	EXTRN	CODE (RcvByte)
+	EXTRN	CODE (Ack_I2c)
+	EXTRN	BIT (?Ack_I2c?BIT)
+	EXTRN	CODE (Start_I2c)
+	EXTRN	CODE (Stop_I2c)
+	EXTRN	CODE (?C_STARTUP)
+	EXTRN	CODE (?C?UIDIV)
+	EXTRN	CODE (?C?LSTXDATA)
+	PUBLIC	AD_CHANNEL
+	PUBLIC	LedOut
+	PUBLIC	D
+	PUBLIC	Disp_Tab
+	PUBLIC	main
+	PUBLIC	_IRcvByte
+	PUBLIC	_ISendByte
+	PUBLIC	_DACconversion
+
+	RSEG  ?DT?main?DA_AD
+?main?BYTE:
+          i?347:   DS   1
+
+	RSEG  ?DT?_ISendByte?DA_AD
+?_ISendByte?BYTE:
+        sla?143:   DS   1
+          c?144:   DS   1
+
+	RSEG  ?DT?_IRcvByte?DA_AD
+?_IRcvByte?BYTE:
+        sla?245:   DS   1
+	ORG  1
+          c?246:   DS   1
+
+	RSEG  ?DT?_DACconversion?DA_AD
+?_DACconversion?BYTE:
+        sla?040:   DS   1
+          c?041:   DS   1
+        Val?042:   DS   1
+
+	RSEG  ?DT?DA_AD
+              D:   DS   64
+     AD_CHANNEL:   DS   1
+
+	RSEG  ?XD?DA_AD
+         LedOut:   DS   32
+
+	RSEG  ?CO?DA_AD
+Disp_Tab:
+	DB	0C0H
+	DB	0F9H
+	DB	0A4H
+	DB	0B0H
+	DB	099H
+	DB	092H
+	DB	082H
+	DB	0F8H
+	DB	080H
+	DB	090H
+	DB	088H
+	DB	083H
+	DB	0C6H
+	DB	0A1H
+	DB	086H
+	DB	0BFH
+	DB	0C7H
+	DB	08CH
+	DB	0C1H
+	DB	0FFH
+	DB	0F7H
+
+; /**********************************************************************************
+; *  标题:       ************* DA-AD试验*******************                         *
+; *																				  *
+; *   1.通过本例程了解并掌握AD-DA转换芯片的基本原理和使用 						  *
+; *   2.了解掌握I2C总线接口的工作原理及一般编程方法。
+; *   
+; *    连接方法：JP8 （P1）与J12用跳线连接 								          *
+; *    																			  *
+; * 通过改变学习板上的2个电位器对应的2段模拟输入，实现模拟输入，学员观察数码管的数字变化情况
+; * 通过改D[4]的值，实现模拟输出，学员观察学习板上DA处LED的亮度变化				  *
+; *                 	                                                              *
+; * 请学员认真消化本例程，懂得AD-DA 在C语言中的操作应用                       	  *
+; ***********************************************************************************/
+
+; #include<reg52.h>
+; #include <I2C.H>
+; 
+; #define  PCF8591 0x90    //PCF8591 地址
+; 
+; 
+; //else IO
+; sbit    LS138A=P2^2;  
+; sbit    LS138B=P2^3;
+; sbit    LS138C=P2^4;  
+; 
+; // 此表为 LED 的字模            // 0    1    2    3    4    5    6   7    8    9    A    b    c    d    E    -    L   P    U    Hidden  _ (20)
+; unsigned char code  Disp_Tab[] = { 0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0xbf,0xc7,0x8c,0xc1, 0xff,  0xf7 }; 
+; 
+; unsigned char AD_CHANNEL;
+; unsigned long xdata  LedOut[8];
+; unsigned int  D[32];
+; 		 
+; 
+; /*******************************************************************
+; DAC 变换, 转化函数               
+; *******************************************************************/
+; bit DACconversion(unsigned char sla,unsigned char c,  unsigned char Val)
+
+	RSEG  ?PR?_DACconversion?DA_AD
+_DACconversion:
+	USING	0
+			; SOURCE LINE # 37
+	MOV  	sla?040,R7
+	MOV  	c?041,R5
+	MOV  	Val?042,R3
+; {
+			; SOURCE LINE # 38
+;    Start_I2c();              //启动总线
+			; SOURCE LINE # 39
+	LCALL	Start_I2c
+;    SendByte(sla);            //发送器件地址
+			; SOURCE LINE # 40
+	MOV  	R7,sla?040
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 41
+	JB   	ack,?C0001
+	CLR  	C
+	RET  	
+?C0001:
+;    SendByte(c);              //发送控制字节
+			; SOURCE LINE # 42
+	MOV  	R7,c?041
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 43
+	JB   	ack,?C0003
+	CLR  	C
+	RET  	
+?C0003:
+;    SendByte(Val);            //发送DAC的数值  
+			; SOURCE LINE # 44
+	MOV  	R7,Val?042
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 45
+	JB   	ack,?C0004
+	CLR  	C
+	RET  	
+?C0004:
+;    Stop_I2c();               //结束总线
+			; SOURCE LINE # 46
+	LCALL	Stop_I2c
+;    return(1);
+			; SOURCE LINE # 47
+	SETB 	C
+; }
+			; SOURCE LINE # 48
+?C0002:
+	RET  	
+; END OF _DACconversion
+
+; 
+; /*******************************************************************
+; ADC发送字节[命令]数据函数               
+; *******************************************************************/
+; bit ISendByte(unsigned char sla,unsigned char c)
+
+	RSEG  ?PR?_ISendByte?DA_AD
+_ISendByte:
+	USING	0
+			; SOURCE LINE # 53
+	MOV  	sla?143,R7
+	MOV  	c?144,R5
+; {
+			; SOURCE LINE # 54
+;    Start_I2c();              //启动总线
+			; SOURCE LINE # 55
+	LCALL	Start_I2c
+;    SendByte(sla);            //发送器件地址
+			; SOURCE LINE # 56
+	MOV  	R7,sla?143
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 57
+	JB   	ack,?C0005
+	CLR  	C
+	RET  	
+?C0005:
+;    SendByte(c);              //发送数据
+			; SOURCE LINE # 58
+	MOV  	R7,c?144
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 59
+	JB   	ack,?C0007
+	CLR  	C
+	RET  	
+?C0007:
+;    Stop_I2c();               //结束总线
+			; SOURCE LINE # 60
+	LCALL	Stop_I2c
+;    return(1);
+			; SOURCE LINE # 61
+	SETB 	C
+; }
+			; SOURCE LINE # 62
+?C0006:
+	RET  	
+; END OF _ISendByte
+
+; 
+; /*******************************************************************
+; ADC读字节数据函数               
+; *******************************************************************/
+; unsigned char IRcvByte(unsigned char sla)
+
+	RSEG  ?PR?_IRcvByte?DA_AD
+_IRcvByte:
+	USING	0
+			; SOURCE LINE # 67
+	MOV  	sla?245,R7
+; {  unsigned char c;
+			; SOURCE LINE # 68
+; 
+;    Start_I2c();          //启动总线
+			; SOURCE LINE # 70
+	LCALL	Start_I2c
+;    SendByte(sla+1);      //发送器件地址
+			; SOURCE LINE # 71
+	MOV  	A,sla?245
+	INC  	A
+	MOV  	R7,A
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 72
+	JB   	ack,?C0008
+	MOV  	R7,#00H
+	RET  	
+?C0008:
+;    c=RcvByte();          //读取数据0
+			; SOURCE LINE # 73
+	LCALL	RcvByte
+	MOV  	c?246,R7
+; 
+;    Ack_I2c(1);           //发送非就答位
+			; SOURCE LINE # 75
+	SETB 	?Ack_I2c?BIT
+	LCALL	Ack_I2c
+;    Stop_I2c();           //结束总线
+			; SOURCE LINE # 76
+	LCALL	Stop_I2c
+;    return(c);
+			; SOURCE LINE # 77
+	MOV  	R7,c?246
+; }
+			; SOURCE LINE # 78
+?C0009:
+	RET  	
+; END OF _IRcvByte
+
+; 
+; //******************************************************************/
+; main()
+
+	RSEG  ?PR?main?DA_AD
+main:
+	USING	0
+			; SOURCE LINE # 81
+; {  char i,j;
+			; SOURCE LINE # 82
+?C0010:
+; 
+;  while(1)
+			; SOURCE LINE # 84
+;  {/********以下AD-DA处理*************/  
+			; SOURCE LINE # 85
+;    switch(AD_CHANNEL)
+			; SOURCE LINE # 86
+	MOV  	A,AD_CHANNEL
+	DEC  	A
+	JZ   	?C0014
+	DEC  	A
+	JZ   	?C0015
+	DEC  	A
+	JZ   	?C0016
+	DEC  	A
+	JZ   	?C0017
+	ADD  	A,#04H
+	JNZ  	?C0012
+;    {
+			; SOURCE LINE # 87
+;      case 0: ISendByte(PCF8591,0x41);
+			; SOURCE LINE # 88
+?C0013:
+	MOV  	R5,#041H
+	MOV  	R7,#090H
+	LCALL	_ISendByte
+;              D[0]=IRcvByte(PCF8591)*2;  //ADC0 模数转换1
+			; SOURCE LINE # 89
+	MOV  	R7,#090H
+	LCALL	_IRcvByte
+	MOV  	A,R7
+	MOV  	B,#02H
+	MUL  	AB
+	MOV  	D,B
+	MOV  	D+01H,A
+; 			 break;  
+			; SOURCE LINE # 90
+	SJMP 	?C0012
+;  
+; 	 case 1: ISendByte(PCF8591,0x42);
+			; SOURCE LINE # 92
+?C0014:
+	MOV  	R5,#042H
+	MOV  	R7,#090H
+	LCALL	_ISendByte
+;              D[1]=IRcvByte(PCF8591)*2;  //ADC1  模数转换2
+			; SOURCE LINE # 93
+	MOV  	R7,#090H
+	LCALL	_IRcvByte
+	MOV  	A,R7
+	MOV  	B,#02H
+	MUL  	AB
+	MOV  	D+02H,B
+	MOV  	D+03H,A
+; 			 break;  
+			; SOURCE LINE # 94
+	SJMP 	?C0012
+; 
+; 	 case 2: ISendByte(PCF8591,0x43);
+			; SOURCE LINE # 96
+?C0015:
+	MOV  	R5,#043H
+	MOV  	R7,#090H
+	LCALL	_ISendByte
+;              D[2]=IRcvByte(PCF8591)*2;  //ADC2	模数转换3
+			; SOURCE LINE # 97
+	MOV  	R7,#090H
+	LCALL	_IRcvByte
+	MOV  	A,R7
+	MOV  	B,#02H
+	MUL  	AB
+	MOV  	D+04H,B
+	MOV  	D+05H,A
+; 			 break;  
+			; SOURCE LINE # 98
+	SJMP 	?C0012
+; 
+; 	 case 3: ISendByte(PCF8591,0x40);
+			; SOURCE LINE # 100
+?C0016:
+	MOV  	R5,#040H
+	MOV  	R7,#090H
+	LCALL	_ISendByte
+;              D[3]=IRcvByte(PCF8591)*2;  //ADC3   模数转换4
+			; SOURCE LINE # 101
+	MOV  	R7,#090H
+	LCALL	_IRcvByte
+	MOV  	A,R7
+	MOV  	B,#02H
+	MUL  	AB
+	MOV  	D+06H,B
+	MOV  	D+07H,A
+; 			 break;  
+			; SOURCE LINE # 102
+	SJMP 	?C0012
+; 
+; 	 case 4: DACconversion(PCF8591,0x40, D[4]/4); //DAC	  数模转换
+			; SOURCE LINE # 104
+?C0017:
+	MOV  	A,D+09H
+	MOV  	R6,D+08H
+	MOV  	R0,#02H
+?C0035:
+	XCH  	A,R6
+	CLR  	C
+	RRC  	A
+	XCH  	A,R6
+	RRC  	A
+	DJNZ 	R0,?C0035
+	MOV  	R3,A
+	MOV  	R5,#040H
+	MOV  	R7,#090H
+	LCALL	_DACconversion
+; 	         break;
+			; SOURCE LINE # 105
+;    }
+			; SOURCE LINE # 106
+?C0012:
+; 
+; 	      // D[4]=400;  //数字--->>模拟输出
+; 		   D[4]=D[3];
+			; SOURCE LINE # 109
+	MOV  	D+08H,D+06H
+	MOV  	D+09H,D+07H
+;    if(++AD_CHANNEL>4) AD_CHANNEL=0;
+			; SOURCE LINE # 110
+	INC  	AD_CHANNEL
+	MOV  	A,AD_CHANNEL
+	SETB 	C
+	SUBB 	A,#04H
+	JC   	?C0018
+	CLR  	A
+	MOV  	AD_CHANNEL,A
+?C0018:
+; 
+;  /********以下将AD的值送到LED数码管显示*************/
+;        		
+; 	 LedOut[0]=Disp_Tab[D[1]%10000/1000];
+			; SOURCE LINE # 114
+	MOV  	R6,D+02H
+	MOV  	R7,D+03H
+	MOV  	R4,#027H
+	MOV  	R5,#010H
+	LCALL	?C?UIDIV
+	MOV  	R6,#03H
+	MOV  	R7,#0E8H
+	XCH  	A,R7
+	XCH  	A,R5
+	XCH  	A,R7
+	XCH  	A,R6
+	XCH  	A,R4
+	XCH  	A,R6
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut
+	LCALL	?C?LSTXDATA
+;      LedOut[1]=Disp_Tab[D[1]%1000/100];
+			; SOURCE LINE # 115
+	MOV  	R6,D+02H
+	MOV  	R7,D+03H
+	MOV  	R4,#03H
+	MOV  	R5,#0E8H
+	LCALL	?C?UIDIV
+	MOV  	R6,#00H
+	MOV  	R7,#064H
+	XCH  	A,R7
+	XCH  	A,R5
+	XCH  	A,R7
+	XCH  	A,R6
+	XCH  	A,R4
+	XCH  	A,R6
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+04H
+	LCALL	?C?LSTXDATA
+;      LedOut[2]=Disp_Tab[D[1]%100/10]&0x7f;
+			; SOURCE LINE # 116
+	MOV  	R6,D+02H
+	MOV  	R7,D+03H
+	MOV  	R4,#00H
+	MOV  	R5,#064H
+	LCALL	?C?UIDIV
+	MOV  	R6,#00H
+	MOV  	R7,#0AH
+	XCH  	A,R7
+	XCH  	A,R5
+	XCH  	A,R7
+	XCH  	A,R6
+	XCH  	A,R4
+	XCH  	A,R6
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	ANL  	A,#07FH
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+08H
+	LCALL	?C?LSTXDATA
+;      LedOut[3]=Disp_Tab[D[1]%10];
+			; SOURCE LINE # 117
+	MOV  	R6,D+02H
+	MOV  	R7,D+03H
+	MOV  	R4,#00H
+	MOV  	R5,#0AH
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R5
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R4
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+0CH
+	LCALL	?C?LSTXDATA
+; 	 
+; 	 LedOut[4]=Disp_Tab[D[0]%10000/1000];
+			; SOURCE LINE # 119
+	MOV  	R6,D
+	MOV  	R7,D+01H
+	MOV  	R4,#027H
+	MOV  	R5,#010H
+	LCALL	?C?UIDIV
+	MOV  	R6,#03H
+	MOV  	R7,#0E8H
+	XCH  	A,R7
+	XCH  	A,R5
+	XCH  	A,R7
+	XCH  	A,R6
+	XCH  	A,R4
+	XCH  	A,R6
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+010H
+	LCALL	?C?LSTXDATA
+;      LedOut[5]=Disp_Tab[D[0]%1000/100]&0x7f;
+			; SOURCE LINE # 120
+	MOV  	R6,D
+	MOV  	R7,D+01H
+	MOV  	R4,#03H
+	MOV  	R5,#0E8H
+	LCALL	?C?UIDIV
+	MOV  	R6,#00H
+	MOV  	R7,#064H
+	XCH  	A,R7
+	XCH  	A,R5
+	XCH  	A,R7
+	XCH  	A,R6
+	XCH  	A,R4
+	XCH  	A,R6
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	ANL  	A,#07FH
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+014H
+	LCALL	?C?LSTXDATA
+;      LedOut[6]=Disp_Tab[D[0]%100/10];
+			; SOURCE LINE # 121
+	MOV  	R6,D
+	MOV  	R7,D+01H
+	MOV  	R4,#00H
+	MOV  	R5,#064H
+	LCALL	?C?UIDIV
+	MOV  	R6,#00H
+	MOV  	R7,#0AH
+	XCH  	A,R7
+	XCH  	A,R5
+	XCH  	A,R7
+	XCH  	A,R6
+	XCH  	A,R4
+	XCH  	A,R6
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+018H
+	LCALL	?C?LSTXDATA
+;      LedOut[7]=Disp_Tab[D[0]%10];  
+			; SOURCE LINE # 122
+	MOV  	R6,D
+	MOV  	R7,D+01H
+	MOV  	R4,#00H
+	MOV  	R5,#0AH
+	LCALL	?C?UIDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R5
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R4
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	R4,A
+	MOV  	R5,A
+	MOV  	R6,A
+	MOV  	DPTR,#LedOut+01CH
+	LCALL	?C?LSTXDATA
+; 	  
+; 	
+; 	 for( i=0; i<8; i++) 
+			; SOURCE LINE # 125
+	CLR  	A
+	MOV  	i?347,A
+?C0019:
+	CLR  	C
+	MOV  	A,i?347
+	XRL  	A,#080H
+	SUBB 	A,#088H
+	JC   	$ + 5H
+	LJMP 	?C0010
+; 	 {	 P1 = LedOut[i];
+			; SOURCE LINE # 126
+	MOV  	R7,i?347
+	MOV  	A,R7
+	RLC  	A
+	SUBB 	A,ACC
+	MOV  	R6,A
+	MOV  	A,R7
+	MOV  	R0,#02H
+?C0036:
+	CLR  	C
+	RLC  	A
+	XCH  	A,R6
+	RLC  	A
+	XCH  	A,R6
+	DJNZ 	R0,?C0036
+	ADD  	A,#LOW (LedOut)
+	MOV  	DPL,A
+	MOV  	A,#HIGH (LedOut)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	INC  	DPTR
+	INC  	DPTR
+	INC  	DPTR
+	MOVX 	A,@DPTR
+	MOV  	P1,A
+; 			
+; 	  switch(i)					  
+			; SOURCE LINE # 128
+	MOV  	A,i?347
+	CJNE 	A,#08H,?C0037
+?C0037:
+	JNC  	?C0022
+	MOV  	DPTR,#?C0038
+	MOV  	R0,A
+	ADD  	A,R0
+	ADD  	A,R0
+	JMP  	@A+DPTR
+?C0038:
+	LJMP 	?C0023
+	LJMP 	?C0024
+	LJMP 	?C0025
+	LJMP 	?C0026
+	LJMP 	?C0027
+	LJMP 	?C0028
+	LJMP 	?C0029
+	LJMP 	?C0030
+; 	     {	    
+			; SOURCE LINE # 129
+; 			case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+			; SOURCE LINE # 130
+?C0023:
+	CLR  	LS138A
+	SJMP 	?C0039
+; 	        case 1:LS138A=1; LS138B=0; LS138C=0; break;             	
+			; SOURCE LINE # 131
+?C0024:
+	SETB 	LS138A
+?C0039:
+	CLR  	LS138B
+	CLR  	LS138C
+	SJMP 	?C0022
+; 	        case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+			; SOURCE LINE # 132
+?C0025:
+	CLR  	LS138A
+	SJMP 	?C0040
+; 	        case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+			; SOURCE LINE # 133
+?C0026:
+	SETB 	LS138A
+?C0040:
+	SETB 	LS138B
+	CLR  	LS138C
+	SJMP 	?C0022
+; 			case 4:LS138A=0; LS138B=0; LS138C=1; break;
+			; SOURCE LINE # 134
+?C0027:
+	CLR  	LS138A
+	SJMP 	?C0041
+; 			case 5:LS138A=1; LS138B=0; LS138C=1; break;
+			; SOURCE LINE # 135
+?C0028:
+	SETB 	LS138A
+?C0041:
+	CLR  	LS138B
+	SETB 	LS138C
+	SJMP 	?C0022
+; 			case 6:LS138A=0; LS138B=1; LS138C=1; break;
+			; SOURCE LINE # 136
+?C0029:
+	CLR  	LS138A
+	SJMP 	?C0042
+; 			case 7:LS138A=1; LS138B=1; LS138C=1; break;
+			; SOURCE LINE # 137
+?C0030:
+	SETB 	LS138A
+?C0042:
+	SETB 	LS138B
+	SETB 	LS138C
+; 			
+; 	     }
+			; SOURCE LINE # 139
+?C0022:
+; 	 
+; 	     for (j = 0 ; j<90 ;j++) { ;}
+			; SOURCE LINE # 141
+;---- Variable 'j?348' assigned to Register 'R7' ----
+	CLR  	A
+	MOV  	R7,A
+?C0031:
+	INC  	R7
+	CJNE 	R7,#05AH,?C0031
+; 	  }
+			; SOURCE LINE # 142
+?C0021:
+	INC  	i?347
+	LJMP 	?C0019
+; END OF main
+
+	END

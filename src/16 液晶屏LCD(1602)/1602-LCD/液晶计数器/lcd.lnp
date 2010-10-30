@@ -1,0 +1,3 @@
+"Countlcd.obj" 
+TO "lcd" 
+RAMSIZE(256) 

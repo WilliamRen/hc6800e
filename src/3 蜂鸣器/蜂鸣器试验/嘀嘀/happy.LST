@@ -1,0 +1,70 @@
+A51 MACRO ASSEMBLER  HAPPY                                                                04/06/2010 14:58:13 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN happy.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE happy.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+0000                   5                     ORG     0000H                   ;伪指令，指定程序从8000H开始存放
+0000 2100              6                     AJMP    MAIN                    ;跳转指令，程序跳转到MAIN处
+                       7     
+0100                   8                     ORG     0100H                   ;伪指令，指定以下程序从8100H开始存放
+0100                   9     MAIN:
+0100 75813C           10                     MOV     SP,#60                  ;给堆栈指针赋初值
+0103 3107             11     LOOP:           ACALL   MUSIC
+0105 2103             12                     AJMP    LOOP
+                      13     
+                      14     
+                      15     ;***********************
+                      16     ;蜂鸣器输出声响子程序
+                      17     ;**********************
+0107                  18     MUSIC:
+0107 7D60             19                     MOV     R5,#60H                 ;控制音长
+0109                  20     MIC:
+0109 B295             21                     CPL     P1.5
+010B 3110             22                     ACALL   DELAY5MS                ;控制音调
+010D DDFA             23                     DJNZ    R5,MIC
+010F 22               24                     RET
+                      25     
+                      26     
+                      27     ;***************
+                      28     ;延时子程序
+                      29     ;***************
+0110                  30     DELAY5MS:
+0110 7F03             31                         MOV R7,#3H
+0112 7E40             32     DELAY0:         MOV     R6,#40H
+0114 DEFE             33     DELAY1:         DJNZ    R6,DELAY1
+0116 DFFA             34                     DJNZ    R7,DELAY0
+0118 22               35                     RET
+                      36                     ;
+                      37                     END
+                             
+A51 MACRO ASSEMBLER  HAPPY                                                                04/06/2010 14:58:13 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY0 . . . . . .  C ADDR   0112H   A   
+DELAY1 . . . . . .  C ADDR   0114H   A   
+DELAY5MS . . . . .  C ADDR   0110H   A   
+LOOP . . . . . . .  C ADDR   0103H   A   
+MAIN . . . . . . .  C ADDR   0100H   A   
+MIC. . . . . . . .  C ADDR   0109H   A   
+MUSIC. . . . . . .  C ADDR   0107H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

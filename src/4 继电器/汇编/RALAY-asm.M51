@@ -1,0 +1,46 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        03/15/2010  17:53:16  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE RALAY-asm.obj TO RALAY-asm RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  RALAY-asm.obj (RALAY_ASM)
+
+
+LINK MAP OF MODULE:  RALAY-asm (RALAY_ASM)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     003EH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  RALAY-asm (RALAY_ASM)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        RALAY_ASM
+  C:003CH         SYMBOL        GO
+  C:0030H         SYMBOL        MAIN
+  D:0090H         SYMBOL        P1
+  D:00A0H         SYMBOL        P2
+  C:0000H         LINE#         10
+  C:0030H         LINE#         13
+  C:0033H         LINE#         14
+  C:0035H         LINE#         15
+  C:0038H         LINE#         16
+  C:003AH         LINE#         17
+  C:003CH         LINE#         19
+  -------         ENDMOD        RALAY_ASM
+
+Program Size: data=8.0 xdata=0 code=62
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

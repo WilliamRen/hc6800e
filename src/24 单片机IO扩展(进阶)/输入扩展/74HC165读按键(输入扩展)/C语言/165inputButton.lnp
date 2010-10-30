@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"button.obj" 
+TO "165inputButton" 
+RAMSIZE(256) 

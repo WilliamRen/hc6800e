@@ -1,0 +1,6 @@
+"STARTUP.obj",
+"main.obj",
+"Lcd.obj",
+"MMC.obj" 
+TO "TFT-char" 
+RAMSIZE(256) 

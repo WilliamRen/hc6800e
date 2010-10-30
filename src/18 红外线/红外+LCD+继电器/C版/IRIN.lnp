@@ -1,0 +1,4 @@
+"HC_IRLCD.obj",
+"STARTUP.obj" 
+TO "IRIN" 
+RAMSIZE(256) 

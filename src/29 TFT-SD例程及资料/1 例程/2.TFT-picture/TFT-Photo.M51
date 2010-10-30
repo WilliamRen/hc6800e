@@ -1,0 +1,359 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        10/01/2010  19:13:53  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, TFT-Photo.obj, LCD-Driver.obj TO TFT-Photo RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  TFT-Photo.obj (TFT_PHOTO)
+  LCD-Driver.obj (LCD_DRIVER)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?IMUL)
+
+
+LINK MAP OF MODULE:  TFT-Photo (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     001AH     UNIT         _DATA_GROUP_
+            DATA    0022H     0010H     UNIT         ?DT?LCD_DRIVER
+            IDATA   0032H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     002FH     UNIT         ?PR?_LCD_CLEAR?LCD_DRIVER
+                    0032H     0009H                  *** GAP ***
+            CODE    003BH     0003H     ABSOLUTE     
+            CODE    003EH     1BD8H     UNIT         ?CO?LCD_DRIVER
+            CODE    1C16H     00A8H     UNIT         ?PR?LCD_INIT?LCD_DRIVER
+            CODE    1CBEH     008CH     UNIT         ?C_C51STARTUP
+            CODE    1D4AH     007DH     UNIT         ?PR?_PIC_PLAY?LCD_DRIVER
+            CODE    1DC7H     0068H     UNIT         ?PR?_LCD_SETRAMADDR?LCD_DRIVER
+            CODE    1E2FH     0064H     UNIT         ?PR?MAIN?TFT_PHOTO
+            CODE    1E93H     0018H     UNIT         ?PR?_REG_WRITE?LCD_DRIVER
+            CODE    1EABH     0016H     UNIT         ?PR?_DELAY_MS?LCD_DRIVER
+            CODE    1EC1H     0013H     UNIT         ?PR?_LCD_WIRTE_DATA16?LCD_DRIVER
+            CODE    1ED4H     0013H     UNIT         ?C_INITSEG
+            CODE    1EE7H     0012H     UNIT         ?PR?_LCD_WRITE?LCD_DRIVER
+            CODE    1EF9H     0012H     UNIT         ?C?LIB_CODE
+            CODE    1F0BH     000DH     UNIT         ?PR?_LCD_WRITE_DATA8?LCD_DRIVER
+
+
+
+OVERLAY MAP OF MODULE:   TFT-Photo (?C_STARTUP)
+
+
+SEGMENT                                    DATA_GROUP 
+  +--> CALLED SEGMENT                    START    LENGTH
+--------------------------------------------------------
+?C_C51STARTUP                            -----    -----
+  +--> ?PR?MAIN?TFT_PHOTO
+  +--> ?C_INITSEG
+
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/01/2010  19:13:53  PAGE 2
+
+
+?PR?MAIN?TFT_PHOTO                       -----    -----
+  +--> ?PR?LCD_INIT?LCD_DRIVER
+  +--> ?PR?_LCD_CLEAR?LCD_DRIVER
+  +--> ?PR?_PIC_PLAY?LCD_DRIVER
+
+?PR?LCD_INIT?LCD_DRIVER                  -----    -----
+  +--> ?PR?_REG_WRITE?LCD_DRIVER
+  +--> ?PR?_LCD_SETRAMADDR?LCD_DRIVER
+  +--> ?PR?_LCD_WIRTE_DATA16?LCD_DRIVER
+  +--> ?PR?_DELAY_MS?LCD_DRIVER
+
+?PR?_REG_WRITE?LCD_DRIVER                -----    -----
+  +--> ?PR?_LCD_WRITE?LCD_DRIVER
+
+?PR?_LCD_SETRAMADDR?LCD_DRIVER           0014H    000EH
+  +--> ?PR?_REG_WRITE?LCD_DRIVER
+  +--> ?PR?_LCD_WRITE?LCD_DRIVER
+
+?PR?_LCD_CLEAR?LCD_DRIVER                -----    -----
+  +--> ?PR?_LCD_SETRAMADDR?LCD_DRIVER
+  +--> ?PR?_LCD_WIRTE_DATA16?LCD_DRIVER
+
+?PR?_PIC_PLAY?LCD_DRIVER                 0008H    000CH
+  +--> ?PR?_LCD_SETRAMADDR?LCD_DRIVER
+  +--> ?CO?LCD_DRIVER
+  +--> ?PR?_LCD_WRITE_DATA8?LCD_DRIVER
+
+
+
+SYMBOL TABLE OF MODULE:  TFT-Photo (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:1CBEH         SEGMENT       ?C_C51STARTUP
+  I:0032H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:1CC1H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:1CBEH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/01/2010  19:13:53  PAGE 3
+
+
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:1CBEH         LINE#         99
+  C:1CC0H         LINE#         100
+  C:1CC1H         LINE#         101
+  C:1CC2H         LINE#         102
+  C:1CC4H         LINE#         151
+  C:1CC7H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        TFT_PHOTO
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  C:003BH         PUBLIC        reserve
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:1E2FH         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:1E2FH         LINE#         26
+  C:1E2FH         LINE#         27
+  C:1E2FH         LINE#         28
+  C:1E32H         LINE#         29
+  C:1E35H         LINE#         31
+  C:1E38H         LINE#         32
+  C:1E3DH         LINE#         34
+  C:1E52H         LINE#         35
+  C:1E67H         LINE#         36
+  C:1E7CH         LINE#         37
+  C:1E91H         LINE#         39
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        TFT_PHOTO
+
+  -------         MODULE        LCD_DRIVER
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:003EH         PUBLIC        Image_pic
+  D:00A8H         PUBLIC        IE
+  D:0022H         PUBLIC        colors
+  D:00B8H         PUBLIC        IP
+  C:0003H         PUBLIC        _LCD_clear
+  C:1EE7H         PUBLIC        _LCD_Write
+  C:1EABH         PUBLIC        _delay_ms
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:1D4AH         PUBLIC        _pic_play
+  C:1F0BH         PUBLIC        _LCD_Write_Data8
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/01/2010  19:13:53  PAGE 4
+
+
+  B:00A0H.6       PUBLIC        LCD_CS
+  B:00A0H.5       PUBLIC        LCD_RS
+  B:00B0H.3       PUBLIC        LCD_WR
+  C:1DC7H         PUBLIC        _LCD_SetRamAddr
+  C:1EC1H         PUBLIC        _LCD_Wirte_Data16
+  D:00C8H         PUBLIC        T2CON
+  C:1C16H         PUBLIC        LCD_init
+  C:1E96H         PUBLIC        _Reg_Write
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        ms
+  -------         DO            
+  D:0005H         SYMBOL        k
+  -------         ENDDO         
+  C:1EABH         LINE#         25
+  C:1EABH         LINE#         26
+  C:1EABH         LINE#         29
+  C:1EB5H         LINE#         30
+  C:1EB5H         LINE#         31
+  C:1EC0H         LINE#         33
+  C:1EC0H         LINE#         34
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          _LCD_WRITE
+  D:0007H         SYMBOL        type
+  D:0002H         SYMBOL        value
+  C:1EE7H         LINE#         41
+  C:1EE9H         LINE#         42
+  C:1EE9H         LINE#         43
+  C:1EEBH         LINE#         44
+  C:1EF0H         LINE#         46
+  C:1EF2H         LINE#         47
+  C:1EF4H         LINE#         48
+  C:1EF6H         LINE#         49
+  C:1EF8H         LINE#         50
+  -------         ENDPROC       _LCD_WRITE
+  -------         PROC          _LCD_WRITE_DATA8
+  D:0007H         SYMBOL        value
+  C:1F0BH         LINE#         57
+  C:1F0BH         LINE#         58
+  C:1F0BH         LINE#         59
+  C:1F0DH         LINE#         60
+  C:1F0FH         LINE#         61
+  C:1F11H         LINE#         62
+  C:1F13H         LINE#         63
+  C:1F15H         LINE#         64
+  C:1F17H         LINE#         65
+  -------         ENDPROC       _LCD_WRITE_DATA8
+  -------         PROC          _LCD_WIRTE_DATA16
+  D:0006H         SYMBOL        value
+  C:1EC1H         LINE#         74
+  C:1EC1H         LINE#         75
+  C:1EC1H         LINE#         76
+  C:1EC3H         LINE#         77
+  C:1EC5H         LINE#         78
+  C:1EC7H         LINE#         79
+  C:1EC9H         LINE#         80
+  C:1ECBH         LINE#         81
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/01/2010  19:13:53  PAGE 5
+
+
+  C:1ECDH         LINE#         82
+  C:1ECFH         LINE#         83
+  C:1ED1H         LINE#         84
+  C:1ED3H         LINE#         85
+  -------         ENDPROC       _LCD_WIRTE_DATA16
+  -------         PROC          L?0028
+  -------         ENDPROC       L?0028
+  -------         PROC          _REG_WRITE
+  D:0004H         SYMBOL        reg
+  D:0082H         SYMBOL        value
+  C:1E96H         LINE#         93
+  C:1E9EH         LINE#         94
+  C:1E9EH         LINE#         95
+  C:1EA3H         LINE#         96
+  -------         ENDPROC       _REG_WRITE
+  -------         PROC          _LCD_SETRAMADDR
+  D:0014H         SYMBOL        xStart
+  D:0016H         SYMBOL        xEnd
+  D:0018H         SYMBOL        yStart
+  D:001AH         SYMBOL        yEnd
+  -------         DO            
+  D:001CH         SYMBOL        VerPos
+  D:001EH         SYMBOL        HorPos
+  D:0020H         SYMBOL        StartAddr
+  -------         ENDDO         
+  C:1DC7H         LINE#         105
+  C:1DD3H         LINE#         106
+  C:1DD3H         LINE#         109
+  C:1DDDH         LINE#         110
+  C:1DE7H         LINE#         111
+  C:1DEFH         LINE#         113
+  C:1DF9H         LINE#         114
+  C:1E02H         LINE#         115
+  C:1E0BH         LINE#         116
+  C:1E14H         LINE#         118
+  C:1E1DH         LINE#         119
+  C:1E26H         LINE#         121
+  -------         ENDPROC       _LCD_SETRAMADDR
+  -------         PROC          LCD_INIT
+  -------         DO            
+  D:0004H         SYMBOL        num
+  -------         ENDDO         
+  C:1C16H         LINE#         132
+  C:1C16H         LINE#         133
+  C:1C16H         LINE#         135
+  C:1C21H         LINE#         136
+  C:1C2AH         LINE#         137
+  C:1C2FH         LINE#         138
+  C:1C38H         LINE#         139
+  C:1C48H         LINE#         140
+  C:1C4CH         LINE#         141
+  C:1C5CH         LINE#         143
+  C:1C67H         LINE#         144
+  C:1C70H         LINE#         145
+  C:1C79H         LINE#         146
+  C:1C7EH         LINE#         147
+  C:1C86H         LINE#         148
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/01/2010  19:13:53  PAGE 6
+
+
+  C:1C8FH         LINE#         149
+  C:1C98H         LINE#         150
+  C:1CA0H         LINE#         151
+  C:1CA8H         LINE#         152
+  C:1CB0H         LINE#         153
+  C:1CB9H         LINE#         154
+  -------         ENDPROC       LCD_INIT
+  -------         PROC          _PIC_PLAY
+  D:0008H         SYMBOL        Start_X
+  D:0082H         SYMBOL        End_X
+  D:0002H         SYMBOL        Start_Y
+  D:000EH         SYMBOL        End_Y
+  -------         DO            
+  D:0010H         SYMBOL        num
+  D:0004H         SYMBOL        m
+  D:0012H         SYMBOL        dx
+  D:0006H         SYMBOL        dy
+  -------         ENDDO         
+  C:1D4AH         LINE#         163
+  C:1D52H         LINE#         164
+  C:1D52H         LINE#         168
+  C:1D65H         LINE#         169
+  C:1D72H         LINE#         170
+  C:1D85H         LINE#         172
+  C:1D87H         LINE#         173
+  C:1DA4H         LINE#         174
+  C:1DA6H         LINE#         177
+  C:1DA9H         LINE#         178
+  C:1DA9H         LINE#         179
+  C:1DB9H         LINE#         181
+  C:1DC4H         LINE#         182
+  C:1DC6H         LINE#         184
+  -------         ENDPROC       _PIC_PLAY
+  -------         PROC          _LCD_CLEAR
+  D:0001H         SYMBOL        n
+  -------         DO            
+  D:0004H         SYMBOL        num
+  -------         ENDDO         
+  C:0003H         LINE#         192
+  C:0005H         LINE#         193
+  C:0005H         LINE#         196
+  C:0016H         LINE#         198
+  C:001AH         LINE#         199
+  C:001AH         LINE#         200
+  C:0028H         LINE#         201
+  C:0031H         LINE#         202
+  -------         ENDPROC       _LCD_CLEAR
+  -------         ENDMOD        LCD_DRIVER
+
+  -------         MODULE        ?C?IMUL
+  C:1EF9H         PUBLIC        ?C?IMUL
+  -------         ENDMOD        ?C?IMUL
+
+Program Size: data=51.0 xdata=0 code=7951
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

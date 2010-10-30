@@ -1,0 +1,153 @@
+A51 MACRO ASSEMBLER  BLED                                                                 03/15/2010 16:17:52 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN BLED.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE BLED.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;               键盘控制的花样彩灯。                                                       
+                                                          *
+                       3     ;  连接方法：JP10（P2） 与 JP1 （LED灯）连接，                                             
+                                              *
+                       4     ;            JP11（P0） 与 JP5（按键接口）连接                                             
+                                      *
+                       5     ;                                                                                          
+                                                                                                  *
+                       6     ;按p24,p27,p26,p27,p2口8个灯分别作 移动右移动，停止 右移 左移*                             
+                              *
+                       7     ;                                                                                          
+                                                                                                  *
+                       8     ;********************************************************************************
+                       9     ;亮灯控制程序;
+                      10     ;************;
+                      11     
+0000                  12             ORG     0000H
+0000 020030           13             LJMP    START
+0030                  14             org     0030h
+                      15     ;************;
+                      16     ;  主 程 序  ;
+                      17     ;************;
+0030                  18     START:
+0030 75B0FF           19             MOV P3,       #0FFH
+0033 30870B           20             JNB       P0.7,FUN0     ;   检测按键
+0036 308416           21             JNB       P0.4,FUN1
+0039 308521           22             JNB       P0.5,FUN2
+003C 30862C           23             JNB       P0.6,FUN3     ;关闭按纽
+003F 0130             24             AJMP      START
+0041 1200A8           25     FUN0:   LCALL      DL10MS       ;消岸抖动
+0044 2087E9           26             JB         P0.7,START
+0047 3087FD           27     WAITL0: JNB        P0.7,WAITL0  ;等待键释放
+004A 12007A           28     FUN01:  LCALL      FUN00
+004D 0130             29             AJMP       START
+004F 1200A8           30     FUN1:   LCALL      DL10MS       ;消岸抖动
+0052 2084DB           31             JB         P0.4,START
+0055 30B3FD           32     WAITL1: JNB        P3.3,WAITL1  ;等待键释放
+0058 120088           33     FUN10:  LCALL      FUN11
+005B 0130             34             AJMP       START
+005D 1200A8           35     FUN2:   LCALL      DL10MS       ;消岸抖动
+0060 2085CD           36             JB         P0.5,START
+0063 3085FD           37     WAITL2: JNB        P0.5,WAITL2  ;等待键释放
+0066 120095           38     FUN20:  LCALL      FUN22
+0069 0130             39             AJMP       START
+                      40     
+006B 1200A8           41     FUN3:   LCALL      DL10MS       ;消岸抖动
+006E 2086BF           42             JB         P0.6,START
+0071 3086FD           43     WAITL3: JNB        P0.6,WAITL3  ;等待键释放
+0074 75A0FF           44             MOV        P2,#0FFH     ;关显示
+0077 020030           45             LJMP       START
+                      46     
+007A 74FE             47     FUN00:  MOV        A,#0FEH      ;左移子程序
+007C F5A0             48     FUN000: MOV        P2,A
+007E 1200B0           49             LCALL      DL05S
+0081 30E703           50             JNB        ACC.7,OUT    ;检测是否结束
+0084 23               51             RL         A
+0085 017C             52             AJMP       FUN000
+A51 MACRO ASSEMBLER  BLED                                                                 03/15/2010 16:17:52 PAGE     2
+
+0087 22               53     OUT:    RET
+                      54     
+0088 747F             55     FUN11:  MOV        A,#07FH      ;右移子程序
+008A F5A0             56     FUN111: MOV        P2,A
+008C 1200B0           57             LCALL      DL05S
+008F 30E0F5           58             JNB        ACC.0,OUT    ;检测是否结束
+0092 03               59             RR         A
+0093 018A             60             AJMP       FUN111
+                      61     
+0095 74AA             62     FUN22:MOV         A,#0AAH       ;间隔显示子程序
+0097 F5A0             63           MOV         P2,A
+0099 1200B8           64           LCALL       DL30S
+009C F4               65           CPL         A
+009D F5A0             66           MOV         P2,A
+009F 1200B8           67           LCALL       DL30S
+00A2 22               68           RET
+                      69     
+                      70     ;************;
+                      71     ;  延时程序  ;
+                      72     ;************;
+00A3 7AFF             73     DL512:MOV       R2,#0FFH        ;延时500US
+00A5 DAFE             74     LOOP1: DJNZ     R2,LOOP1
+00A7 22               75            RET
+                      76     
+00A8 7B14             77     DL10MS:MOV      R3,#14H         ;延时10MS
+00AA 1200A3           78     LOOP2: LCALL    DL512
+00AD DBFB             79            DJNZ     R3,LOOP2
+00AF 22               80            RET
+                      81     
+00B0 7C0A             82     DL05S:MOV       R4,#0AH         ;延时100MS
+00B2 1200A8           83     LOOP3: LCALL    DL10MS
+00B5 DCFB             84            DJNZ     R4,LOOP3
+00B7 22               85            RET
+                      86     
+00B8 7D03             87     DL30S:MOV       R5,#03H         ;延时300MS.
+00BA 1200B0           88     LOOP4:LCALL     DL05S
+00BD DDFB             89           DJNZ      R5,LOOP4
+00BF 22               90           RET     
+                      91     
+                      92     end
+A51 MACRO ASSEMBLER  BLED                                                                 03/15/2010 16:17:52 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+DL05S. . . . . . .  C ADDR   00B0H   A   
+DL10MS . . . . . .  C ADDR   00A8H   A   
+DL30S. . . . . . .  C ADDR   00B8H   A   
+DL512. . . . . . .  C ADDR   00A3H   A   
+FUN0 . . . . . . .  C ADDR   0041H   A   
+FUN00. . . . . . .  C ADDR   007AH   A   
+FUN000 . . . . . .  C ADDR   007CH   A   
+FUN01. . . . . . .  C ADDR   004AH   A   
+FUN1 . . . . . . .  C ADDR   004FH   A   
+FUN10. . . . . . .  C ADDR   0058H   A   
+FUN11. . . . . . .  C ADDR   0088H   A   
+FUN111 . . . . . .  C ADDR   008AH   A   
+FUN2 . . . . . . .  C ADDR   005DH   A   
+FUN20. . . . . . .  C ADDR   0066H   A   
+FUN22. . . . . . .  C ADDR   0095H   A   
+FUN3 . . . . . . .  C ADDR   006BH   A   
+LOOP1. . . . . . .  C ADDR   00A5H   A   
+LOOP2. . . . . . .  C ADDR   00AAH   A   
+LOOP3. . . . . . .  C ADDR   00B2H   A   
+LOOP4. . . . . . .  C ADDR   00BAH   A   
+OUT. . . . . . . .  C ADDR   0087H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+START. . . . . . .  C ADDR   0030H   A   
+WAITL0 . . . . . .  C ADDR   0047H   A   
+WAITL1 . . . . . .  C ADDR   0055H   A   
+WAITL2 . . . . . .  C ADDR   0063H   A   
+WAITL3 . . . . . .  C ADDR   0071H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,43 @@
+A51 MACRO ASSEMBLER  P3212                                                                03/15/2010 15:55:21 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN p3212.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE p3212.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+                       5     
+                       6     
+                       7     
+                       8     
+                       9     
+0000                  10             ORG        0000H
+0000 0130             11             AJMP    MAIN
+0030                  12                 ORG    0030H
+0030 A280             13     MAIN:   MOV      C,p0.0             ;检测按键
+0032 92A0             14                 MOV  P2.0,C         ;根据按键决定输出。
+0034 0130             15                 AJMP MAIN           ;循环
+                      16                 END
+                                     
+A51 MACRO ASSEMBLER  P3212                                                                03/15/2010 15:55:21 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+MAIN . . . . . . .  C ADDR   0030H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

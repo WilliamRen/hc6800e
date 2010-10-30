@@ -1,0 +1,91 @@
+C51 COMPILER V7.10   BLED                                                                  03/15/2010 16:37:28 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE BLED
+OBJECT MODULE PLACED IN BLED.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE BLED.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /******************************************************************/
+   2          /*            按键状态显示试验                                                                            *
+   3          /*                                                                                                                *
+   4          /*  连接方法：连接JP10（P0)与JP5（按钮接口)                               *
+   5          /*                            JP11 (P2)与JP1(LED接口)                                             *
+   6                                                                                                                                            *
+   7          /*按键则点亮LED灯，8路指示灯接p0口                                                        *
+   8          /******************************************************************/
+   9          #include <reg51.h>
+  10          #include <intrins.h>
+  11          
+  12          sbit BEEP = P1^5;
+  13          sbit RELAY = P1^4;
+  14          
+  15          sbit  K1 = P0^0; sbit  K2 = P0^1;
+  16          sbit  K3 = P0^2; sbit  K4 = P0^3;
+  17          sbit  K5 = P0^4; sbit  K6 = P0^5;
+  18          
+  19          void beep();
+  20          /*********************************************************/
+  21          main()
+  22          {
+  23   1         
+  24   1         while(1)
+  25   1         {
+  26   2                P2 = 0xff;
+  27   2                if(K1==0)
+  28   2                P2 = 0xfe;
+  29   2               
+  30   2                if(K2 == 0)
+  31   2                P2 = 0xfd;
+  32   2      
+  33   2                if(!K3)
+  34   2                P2 = 0xfb;
+  35   2      
+  36   2                if(!K4)
+  37   2                P2 = 0xf7;
+  38   2      
+  39   2                        
+  40   2                if (!K5 )
+  41   2                 beep();      //喇叭发声   
+  42   2      
+  43   2                RELAY = 1;
+  44   2                if (!K6 )
+  45   2                RELAY = 0;  //通过了反相器
+  46   2              
+  47   2         }
+  48   1      }
+  49          
+  50          
+  51          /**********************************************************/
+  52          void beep()
+  53          {
+  54   1        unsigned char i , j;
+  55   1        for (i=0;i<100;i++)
+C51 COMPILER V7.10   BLED                                                                  03/15/2010 16:37:28 PAGE 2   
+
+  56   1         {
+  57   2        
+  58   2         BEEP=!BEEP;                 //BEEP取反
+  59   2         for (j = 0 ; j<250 ; j++)   //需要产生方波
+  60   2          _nop_();
+  61   2         } 
+  62   1        BEEP=1;                      //关闭蜂鸣器
+  63   1      }
+  64          
+  65          
+  66          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     60    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

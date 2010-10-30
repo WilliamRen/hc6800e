@@ -1,0 +1,141 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        09/21/2010  17:45:17  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, 74HC138.obj TO 译码器实验 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  74HC138.obj (74HC138)
+
+
+LINK MAP OF MODULE:  译码器实验 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0044H     UNIT         ?PR?MAIN?74HC138
+            CODE    0047H     001DH     UNIT         ?PR?_DELAY?74HC138
+            CODE    0064H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   译码器实验 (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?74HC138
+
+?PR?MAIN?74HC138
+  +--> ?PR?_DELAY?74HC138
+
+
+
+SYMBOL TABLE OF MODULE:  译码器实验 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0064H         SEGMENT       ?C_C51STARTUP
+  I:0008H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+BL51 BANKED LINKER/LOCATER V5.03                                                      09/21/2010  17:45:17  PAGE 2
+
+
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0067H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0064H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:0064H         LINE#         99
+  C:0066H         LINE#         100
+  C:0067H         LINE#         101
+  C:0068H         LINE#         102
+  C:006AH         LINE#         151
+  C:006DH         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        74HC138
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A0H         PUBLIC        P2
+  C:0003H         PUBLIC        main
+  B:00A0H.2       PUBLIC        HC138A
+  B:00A0H.3       PUBLIC        HC138B
+  B:00A0H.4       PUBLIC        HC138C
+  C:004FH         PUBLIC        _delay
+  C:0049H         SYMBOL        L?0011
+  C:004BH         SYMBOL        L?0012
+  -------         PROC          L?0010
+  -------         ENDPROC       L?0010
+  C:0049H         SYMBOL        L?0011
+  C:004BH         SYMBOL        L?0012
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        i
+  -------         DO            
+  D:0005H         SYMBOL        j
+  -------         ENDDO         
+  C:004FH         LINE#         21
+  C:004FH         LINE#         22
+  C:004FH         LINE#         24
+  C:0058H         LINE#         25
+  C:0063H         LINE#         28
+  -------         ENDPROC       _DELAY
+  -------         PROC          MAIN
+  C:0003H         LINE#         30
+  C:0003H         LINE#         31
+  C:0003H         LINE#         33
+  C:0005H         LINE#         34
+  C:0008H         LINE#         37
+  C:000EH         LINE#         38
+BL51 BANKED LINKER/LOCATER V5.03                                                      09/21/2010  17:45:17  PAGE 3
+
+
+  C:0011H         LINE#         41
+  C:0015H         LINE#         42
+  C:0018H         LINE#         45
+  C:001EH         LINE#         46
+  C:0025H         LINE#         49
+  C:0027H         LINE#         50
+  C:002AH         LINE#         53
+  C:0030H         LINE#         54
+  C:0033H         LINE#         56
+  C:0037H         LINE#         57
+  C:003AH         LINE#         59
+  C:0040H         LINE#         60
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        74HC138
+
+Program Size: data=9.0 xdata=0 code=112
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

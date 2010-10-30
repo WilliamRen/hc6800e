@@ -1,0 +1,58 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        04/06/2010  14:58:14  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE happy.obj TO buzz RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  happy.obj (HAPPY)
+
+
+LINK MAP OF MODULE:  buzz (HAPPY)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0119H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  buzz (HAPPY)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        HAPPY
+  C:0112H         SYMBOL        DELAY0
+  C:0114H         SYMBOL        DELAY1
+  C:0110H         SYMBOL        DELAY5MS
+  C:0103H         SYMBOL        LOOP
+  C:0100H         SYMBOL        MAIN
+  C:0109H         SYMBOL        MIC
+  C:0107H         SYMBOL        MUSIC
+  D:0090H         SYMBOL        P1
+  D:0081H         SYMBOL        SP
+  C:0000H         LINE#         6
+  C:0100H         LINE#         10
+  C:0103H         LINE#         11
+  C:0105H         LINE#         12
+  C:0107H         LINE#         19
+  C:0109H         LINE#         21
+  C:010BH         LINE#         22
+  C:010DH         LINE#         23
+  C:010FH         LINE#         24
+  C:0110H         LINE#         31
+  C:0112H         LINE#         32
+  C:0114H         LINE#         33
+  C:0116H         LINE#         34
+  C:0118H         LINE#         35
+  -------         ENDMOD        HAPPY
+
+Program Size: data=8.0 xdata=0 code=281
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

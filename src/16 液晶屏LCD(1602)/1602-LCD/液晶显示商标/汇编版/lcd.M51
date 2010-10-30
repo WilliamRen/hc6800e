@@ -1,0 +1,96 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        03/29/2009  20:10:37  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE 1602LOGO.obj TO lcd RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  1602LOGO.obj (1602LOGO)
+
+
+LINK MAP OF MODULE:  lcd (1602LOGO)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     008BH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  lcd (1602LOGO)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        1602LOGO
+  C:003CH         SYMBOL        A1
+  C:0054H         SYMBOL        D1
+  C:0052H         SYMBOL        DELAY
+  B:00A0H.7       SYMBOL        E
+  C:002FH         SYMBOL        ENABLE
+  D:0080H         SYMBOL        P0
+  D:00A0H         SYMBOL        P2
+  B:00A0H.6       SYMBOL        RS
+  B:00A0H.5       SYMBOL        RW
+  D:0081H         SYMBOL        SP
+  C:005BH         SYMBOL        TABLE1
+  C:006EH         SYMBOL        TABLE2
+  C:003AH         SYMBOL        WRITE1
+  C:0045H         SYMBOL        WRITE2
+  C:0000H         LINE#         13
+  C:0003H         LINE#         14
+  C:0006H         LINE#         15
+  C:0008H         LINE#         16
+  C:000BH         LINE#         17
+  C:000DH         LINE#         18
+  C:0010H         LINE#         19
+  C:0012H         LINE#         20
+  C:0015H         LINE#         21
+  C:0017H         LINE#         22
+  C:001AH         LINE#         23
+  C:001CH         LINE#         24
+  C:001FH         LINE#         25
+  C:0021H         LINE#         26
+  C:0024H         LINE#         27
+  C:0026H         LINE#         28
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/29/2009  20:10:37  PAGE 2
+
+
+  C:0029H         LINE#         29
+  C:002BH         LINE#         31
+  C:002DH         LINE#         32
+  C:002FH         LINE#         33
+  C:0031H         LINE#         34
+  C:0033H         LINE#         35
+  C:0035H         LINE#         36
+  C:0037H         LINE#         37
+  C:0039H         LINE#         38
+  C:003AH         LINE#         39
+  C:003CH         LINE#         40
+  C:003DH         LINE#         41
+  C:003EH         LINE#         42
+  C:0040H         LINE#         43
+  C:0041H         LINE#         44
+  C:0044H         LINE#         45
+  C:0045H         LINE#         46
+  C:0047H         LINE#         47
+  C:0049H         LINE#         48
+  C:004BH         LINE#         49
+  C:004DH         LINE#         50
+  C:004FH         LINE#         51
+  C:0051H         LINE#         52
+  C:0052H         LINE#         53
+  C:0054H         LINE#         54
+  C:0056H         LINE#         55
+  C:0058H         LINE#         56
+  C:005AH         LINE#         57
+  -------         ENDMOD        1602LOGO
+
+Program Size: data=8.0 xdata=0 code=139
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

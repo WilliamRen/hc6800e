@@ -1,0 +1,301 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        03/31/2010  13:48:05  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, ps2.obj TO PS2 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  ps2.obj (PS2)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?UIDIV)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CCASE)
+
+
+LINK MAP OF MODULE:  PS2 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0011H     UNIT         _DATA_GROUP_
+            DATA    0019H     0006H     UNIT         ?DT?PS2
+                    001FH     0001H                  *** GAP ***
+            BIT     0020H.0   0000H.1   UNIT         ?BI?PS2
+                    0020H.1   0000H.7                *** GAP ***
+            IDATA   0021H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     ABSOLUTE     
+            CODE    0006H     010AH     UNIT         ?PR?DISPLAY?PS2
+            CODE    0110H     007BH     UNIT         ?C?LIB_CODE
+            CODE    018BH     0076H     UNIT         ?PR?_DECODE?PS2
+            CODE    0201H     0050H     UNIT         ?PR?KEYBOARD_OUT?PS2
+            CODE    0251H     0020H     UNIT         ?PR?MAIN?PS2
+            CODE    0271H     001EH     UNIT         ?PR?_DELAY?PS2
+            CODE    028FH     0015H     UNIT         ?CO?PS2
+            CODE    02A4H     0012H     UNIT         ?PR?BEEP?PS2
+            CODE    02B6H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   PS2 (?C_STARTUP)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?PS2
+
+?PR?MAIN?PS2                   -----    -----
+  +--> ?PR?BEEP?PS2
+  +--> ?PR?_DECODE?PS2
+  +--> ?PR?DISPLAY?PS2
+
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/31/2010  13:48:05  PAGE 2
+
+
+?PR?BEEP?PS2                   -----    -----
+  +--> ?PR?_DELAY?PS2
+
+?PR?DISPLAY?PS2                0008H    0011H
+  +--> ?CO?PS2
+  +--> ?PR?_DELAY?PS2
+
+
+
+SYMBOL TABLE OF MODULE:  PS2 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:02B6H         SEGMENT       ?C_C51STARTUP
+  I:0021H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:02B9H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:02B6H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:02B6H         LINE#         99
+  C:02B8H         LINE#         100
+  C:02B9H         LINE#         101
+  C:02BAH         LINE#         102
+  C:02BCH         LINE#         151
+  C:02BFH         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        PS2
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  B:00A0H.3       PUBLIC        LS138B
+  B:00A0H.4       PUBLIC        LS138C
+  D:0080H         PUBLIC        P0
+  D:0019H         PUBLIC        KeyV
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/31/2010  13:48:05  PAGE 3
+
+
+  B:00A8H.7       PUBLIC        EA
+  B:0090H.6       PUBLIC        Key_Data
+  B:0020H.0       PUBLIC        BF
+  C:028FH         PUBLIC        Disp_Tab
+  D:00A8H         PUBLIC        IE
+  D:001AH         PUBLIC        KEY_val
+  D:00B8H         PUBLIC        IP
+  B:0090H.5       PUBLIC        BEEP
+  C:02A4H         PUBLIC        beep
+  C:0251H         PUBLIC        main
+  C:018BH         PUBLIC        _Decode
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:00A8H.0       PUBLIC        EX0
+  B:0088H.2       PUBLIC        IT1
+  D:001CH         PUBLIC        IntNum
+  B:00B0H.2       PUBLIC        Key_CLK
+  D:00C8H         PUBLIC        T2CON
+  D:001EH         PUBLIC        LedNumVal
+  C:0201H         PUBLIC        Keyboard_out
+  C:0271H         PUBLIC        _delay
+  C:0006H         PUBLIC        display
+  D:00D0H         PUBLIC        PSW
+  B:00A0H.2       PUBLIC        LS138A
+  -------         PROC          MAIN
+  C:0251H         LINE#         41
+  C:0251H         LINE#         42
+  C:0251H         LINE#         44
+  C:0253H         LINE#         45
+  C:0255H         LINE#         46
+  C:0257H         LINE#         48
+  C:0257H         LINE#         49
+  C:0257H         LINE#         50
+  C:025AH         LINE#         51
+  C:025AH         LINE#         52
+  C:0263H         LINE#         54
+  C:0268H         LINE#         56
+  C:026AH         LINE#         58
+  C:026CH         LINE#         59
+  C:026FH         LINE#         60
+  -------         ENDPROC       MAIN
+  -------         PROC          KEYBOARD_OUT
+  C:0201H         LINE#         67
+  C:0205H         LINE#         69
+  C:021EH         LINE#         70
+  C:021EH         LINE#         71
+  C:0224H         LINE#         72
+  C:0227H         LINE#         73
+  C:022AH         LINE#         74
+  C:022AH         LINE#         75
+  C:0232H         LINE#         76
+  C:0235H         LINE#         78
+  C:0242H         LINE#         79
+  C:0242H         LINE#         80
+  C:0248H         LINE#         81
+  C:024AH         LINE#         82
+  C:024CH         LINE#         83
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/31/2010  13:48:05  PAGE 4
+
+
+  C:024CH         LINE#         85
+  -------         ENDPROC       KEYBOARD_OUT
+  -------         PROC          _DECODE
+  D:0007H         SYMBOL        ScanCode
+  C:018BH         LINE#         90
+  C:018BH         LINE#         91
+  C:018BH         LINE#         93
+  C:01B1H         LINE#         94
+  C:01B1H         LINE#         95
+  C:01B1H         LINE#         96
+  C:01B6H         LINE#         97
+  C:01B8H         LINE#         99
+  C:01B8H         LINE#         100
+  C:01BEH         LINE#         101
+  C:01C0H         LINE#         103
+  C:01C0H         LINE#         104
+  C:01C6H         LINE#         105
+  C:01C8H         LINE#         107
+  C:01C8H         LINE#         108
+  C:01CEH         LINE#         109
+  C:01D0H         LINE#         111
+  C:01D0H         LINE#         112
+  C:01D6H         LINE#         113
+  C:01D8H         LINE#         115
+  C:01D8H         LINE#         116
+  C:01DEH         LINE#         117
+  C:01E0H         LINE#         119
+  C:01E0H         LINE#         120
+  C:01E6H         LINE#         121
+  C:01E8H         LINE#         123
+  C:01E8H         LINE#         124
+  C:01EEH         LINE#         125
+  C:01F0H         LINE#         127
+  C:01F0H         LINE#         128
+  C:01F6H         LINE#         129
+  C:01F8H         LINE#         131
+  C:01F8H         LINE#         132
+  C:01FEH         LINE#         133
+  C:01FEH         LINE#         135
+  C:01FEH         LINE#         138
+  C:01FEH         LINE#         140
+  C:01FEH         LINE#         143
+  C:0200H         LINE#         144
+  -------         ENDPROC       _DECODE
+  -------         PROC          DISPLAY
+  -------         DO            
+  D:0008H         SYMBOL        i
+  D:0009H         SYMBOL        LedOut
+  -------         ENDDO         
+  C:0006H         LINE#         148
+  C:0006H         LINE#         149
+  C:0006H         LINE#         153
+  C:0009H         LINE#         156
+  C:0034H         LINE#         157
+  C:005FH         LINE#         158
+  C:0075H         LINE#         159
+  C:0083H         LINE#         161
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/31/2010  13:48:05  PAGE 5
+
+
+  C:0087H         LINE#         162
+  C:008BH         LINE#         163
+  C:0090H         LINE#         164
+  C:009DH         LINE#         167
+  C:00A0H         LINE#         168
+  C:00ABH         LINE#         170
+  C:00D1H         LINE#         171
+  C:00D1H         LINE#         172
+  C:00D5H         LINE#         173
+  C:00DDH         LINE#         174
+  C:00E1H         LINE#         175
+  C:00E9H         LINE#         176
+  C:00EDH         LINE#         177
+  C:00F5H         LINE#         178
+  C:00F9H         LINE#         179
+  C:00FFH         LINE#         181
+  C:00FFH         LINE#         183
+  C:0106H         LINE#         184
+  C:010FH         LINE#         186
+  -------         ENDPROC       DISPLAY
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        i
+  -------         DO            
+  D:0005H         SYMBOL        j
+  -------         ENDDO         
+  C:0271H         LINE#         191
+  C:0271H         LINE#         192
+  C:0271H         LINE#         194
+  C:027AH         LINE#         195
+  C:028EH         LINE#         196
+  -------         ENDPROC       _DELAY
+  -------         PROC          BEEP
+  -------         DO            
+  D:0004H         SYMBOL        i
+  -------         ENDDO         
+  C:02A4H         LINE#         201
+  C:02A4H         LINE#         202
+  C:02A4H         LINE#         204
+  C:02A6H         LINE#         205
+  C:02A6H         LINE#         206
+  C:02ADH         LINE#         207
+  C:02AFH         LINE#         208
+  C:02B3H         LINE#         209
+  C:02B5H         LINE#         210
+  -------         ENDPROC       BEEP
+  -------         ENDMOD        PS2
+
+  -------         MODULE        ?C?UIDIV
+  C:0110H         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+  -------         MODULE        ?C?CCASE
+  C:0165H         PUBLIC        ?C?CCASE
+  -------         ENDMOD        ?C?CCASE
+
+Program Size: data=32.1 xdata=0 code=706
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

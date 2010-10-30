@@ -1,0 +1,157 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        02/15/2010  14:54:24  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\PROGRAM FILES\KEIL\C51\BIN\BL51.EXE STARTUP.obj, LED_595.obj TO LED_595 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  LED_595.obj (LED_595)
+
+
+LINK MAP OF MODULE:  LED_595 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0001H     UNIT         _DATA_GROUP_
+            IDATA   0009H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0027H     UNIT         ?PR?MAIN?LED_595
+            CODE    002AH     0026H     UNIT         ?PR?_HC595SENDDATA?LED_595
+            CODE    0050H     001EH     UNIT         ?PR?_DELAY?LED_595
+            CODE    006EH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   LED_595 (?C_STARTUP)
+
+
+SEGMENT                              DATA_GROUP 
+  +--> CALLED SEGMENT              START    LENGTH
+--------------------------------------------------
+?C_C51STARTUP                      -----    -----
+  +--> ?PR?MAIN?LED_595
+
+?PR?MAIN?LED_595                   0008H    0001H
+  +--> ?PR?_HC595SENDDATA?LED_595
+  +--> ?PR?_DELAY?LED_595
+
+
+
+SYMBOL TABLE OF MODULE:  LED_595 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:006EH         SEGMENT       ?C_C51STARTUP
+  I:0009H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+BL51 BANKED LINKER/LOCATER V5.03                                                      02/15/2010  14:54:24  PAGE 2
+
+
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0071H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:006EH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:006EH         LINE#         99
+  C:0070H         LINE#         100
+  C:0071H         LINE#         101
+  C:0072H         LINE#         102
+  C:0074H         LINE#         151
+  C:0077H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        LED_595
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00B0H         PUBLIC        P3
+  B:00B0H.4       PUBLIC        MOSIO
+  B:00B0H.5       PUBLIC        R_CLK
+  B:00B0H.6       PUBLIC        S_CLK
+  C:002AH         PUBLIC        _HC595SendData
+  C:0003H         PUBLIC        main
+  C:0050H         PUBLIC        _delay
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        Led
+  -------         ENDDO         
+  C:0003H         LINE#         27
+  C:0003H         LINE#         28
+  C:0006H         LINE#         29
+  C:000BH         LINE#         31
+  C:000BH         LINE#         32
+  C:000BH         LINE#         34
+  C:0010H         LINE#         35
+  C:0016H         LINE#         36
+  C:0019H         LINE#         37
+  C:0021H         LINE#         40
+  C:0028H         LINE#         42
+  -------         ENDPROC       MAIN
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        i
+  -------         DO            
+  D:0004H         SYMBOL        j
+BL51 BANKED LINKER/LOCATER V5.03                                                      02/15/2010  14:54:24  PAGE 3
+
+
+  -------         ENDDO         
+  C:0050H         LINE#         48
+  C:0050H         LINE#         49
+  C:0050H         LINE#         51
+  C:0059H         LINE#         52
+  C:006DH         LINE#         53
+  -------         ENDPROC       _DELAY
+  -------         PROC          _HC595SENDDATA
+  D:0007H         SYMBOL        SendVal
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:002AH         LINE#         60
+  C:002AH         LINE#         61
+  C:002AH         LINE#         64
+  C:002CH         LINE#         65
+  C:002CH         LINE#         66
+  C:003DH         LINE#         67
+  C:003FH         LINE#         69
+  C:0041H         LINE#         70
+  C:0042H         LINE#         71
+  C:0043H         LINE#         72
+  C:0045H         LINE#         73
+  C:0049H         LINE#         76
+  C:004BH         LINE#         77
+  C:004CH         LINE#         78
+  C:004DH         LINE#         79
+  C:004FH         LINE#         81
+  -------         ENDPROC       _HC595SENDDATA
+  -------         ENDMOD        LED_595
+
+Program Size: data=10.0 xdata=0 code=122
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

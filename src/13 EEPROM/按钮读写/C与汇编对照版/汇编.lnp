@@ -1,0 +1,6 @@
+"74hc595-165.obj",
+"2402.obj",
+"2402Main.obj",
+"I2C.obj" 
+TO "»ã±à" 
+RAMSIZE(256) 

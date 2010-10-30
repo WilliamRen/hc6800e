@@ -1,0 +1,83 @@
+C51 COMPILER V7.10   步絖马达                                                              08/30/2009 22:36:08 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 步絖马达
+OBJECT MODULE PLACED IN 步进马达.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 步进马达.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************************************************************************
+   2          *  标题:  步进电机试验三                                                                                                                         *
+   3          *  接线:  5v-黑色   p10-红线   p11-白线   p12-黄色   p13-绿色(对照电路板字符标示)        *
+   4          *                                                                                                                                                                        *
+   5          *    通过本例程了解步进马达使用及驱动程序编写                                                                            *
+   6          *;   单双八拍工作方式：                                                                  *
+   7          *;   A-AB-B-BC-C-CD-D-DA (即一个脉冲,转 3.75 度)                                                                 *
+   8          *                                                                                        *
+   9          *  请学员一定要消化掉本例程                                                              *
+  10                                                             *                                                             *
+  11          **************************************************************************************/    
+  12           
+  13          
+  14           #include "reg52.h"
+  15          
+  16          unsigned char code FFW[8]={0xfe,0xfc,0xfd,0xf9,0xfb,0xf3,0xf7,0xf6};
+  17          void delay(unsigned int t);
+  18          
+  19           //Motor
+  20          sbit F1 = P1^0;
+  21          sbit F2 = P1^1;
+  22          sbit F3 = P1^2;
+  23          sbit F4 = P1^3;
+  24          
+  25           ///////////////////////////////////////
+  26          //步进电机驱动
+  27          void  motor_ffw()
+  28           { 
+  29   1         unsigned char i;
+  30   1        
+  31   1            for (i=0; i<8; i++)       //一个周期转30度
+  32   1              {
+  33   2                P1 = FFW[i]&0x1f;     //取数据
+  34   2                delay(5);            //调节转速
+  35   2              }
+  36   1           } 
+  37          
+  38          
+  39          void delay(unsigned int t)
+  40          {                           
+  41   1         unsigned int k;
+  42   1         while(t--)
+  43   1         {
+  44   2           for(k=0; k<60; k++)
+  45   2           { }
+  46   2         }
+  47   1      }
+  48          
+  49          
+  50          main() 
+  51           { 
+  52   1          while(1)
+  53   1              {
+  54   2               motor_ffw();
+  55   2      
+C51 COMPILER V7.10   步絖马达                                                              08/30/2009 22:36:08 PAGE 2   
+
+  56   2               }
+  57   1      }
+  58          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     65    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

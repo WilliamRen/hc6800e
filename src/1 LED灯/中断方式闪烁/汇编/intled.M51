@@ -1,0 +1,65 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        10/29/2009  08:49:50  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE int1.obj TO intled RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  int1.obj (INT1)
+
+
+LINK MAP OF MODULE:  intled (INT1)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     005BH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  intled (INT1)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        INT1
+  D:00A8H         SYMBOL        IE
+  C:0046H         SYMBOL        INT_TIMER
+  C:005AH         SYMBOL        L1
+  C:0030H         SYMBOL        MAIN
+  D:00A0H         SYMBOL        P2
+  D:008CH         SYMBOL        TH0
+  D:008AH         SYMBOL        TL0
+  D:0089H         SYMBOL        TMOD
+  B:0088H.4       SYMBOL        TR0
+  C:0000H         LINE#         8
+  C:000BH         LINE#         10
+  C:0030H         LINE#         12
+  C:0033H         LINE#         13
+  C:0036H         LINE#         14
+  C:0039H         LINE#         15
+  C:003CH         LINE#         16
+  C:003FH         LINE#         17
+  C:0042H         LINE#         18
+  C:0044H         LINE#         19
+  C:0046H         LINE#         22
+  C:0049H         LINE#         23
+  C:004CH         LINE#         24
+  C:004FH         LINE#         25
+  C:0052H         LINE#         26
+  C:0055H         LINE#         27
+  C:0058H         LINE#         28
+  C:005AH         LINE#         29
+  -------         ENDMOD        INT1
+
+Program Size: data=8.0 xdata=0 code=91
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/29/2009  08:49:50  PAGE 2
+
+
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

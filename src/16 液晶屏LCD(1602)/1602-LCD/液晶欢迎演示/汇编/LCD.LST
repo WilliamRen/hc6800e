@@ -1,0 +1,284 @@
+A51 MACRO ASSEMBLER  LCD                                                                  03/24/2009 19:21:11 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN LCD.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE LCD.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;/********************************************************************************
+                       2     ;*  标题:  xl系列单片机实验仪演示程序 1602字符型LCD显示演示程序                 *
+                       3     ;*  文件:   xllcdw.asm                                                          *
+                       4     ;*  日期:  2006-1-5                                                             *
+                       5     ;*  版本:  3.0 （试验通过版）可用xl600-xl1000单片机综合试验仪试验               *
+                       6     ;*  邮箱:  sxj1974@163.com                                                      *
+                       7     ;*  网站： http://www.51c51.com    www.8951.com                                 *
+                       8     ;*********************************************************************************
+                       9     ;*  描述:                                                                       *
+                      10     ;*         1602字符型LCD显示演示程序                                            *
+                      11     ;*         在第一行显示  welcome                                                *
+                      12     ;*         在第二行显示  www.51c51.com                                          *
+                      13     ;*                                                                              *
+                      14     ;********************************************************************************
+                      15     ;* 【版权】 Copyright(C)深圳市学林电子有限公司 www.51c51.com                    *
+                      16     ;* 【声明】 此程序仅用于学习与参考，引用请注明版权和作者信息！                  *
+                      17     ;*  【技术支持】请访问http://www.51c51.com/bbs/index.asp  官方论坛              *
+                      18     ;********************************************************************************/
+                      19     ; 端口定义
+  00A6                20     RS      EQU     P2.6
+  00A5                21     RW      EQU     P2.5
+  00A7                22     EP      EQU     P2.7
+                      23     
+0000                  24             ORG     0000H
+0000 020003           25             LJMP    MAIN
+0003                  26     MAIN:
+0003 120060           27             LCALL   LCD_INIT                ; 初始化LCD
+0006 740F             28             MOV     A,#15
+0008 1200EB           29             LCALL   DELAY_MS                ;
+                      30     
+000B                  31     MAIN_LOOP:      
+                      32     ;  在第一行显示字符串"welcome!"
+000B 7404             33             MOV     A,#4
+000D 12009C           34             LCALL   SET_LCD_POS             ; 设置LCD光标到第一行的第5个字符
+                      35             
+0010 900105           36             MOV     DPTR,#TAB_WELCOME       ; "welcome!"字串表格地址
+0013 120050           37             LCALL   DISPLAY_STRING          ; 显示字符串
+                      38     ; 在第二行显示字符串"www.willar.com"    
+0016 7441             39             MOV     A,#41H                  ; 
+0018 12009C           40             LCALL   SET_LCD_POS             ; 设置LCD光标到第二行第二个字符
+                      41             
+001B 9000F5           42             MOV     DPTR,#TAB_WILLAR
+001E 120050           43             LCALL   DISPLAY_STRING
+                      44     
+                      45     ; 闪烁显示内容  
+0021 74C8             46             MOV     A,#200                  ; 
+0023 1200EB           47             LCALL   DELAY_MS                ; 
+                      48             
+0026 120086           49             LCALL   LCD_TURN_OFF    
+0029 74C8             50             MOV     A,#200                  ; 
+002B 1200EB           51             LCALL   DELAY_MS                ; 
+                      52             
+002E 12007B           53             LCALL   LCD_TURN_ON
+                      54             
+0031 74C8             55             MOV     A,#200                  ; 
+0033 1200EB           56             LCALL   DELAY_MS                ; 
+                      57             
+0036 120086           58             LCALL   LCD_TURN_OFF
+A51 MACRO ASSEMBLER  LCD                                                                  03/24/2009 19:21:11 PAGE     2
+
+                      59                     
+0039 74C8             60             MOV     A,#200                  ; 
+003B 1200EB           61             LCALL   DELAY_MS                ; 
+                      62             
+003E 12007B           63             LCALL   LCD_TURN_ON
+                      64             
+0041 74C8             65             MOV     A,#200                  ; 
+0043 1200EB           66             LCALL   DELAY_MS                ; 
+                      67     ;清屏
+0046 120091           68             LCALL   LCD_CLEAR
+0049 7401             69             MOV     A,#1
+004B 1200EB           70             LCALL   DELAY_MS
+                      71     ; 重新显示      
+004E 80BB             72             JMP     MAIN_LOOP       
+                      73     
+                      74     ;显示字符串函数
+                      75     ;传入参数：DPTR(字符串表格地址)
+                      76     ;返回值：无
+0050                  77     DISPLAY_STRING: 
+0050 E4               78             CLR     A
+0051 93               79             MOVC    A,@A+DPTR               ; 
+0052 600B             80             JZ      END_DISPLAY_STRING      ; 如果遇到00H表示表格结束
+0054 1200BC           81             LCALL   LCD_WRITE_DATA          ; 写数据到LCD
+0057 A3               82             INC     DPTR                    ; 指向表格的下一字符
+0058 74C8             83             MOV     A, #200                 ; 
+005A 1200EB           84             LCALL   DELAY_MS                ; 
+005D 80F1             85             SJMP    DISPLAY_STRING          ; 循环直到字符串结束
+005F                  86     END_DISPLAY_STRING:
+005F 22               87             RET
+                      88             
+                      89             
+                      90     ; 初始化LCD
+0060                  91     LCD_INIT:
+                      92     
+                      93     ; 设置显示格式---
+0060 7438             94             MOV     A,#38H                  ; 38H --- 16*2行显示,5*7点阵,8位数据接口
+0062 1200A2           95             LCALL   LCD_WRITE_COMMAND
+0065 7401             96             MOV     A,#1
+0067 1200EB           97             LCALL   DELAY_MS
+                      98     ;开显示
+006A 12007B           99             LCALL   LCD_TURN_ON
+                     100     ;读写后指针加1
+006D 7406            101             MOV     A,#06H                  ; 06H --- 读写后指针加1
+006F 1200A2          102             LCALL   LCD_WRITE_COMMAND
+0072 7401            103             MOV     A,#1
+0074 1200EB          104             LCALL   DELAY_MS
+                     105     ; 清除LCD屏幕
+0077 120091          106             LCALL   LCD_CLEAR
+007A 22              107             RET
+                     108     
+                     109     
+                     110     ;开显示
+007B                 111     LCD_TURN_ON:
+007B 740C            112             MOV     A,#0CH                  ; 0CH --- 开显示,无光标
+007D 1200A2          113             LCALL   LCD_WRITE_COMMAND
+0080 7401            114             MOV     A,#1
+0082 1200EB          115             LCALL   DELAY_MS
+0085 22              116             RET
+                     117             
+                     118     ; 关显示
+0086                 119     LCD_TURN_OFF:
+0086 7408            120             MOV     A,#08H                  ; 08H --- 关显示
+0088 1200A2          121             LCALL   LCD_WRITE_COMMAND
+008B 7401            122             MOV     A,#1
+008D 1200EB          123             LCALL   DELAY_MS
+0090 22              124             RET
+A51 MACRO ASSEMBLER  LCD                                                                  03/24/2009 19:21:11 PAGE     3
+
+                     125     
+                     126     ; 清除LCD屏幕
+0091                 127     LCD_CLEAR:
+0091 7401            128             MOV     A,#01H                  ; 01H清屏指令                   
+0093 1200A2          129             LCALL   LCD_WRITE_COMMAND
+0096 7401            130             MOV     A,#1
+0098 1200EB          131             LCALL   DELAY_MS
+009B 22              132             RET
+                     133     
+                     134     ;设置LCD当前光标的位置
+                     135     
+009C                 136     SET_LCD_POS:
+009C 4480            137             ORL     A,#80H          ; 
+009E 1200A2          138             LCALL   LCD_WRITE_COMMAND
+00A1 22              139             RET
+                     140     
+                     141     ; 写入控制指令到LCD
+                     142     ; 传入参数: ACC(要写入的命令)
+                     143     ; 返回值: 无
+00A2                 144     LCD_WRITE_COMMAND:
+00A2 1200D6          145             LCALL   CHECK_LCD_BUSY
+00A5 C2A6            146             CLR     RS
+00A7 C2A5            147             CLR     RW
+00A9 C2A7            148             CLR     EP
+00AB 00              149             NOP
+00AC 00              150             NOP
+00AD F580            151             MOV     P0,A                    ; 写入数据到LCD端口
+00AF 00              152             NOP
+00B0 00              153             NOP
+00B1 00              154             NOP
+00B2 00              155             NOP
+00B3 D2A7            156             SETB    EP
+00B5 00              157             NOP
+00B6 00              158             NOP
+00B7 00              159             NOP
+00B8 00              160             NOP
+00B9 C2A7            161             CLR     EP
+00BB 22              162             RET
+                     163             
+                     164     ; 写入显示数据到LCD
+                     165     ; 传入参数: ACC(要写入的数据)
+                     166     ; 返回值: 无
+00BC                 167     LCD_WRITE_DATA:
+00BC 1200D6          168             LCALL   CHECK_LCD_BUSY
+00BF D2A6            169             SETB    RS
+00C1 C2A5            170             CLR     RW
+00C3 C2A7            171             CLR     EP
+00C5 00              172             NOP
+00C6 00              173             NOP
+00C7 F580            174             MOV     P0,A                    ; 写入数据到LCD端口
+00C9 00              175             NOP
+00CA 00              176             NOP
+00CB 00              177             NOP
+00CC 00              178             NOP
+00CD D2A7            179             SETB    EP
+00CF 00              180             NOP
+00D0 00              181             NOP
+00D1 00              182             NOP
+00D2 00              183             NOP
+00D3 C2A7            184             CLR     EP
+00D5 22              185             RET
+                     186             
+00D6                 187     CHECK_LCD_BUSY:
+00D6 C2A6            188             CLR     RS
+00D8 D2A5            189             SETB    RW
+00DA D2A7            190             SETB    EP
+A51 MACRO ASSEMBLER  LCD                                                                  03/24/2009 19:21:11 PAGE     4
+
+00DC 00              191             NOP
+00DD 00              192             NOP
+00DE 00              193             NOP
+00DF 00              194             NOP
+00E0 A287            195             MOV     C,P0.7                  ; 读取忙碌位
+00E2 00              196             NOP
+00E3 00              197             NOP
+00E4 C2A7            198             CLR     EP
+00E6 00              199             NOP
+00E7 00              200             NOP
+00E8 40EC            201             JC      CHECK_LCD_BUSY          ; 等待LCD空闲(P0.7=0)
+                     202             
+00EA 22              203             RET
+                     204     
+                     205     ; 延时子程序
+                     206     ; 传入参数: ACC(延时时间,单位毫秒)
+                     207     ; 返回值: 无
+00EB                 208     DELAY_MS:
+00EB FF              209             MOV     R7,A
+00EC                 210     DELAY_LOOP1:
+00EC 7EE8            211             MOV     R6,#0E8H
+00EE                 212     DELAY_LOOP2:
+00EE 00              213             NOP
+00EF 00              214             NOP
+00F0 DEFC            215             DJNZ    R6,DELAY_LOOP2
+00F2 DFF8            216             DJNZ    R7,DELAY_LOOP1
+00F4 22              217             RET
+                     218                     
+                     219     
+00F5                 220     TAB_WILLAR:
+00F5 7777772E        221             DB      "www.PRECHIN.com"
+00F9 50524543                
+00FD 48494E2E                
+0101 636F6D                  
+0104 00              222             DB      00                      ; 字符结束标志
+                     223             
+0105                 224     TAB_WELCOME:
+0105 57656C63        225             DB      "Welcome!"
+0109 6F6D6521                
+010D 00              226             DB      00                      ; 字符结束标志
+                     227     
+                     228             END
+                             
+A51 MACRO ASSEMBLER  LCD                                                                  03/24/2009 19:21:11 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+CHECK_LCD_BUSY . .  C ADDR   00D6H   A   
+DELAY_LOOP1. . . .  C ADDR   00ECH   A   
+DELAY_LOOP2. . . .  C ADDR   00EEH   A   
+DELAY_MS . . . . .  C ADDR   00EBH   A   
+DISPLAY_STRING . .  C ADDR   0050H   A   
+END_DISPLAY_STRING  C ADDR   005FH   A   
+EP . . . . . . . .  B ADDR   00A0H.7 A   
+LCD_CLEAR. . . . .  C ADDR   0091H   A   
+LCD_INIT . . . . .  C ADDR   0060H   A   
+LCD_TURN_OFF . . .  C ADDR   0086H   A   
+LCD_TURN_ON. . . .  C ADDR   007BH   A   
+LCD_WRITE_COMMAND.  C ADDR   00A2H   A   
+LCD_WRITE_DATA . .  C ADDR   00BCH   A   
+MAIN . . . . . . .  C ADDR   0003H   A   
+MAIN_LOOP. . . . .  C ADDR   000BH   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+RS . . . . . . . .  B ADDR   00A0H.6 A   
+RW . . . . . . . .  B ADDR   00A0H.5 A   
+SET_LCD_POS. . . .  C ADDR   009CH   A   
+TAB_WELCOME. . . .  C ADDR   0105H   A   
+TAB_WILLAR . . . .  C ADDR   00F5H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

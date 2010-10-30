@@ -1,0 +1,226 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        10/25/2008  22:13:24  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+D:\PROGRAM FILES\KEIL\C51\BIN\BL51.EXE STARTUP.obj, 步进马达.obj TO 步进马达 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  步进马达.obj (步絖马达)
+  D:\PROGRAM FILES\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  步进马达 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0007H     UNIT         ?DT?步絖马达
+            IDATA   000FH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0008H     UNIT         ?C_INITSEG
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     008CH     UNIT         ?C_C51STARTUP
+            CODE    009AH     005FH     UNIT         ?PR?SETMOTOR?步絖马达
+            CODE    00F9H     002FH     UNIT         ?PR?TZD?步絖马达
+            CODE    0128H     000FH     UNIT         ?PR?SYSTEM_INI?步絖马达
+            CODE    0137H     000BH     UNIT         ?PR?MAIN?步絖马达
+            CODE    0142H     0009H     UNIT         ?PR?INITMOTOR?步絖马达
+
+
+
+OVERLAY MAP OF MODULE:   步进马达 (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?步絖马达
+  +--> ?C_INITSEG
+
+?PR?MAIN?步絖马达
+  +--> ?PR?SYSTEM_INI?步絖马达
+  +--> ?PR?INITMOTOR?步絖马达
+  +--> ?PR?SETMOTOR?步絖马达
+
+
+
+SYMBOL TABLE OF MODULE:  步进马达 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/25/2008  22:13:24  PAGE 2
+
+
+
+  -------         MODULE        ?C_STARTUP
+  C:000EH         SEGMENT       ?C_C51STARTUP
+  I:000FH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0011H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:000EH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:000EH         LINE#         99
+  C:0010H         LINE#         100
+  C:0011H         LINE#         101
+  C:0012H         LINE#         102
+  C:0014H         LINE#         151
+  C:0017H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        步絖马达
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:0008H         PUBLIC        CT
+  D:000AH         PUBLIC        MotorTimer
+  D:00B8H         PUBLIC        IP
+  C:0137H         PUBLIC        main
+  C:0128H         PUBLIC        system_Ini
+  C:0142H         PUBLIC        InitMotor
+  C:00F9H         PUBLIC        Tzd
+  D:000CH         PUBLIC        MotorStep
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  C:009AH         PUBLIC        SetMotor
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  D:00C8H         PUBLIC        T2CON
+  D:000DH         PUBLIC        TIM
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/25/2008  22:13:24  PAGE 3
+
+
+  B:0090H.0       PUBLIC        F1
+  B:0090H.1       PUBLIC        F2
+  B:0090H.2       PUBLIC        F3
+  B:0090H.3       PUBLIC        F4
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          INITMOTOR
+  C:0142H         LINE#         27
+  C:0142H         LINE#         28
+  C:0142H         LINE#         29
+  C:0144H         LINE#         30
+  C:0146H         LINE#         31
+  C:0148H         LINE#         32
+  C:014AH         LINE#         33
+  -------         ENDPROC       INITMOTOR
+  -------         PROC          SETMOTOR
+  C:009AH         LINE#         37
+  C:009AH         LINE#         38
+  C:009AH         LINE#         42
+  C:00A9H         LINE#         43
+  C:00A9H         LINE#         44
+  C:00A9H         LINE#         45
+  C:00AFH         LINE#         46
+  C:00AFH         LINE#         47
+  C:00B1H         LINE#         48
+  C:00B3H         LINE#         49
+  C:00B5H         LINE#         50
+  C:00B7H         LINE#         51
+  C:00BAH         LINE#         52
+  C:00BAH         LINE#         53
+  C:00BAH         LINE#         54
+  C:00BCH         LINE#         56
+  C:00BCH         LINE#         57
+  C:00C2H         LINE#         58
+  C:00C2H         LINE#         59
+  C:00C4H         LINE#         60
+  C:00C6H         LINE#         61
+  C:00C8H         LINE#         62
+  C:00CAH         LINE#         63
+  C:00CDH         LINE#         64
+  C:00CDH         LINE#         65
+  C:00CDH         LINE#         66
+  C:00CFH         LINE#         68
+  C:00CFH         LINE#         69
+  C:00D5H         LINE#         70
+  C:00D5H         LINE#         73
+  C:00D7H         LINE#         74
+  C:00D9H         LINE#         75
+  C:00DBH         LINE#         76
+  C:00DDH         LINE#         77
+  C:00E0H         LINE#         78
+  C:00E1H         LINE#         79
+  C:00E1H         LINE#         80
+  C:00E3H         LINE#         83
+  C:00E3H         LINE#         84
+  C:00E9H         LINE#         85
+  C:00E9H         LINE#         86
+  C:00EBH         LINE#         87
+BL51 BANKED LINKER/LOCATER V5.03                                                      10/25/2008  22:13:24  PAGE 4
+
+
+  C:00EDH         LINE#         88
+  C:00EFH         LINE#         89
+  C:00F1H         LINE#         90
+  C:00F4H         LINE#         91
+  C:00F8H         LINE#         92
+  C:00F8H         LINE#         93
+  C:00F8H         LINE#         94
+  C:00F8H         LINE#         96
+  -------         ENDPROC       SETMOTOR
+  -------         PROC          SYSTEM_INI
+  C:0128H         LINE#         99
+  C:0128H         LINE#         100
+  C:0128H         LINE#         101
+  C:012BH         LINE#         102
+  C:012EH         LINE#         103
+  C:0131H         LINE#         104
+  C:0134H         LINE#         105
+  C:0136H         LINE#         108
+  -------         ENDPROC       SYSTEM_INI
+  -------         PROC          MAIN
+  C:0137H         LINE#         110
+  C:0137H         LINE#         111
+  C:013AH         LINE#         112
+  C:013DH         LINE#         113
+  C:013DH         LINE#         114
+  C:013DH         LINE#         115
+  C:0140H         LINE#         117
+  -------         ENDPROC       MAIN
+  -------         PROC          TZD
+  C:00F9H         LINE#         127
+  C:0102H         LINE#         129
+  C:0105H         LINE#         130
+  C:0108H         LINE#         132
+  C:0118H         LINE#         133
+  C:011DH         LINE#         134
+  C:0121H         LINE#         135
+  C:0121H         LINE#         136
+  -------         ENDPROC       TZD
+  -------         ENDMOD        步絖马达
+
+Program Size: data=16.0 xdata=0 code=331
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

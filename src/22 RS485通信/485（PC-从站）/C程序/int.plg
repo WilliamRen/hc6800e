@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+G:\HC6800E-V2.6\单片机例程\RS485通信\485（PC-从站）\C程序\int.uv2
+Project File Date:  10/05/2008
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling 232.c...
+linking...
+Program Size: data=21.1 xdata=0 code=107
+creating hex file from "int"...
+"int" - 0 Error(s), 0 Warning(s).

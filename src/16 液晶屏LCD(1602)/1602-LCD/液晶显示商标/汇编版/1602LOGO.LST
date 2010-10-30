@@ -1,0 +1,112 @@
+A51 MACRO ASSEMBLER  1602LOGO                                                             03/29/2009 20:10:37 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN 1602LOGO.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE 1602LOGO.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;                                                                                          
+                                                                                                  *
+                       3     ;                                                                                          
+                                                                                                  *
+                       4     ;                 1602液晶显示                                                  *
+                       5     ;       p2.6 读操作       p2.5 写操作    p2.7 使能控制端                                   
+                                                      *
+                       6     ;                                                                               *
+                       7     ;                                                                                          
+                                                                                                  *
+                       8     ;********************************************************************************
+  00A6                 9     RS EQU p2.6;液晶接口的定义
+  00A5                10     RW EQU p2.5
+  00A7                11     E  EQU p2.7
+0000                  12             org     0000h
+0000 758170           13             MOV SP ,#70H;设置堆栈
+0003 758001           14             MOV p0,#01H     ;清屏
+0006 112F             15             CALL ENABLE
+0008 758038           16             MOV p0,#38H     ;显示功能
+000B 112F             17             CALL ENABLE
+000D 75800F           18             MOV p0,#0FH     ;显示开关控制
+0010 112F             19             CALL ENABLE
+0012 758006           20             MOV p0,#06H     ;+1
+0015 112F             21             CALL ENABLE
+0017 758080           22             MOV p0,#80H;第一行的开始位置
+001A 112F             23             cALL ENABLE
+001C 90005B           24             MOV DPTR,#TABLE1;显示
+001F 113A             25             CALL WRITE1;到TABLE1取码?
+0021 7580C0           26             MOV p0,#0C0H;第二行的位置
+0024 112F             27             CALL ENABLE
+0026 90006E           28             MOV DPTR,#TABLE2;显示
+0029 113A             29             CALL WRITE1;到TABLE2 取码
+                      30             ;MOV p0,#0C2H;光标定位0C0H
+002B 112F             31             CALL ENABLE
+002D 80FE             32             JMP $
+002F C2A6             33     ENABLE: CLR RS                  ;送命令
+0031 C2A5             34             CLR RW
+0033 C2A7             35             CLR E
+0035 1152             36             CALL DELAY
+0037 D2A7             37             SETB E
+0039 22               38             RET
+003A 7900             39     WRITE1: MOV R1,#00H   ;显示table中的值
+003C E9               40             A1: MOV A,R1;到table取码
+003D 93               41             MOVC A,@A+DPTR
+003E 1145             42             call  wRITE2   ;显示到lcd
+0040 09               43             INC R1
+0041 B400F8           44             CJNE A,#00H,A1  ;是否到00h
+0044 22               45             RET
+0045 F580             46     WRITE2:MOV p0,A  ;显示
+0047 D2A6             47             SETB RS
+0049 C2A5             48             CLR RW
+004B C2A7             49             CLR E
+004D 1152             50             CALL DELAY
+004F D2A7             51             SETB E
+0051 22               52             RET
+0052 7C05             53     DELAY: MOV R4,#05
+0054 7DFF             54             D1:MOV R5,#0FFH
+A51 MACRO ASSEMBLER  1602LOGO                                                             03/29/2009 20:10:37 PAGE     2
+
+0056 DDFE             55             DJNZ R5,$
+0058 DCFA             56             DJNZ R4,D1
+005A 22               57             RET
+005B 5348454E         58     table1: db"SHEN ZHEN PUZHONG ",00H
+005F 205A4845                
+0063 4E205055                
+0067 5A484F4E                
+006B 472000                  
+006E 47205445         59     table2: db"G TECHNOLOGY    ",00H
+0072 43484E4F                
+0076 4C4F4759                
+007A 20202020                
+007E 00                      
+                      60     end
+                             
+A51 MACRO ASSEMBLER  1602LOGO                                                             03/29/2009 20:10:37 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+A1 . . . . . . . .  C ADDR   003CH   A   
+D1 . . . . . . . .  C ADDR   0054H   A   
+DELAY. . . . . . .  C ADDR   0052H   A   
+E. . . . . . . . .  B ADDR   00A0H.7 A   
+ENABLE . . . . . .  C ADDR   002FH   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+RS . . . . . . . .  B ADDR   00A0H.6 A   
+RW . . . . . . . .  B ADDR   00A0H.5 A   
+SP . . . . . . . .  D ADDR   0081H   A   
+TABLE1 . . . . . .  C ADDR   005BH   A   
+TABLE2 . . . . . .  C ADDR   006EH   A   
+WRITE1 . . . . . .  C ADDR   003AH   A   
+WRITE2 . . . . . .  C ADDR   0045H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

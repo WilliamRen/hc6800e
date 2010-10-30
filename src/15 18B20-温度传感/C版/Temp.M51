@@ -1,0 +1,466 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        07/29/2010  11:38:00  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, TemMain.obj, Temp.obj TO Temp RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  TemMain.obj (TEMMAIN)
+  Temp.obj (TEMP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?ULDIV)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?LLDIDATA)
+
+
+LINK MAP OF MODULE:  Temp (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0018H     UNIT         ?DT?TEMMAIN
+            BIT     0020H.0   0000H.1   UNIT         ?BI?TEMP
+                    0020H.1   0000H.7                *** GAP ***
+            DATA    0021H     0002H     UNIT         ?DT?TEMP
+            DATA    0023H     0001H     UNIT         _DATA_GROUP_
+            IDATA   0024H     0014H     UNIT         ?ID?TEMP
+            IDATA   0038H     0003H     UNIT         _IDATA_GROUP_
+            IDATA   003BH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     000FH     UNIT         ?PR?SYSTEM_INI?TEMMAIN
+            CODE    0012H     0009H     UNIT         ?PR?T1ZD?TEMP
+            CODE    001BH     0003H     ABSOLUTE     
+            CODE    001EH     012BH     UNIT         ?PR?MAIN?TEMMAIN
+            CODE    0149H     0100H     UNIT         ?CO?TEMP
+            CODE    0249H     00DAH     UNIT         ?C?LIB_CODE
+            CODE    0323H     0035H     UNIT         ?PR?GEMTEMP?TEMP
+            CODE    0358H     002BH     UNIT         ?PR?READBYTE?TEMP
+            CODE    0383H     0029H     UNIT         ?PR?_WRITEBYTE?TEMP
+            CODE    03ACH     0028H     UNIT         ?PR?INIT18B20?TEMP
+            CODE    03D4H     0027H     UNIT         ?PR?CONFIG18B20?TEMP
+            CODE    03FBH     0023H     UNIT         ?PR?_CRC?TEMP
+            CODE    041EH     001FH     UNIT         ?PR?TEMPERATUERRESULT?TEMP
+            CODE    043DH     001EH     UNIT         ?PR?_DELAY?TEMMAIN
+            CODE    045BH     001CH     UNIT         ?PR?_READ_BYTES?TEMP
+            CODE    0477H     000DH     UNIT         ?PR?READID?TEMP
+            CODE    0484H     000CH     UNIT         ?C_C51STARTUP
+            CODE    0490H     000CH     UNIT         ?PR?GETTEMP?TEMP
+            CODE    049CH     000BH     UNIT         ?CO?TEMMAIN
+            CODE    04A7H     0007H     UNIT         ?PR?_TEMPDELAY?TEMP
+
+
+
+OVERLAY MAP OF MODULE:   Temp (?C_STARTUP)
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 2
+
+
+
+
+SEGMENT                              DATA_GROUP          IDATA_GROUP
+  +--> CALLED SEGMENT              START    LENGTH     START    LENGTH
+----------------------------------------------------------------------
+?C_C51STARTUP                      -----    -----      -----    -----
+  +--> ?PR?MAIN?TEMMAIN
+
+?PR?MAIN?TEMMAIN                   0023H    0001H      -----    -----
+  +--> ?PR?SYSTEM_INI?TEMMAIN
+  +--> ?PR?GETTEMP?TEMP
+  +--> ?CO?TEMMAIN
+  +--> ?PR?_DELAY?TEMMAIN
+
+?PR?GETTEMP?TEMP                   -----    -----      -----    -----
+  +--> ?PR?TEMPERATUERRESULT?TEMP
+
+?PR?TEMPERATUERRESULT?TEMP         -----    -----      -----    -----
+  +--> ?PR?READID?TEMP
+  +--> ?PR?CONFIG18B20?TEMP
+  +--> ?PR?_WRITEBYTE?TEMP
+  +--> ?PR?GEMTEMP?TEMP
+
+?PR?READID?TEMP                    -----    -----      -----    -----
+  +--> ?PR?INIT18B20?TEMP
+  +--> ?PR?_WRITEBYTE?TEMP
+  +--> ?PR?_READ_BYTES?TEMP
+
+?PR?INIT18B20?TEMP                 -----    -----      -----    -----
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?_WRITEBYTE?TEMP                -----    -----      0038H    0001H
+  +--> ?PR?INIT18B20?TEMP
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?_READ_BYTES?TEMP               -----    -----      0038H    0001H
+  +--> ?PR?READBYTE?TEMP
+
+?PR?READBYTE?TEMP                  -----    -----      0039H    0002H
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?CONFIG18B20?TEMP               -----    -----      -----    -----
+  +--> ?PR?_WRITEBYTE?TEMP
+
+?PR?GEMTEMP?TEMP                   -----    -----      -----    -----
+  +--> ?PR?_READ_BYTES?TEMP
+  +--> ?PR?_CRC?TEMP
+  +--> ?PR?_TEMPDELAY?TEMP
+
+?PR?_CRC?TEMP                      -----    -----      0038H    0002H
+  +--> ?CO?TEMP
+
+
+
+SYMBOL TABLE OF MODULE:  Temp (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 3
+
+
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0484H         SEGMENT       ?C_C51STARTUP
+  I:003BH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0487H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0484H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:0484H         LINE#         99
+  C:0486H         LINE#         100
+  C:0487H         LINE#         101
+  C:0488H         LINE#         102
+  C:048AH         LINE#         151
+  C:048DH         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        TEMMAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  B:00A0H.3       PUBLIC        LS138B
+  B:00A0H.4       PUBLIC        LS138C
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:049CH         PUBLIC        Disp_Tab
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:001EH         PUBLIC        main
+  C:0003H         PUBLIC        system_Ini
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:008DH         PUBLIC        TH1
+  D:0008H         PUBLIC        LedOut
+  D:008BH         PUBLIC        TL1
+  B:0088H.6       PUBLIC        TR1
+  D:00C8H         PUBLIC        T2CON
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 4
+
+
+  D:001CH         PUBLIC        LedNumVal
+  C:043DH         PUBLIC        _delay
+  D:00D0H         PUBLIC        PSW
+  B:00A0H.2       PUBLIC        LS138A
+  -------         PROC          SYSTEM_INI
+  C:0003H         LINE#         30
+  C:0003H         LINE#         31
+  C:0003H         LINE#         32
+  C:0006H         LINE#         33
+  C:0009H         LINE#         34
+  C:000CH         LINE#         35
+  C:000FH         LINE#         36
+  C:0011H         LINE#         38
+  -------         ENDPROC       SYSTEM_INI
+  -------         PROC          MAIN
+  -------         DO            
+  D:0023H         SYMBOL        i
+  -------         ENDDO         
+  C:001EH         LINE#         40
+  C:001EH         LINE#         41
+  C:001EH         LINE#         42
+  C:0021H         LINE#         43
+  C:0021H         LINE#         44
+  C:0021H         LINE#         45
+  C:0024H         LINE#         48
+  C:0034H         LINE#         49
+  C:0069H         LINE#         50
+  C:00A1H         LINE#         51
+  C:00D8H         LINE#         52
+  C:00FEH         LINE#         54
+  C:0100H         LINE#         55
+  C:0100H         LINE#         56
+  C:010EH         LINE#         58
+  C:011DH         LINE#         59
+  C:011DH         LINE#         60
+  C:0121H         LINE#         61
+  C:0129H         LINE#         62
+  C:012DH         LINE#         63
+  C:0133H         LINE#         64
+  C:0133H         LINE#         66
+  C:013AH         LINE#         67
+  C:0143H         LINE#         69
+  C:0146H         LINE#         71
+  -------         ENDPROC       MAIN
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        i
+  -------         DO            
+  D:0005H         SYMBOL        j
+  -------         ENDDO         
+  C:043DH         LINE#         75
+  C:043DH         LINE#         76
+  C:043DH         LINE#         78
+  C:0446H         LINE#         79
+  C:045AH         LINE#         80
+  -------         ENDPROC       _DELAY
+  -------         ENDMOD        TEMMAIN
+
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 5
+
+
+  -------         MODULE        TEMP
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  C:0149H         PUBLIC        CrcTable
+  C:0388H         PUBLIC        _WriteByte
+  C:03D4H         PUBLIC        Config18b20
+  C:045BH         PUBLIC        _read_bytes
+  C:0477H         PUBLIC        ReadID
+  D:00A8H         PUBLIC        IE
+  C:0358H         PUBLIC        ReadByte
+  I:0024H         PUBLIC        Temperature
+  D:00B8H         PUBLIC        IP
+  C:041EH         PUBLIC        TemperatuerResult
+  B:0020H.0       PUBLIC        flag
+  C:0323H         PUBLIC        GemTemp
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  I:0026H         PUBLIC        crc_data
+  C:03FBH         PUBLIC        _CRC
+  C:0490H         PUBLIC        GetTemp
+  I:0027H         PUBLIC        temp_buff
+  C:03ACH         PUBLIC        Init18b20
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  B:00B0H.7       PUBLIC        D18B20
+  I:0030H         PUBLIC        id_buff
+  C:0012H         PUBLIC        T1zd
+  D:00C8H         PUBLIC        T2CON
+  D:0021H         PUBLIC        TIM
+  C:04A7H         PUBLIC        _TempDelay
+  D:0022H         PUBLIC        p
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _TEMPDELAY
+  D:0007H         SYMBOL        us
+  C:04A7H         LINE#         54
+  C:04A7H         LINE#         55
+  C:04A7H         LINE#         56
+  C:04ADH         LINE#         57
+  -------         ENDPROC       _TEMPDELAY
+  -------         PROC          INIT18B20
+  C:03ACH         LINE#         65
+  C:03ACH         LINE#         66
+  C:03ACH         LINE#         67
+  C:03AEH         LINE#         68
+  C:03AFH         LINE#         69
+  C:03B1H         LINE#         70
+  C:03B6H         LINE#         71
+  C:03B7H         LINE#         72
+  C:03B9H         LINE#         73
+  C:03BEH         LINE#         74
+  C:03BFH         LINE#         75
+  C:03C0H         LINE#         76
+  C:03C1H         LINE#         78
+  C:03C4H         LINE#         79
+  C:03C8H         LINE#         81
+  C:03CAH         LINE#         82
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 6
+
+
+  C:03CFH         LINE#         83
+  C:03D0H         LINE#         84
+  C:03D1H         LINE#         85
+  C:03D3H         LINE#         86
+  -------         ENDPROC       INIT18B20
+  C:0383H         SYMBOL        L?0033
+  -------         PROC          L?0032
+  -------         ENDPROC       L?0032
+  C:0383H         SYMBOL        L?0033
+  -------         PROC          _WRITEBYTE
+  D:0005H         SYMBOL        wr
+  -------         DO            
+  I:0038H         SYMBOL        i
+  -------         ENDDO         
+  C:0388H         LINE#         94
+  C:038AH         LINE#         95
+  C:038AH         LINE#         97
+  C:038EH         LINE#         98
+  C:038EH         LINE#         99
+  C:0390H         LINE#         100
+  C:0391H         LINE#         101
+  C:0395H         LINE#         102
+  C:039AH         LINE#         103
+  C:039BH         LINE#         104
+  C:039CH         LINE#         105
+  C:039EH         LINE#         106
+  C:03A2H         LINE#         107
+  C:03ABH         LINE#         108
+  -------         ENDPROC       _WRITEBYTE
+  -------         PROC          READBYTE
+  -------         DO            
+  I:0039H         SYMBOL        i
+  I:003AH         SYMBOL        u
+  -------         ENDDO         
+  C:0358H         LINE#         116
+  C:0358H         LINE#         117
+  C:0358H         LINE#         118
+  C:035CH         LINE#         119
+  C:035EH         LINE#         120
+  C:035EH         LINE#         121
+  C:0360H         LINE#         122
+  C:0366H         LINE#         123
+  C:0368H         LINE#         124
+  C:036BH         LINE#         125
+  C:036FH         LINE#         126
+  C:0374H         LINE#         127
+  C:0375H         LINE#         128
+  C:037EH         LINE#         129
+  C:0382H         LINE#         130
+  -------         ENDPROC       READBYTE
+  -------         PROC          _READ_BYTES
+  D:0005H         SYMBOL        j
+  -------         DO            
+  I:0038H         SYMBOL        i
+  -------         ENDDO         
+  C:045BH         LINE#         138
+  C:045DH         LINE#         139
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 7
+
+
+  C:045DH         LINE#         141
+  C:0468H         LINE#         142
+  C:0468H         LINE#         143
+  C:046FH         LINE#         144
+  C:0471H         LINE#         145
+  C:0476H         LINE#         146
+  -------         ENDPROC       _READ_BYTES
+  -------         PROC          _CRC
+  D:0007H         SYMBOL        j
+  -------         DO            
+  I:0038H         SYMBOL        i
+  I:0039H         SYMBOL        crc_data
+  -------         ENDDO         
+  C:03FBH         LINE#         154
+  C:03FBH         LINE#         155
+  C:03FBH         LINE#         156
+  C:03FFH         LINE#         157
+  C:0409H         LINE#         158
+  C:0419H         LINE#         159
+  C:041DH         LINE#         160
+  -------         ENDPROC       _CRC
+  -------         PROC          GEMTEMP
+  C:0323H         LINE#         168
+  C:0323H         LINE#         169
+  C:0323H         LINE#         170
+  C:0328H         LINE#         171
+  C:0330H         LINE#         172
+  C:0330H         LINE#         173
+  C:0341H         LINE#         175
+  C:0352H         LINE#         176
+  C:0357H         LINE#         177
+  C:0357H         LINE#         178
+  -------         ENDPROC       GEMTEMP
+  -------         PROC          CONFIG18B20
+  C:03D4H         LINE#         186
+  C:03D4H         LINE#         187
+  C:03D4H         LINE#         188
+  C:03D4H         LINE#         189
+  C:03D7H         LINE#         190
+  C:03DCH         LINE#         191
+  C:03E1H         LINE#         192
+  C:03E6H         LINE#         193
+  C:03EBH         LINE#         194
+  C:03EBH         LINE#         195
+  C:03EEH         LINE#         196
+  C:03F3H         LINE#         197
+  C:03F3H         LINE#         198
+  C:03F6H         LINE#         199
+  -------         ENDPROC       CONFIG18B20
+  -------         PROC          READID
+  C:0477H         LINE#         208
+  C:0477H         LINE#         209
+  C:0477H         LINE#         210
+  C:047AH         LINE#         211
+  C:047FH         LINE#         212
+  -------         ENDPROC       READID
+  -------         PROC          TEMPERATUERRESULT
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/29/2010  11:38:00  PAGE 8
+
+
+  C:041EH         LINE#         221
+  C:041EH         LINE#         222
+  C:041EH         LINE#         223
+  C:0421H         LINE#         224
+  C:0424H         LINE#         225
+  C:0427H         LINE#         226
+  C:0427H         LINE#         227
+  C:042AH         LINE#         228
+  C:042FH         LINE#         230
+  C:042FH         LINE#         231
+  C:0432H         LINE#         232
+  C:0437H         LINE#         233
+  C:043AH         LINE#         234
+  -------         ENDPROC       TEMPERATUERRESULT
+  -------         PROC          GETTEMP
+  C:0490H         LINE#         238
+  C:0490H         LINE#         239
+  C:0490H         LINE#         240
+  C:0495H         LINE#         241
+  C:0498H         LINE#         242
+  C:049BH         LINE#         243
+  C:049BH         LINE#         245
+  -------         ENDPROC       GETTEMP
+  -------         PROC          T1ZD
+  C:0012H         LINE#         251
+  C:0012H         LINE#         253
+  C:0015H         LINE#         254
+  C:0018H         LINE#         255
+  C:001AH         LINE#         257
+  -------         ENDPROC       T1ZD
+  -------         ENDMOD        TEMP
+
+  -------         MODULE        ?C?ULDIV
+  C:0285H         PUBLIC        ?C?ULDIV
+  -------         ENDMOD        ?C?ULDIV
+
+  -------         MODULE        ?C?LLDIDATA
+  C:0317H         PUBLIC        ?C?LLDIDATA
+  -------         ENDMOD        ?C?LLDIDATA
+
+Program Size: data=59.1 xdata=0 code=1198
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

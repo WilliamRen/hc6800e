@@ -1,0 +1,161 @@
+C51 COMPILER V7.10   LCD                                                                   03/29/2009 20:06:24 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN LCD.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE LCD.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *  描述:                                                                       *
+   3          *         1602字符型LCD显示演示程序                                            *
+   4          *         在第一行显示  welcome                                                *
+   5          *         在第二行显示  www.PRECHIN.com                                         *
+   6          *                                                                              *
+   7          ********************************************************************************/
+   8          
+   9          #include <reg51.h>
+  10          #include <intrins.h>
+  11          
+  12          typedef unsigned char BYTE;
+  13          typedef unsigned int WORD;
+  14          typedef bit BOOL ; 
+  15          
+  16          sbit rs = P2^6;         //
+  17          sbit rw = P2^5;
+  18          sbit ep = P2^7;
+  19          
+  20          BYTE code dis1[] = {"welcome!"};
+  21          BYTE code dis2[] = {"www.PRECHIN.com"};
+  22          
+  23          delay(BYTE ms)
+  24          {                                                       // 延时子程序
+  25   1              BYTE i;
+  26   1              while(ms--)
+  27   1              {
+  28   2                      for(i = 0; i< 250; i++)
+  29   2                      {
+  30   3                              _nop_();
+  31   3                              _nop_();
+  32   3                              _nop_();
+  33   3                              _nop_();
+  34   3                      }
+  35   2              }
+  36   1      }
+  37          
+  38          BOOL lcd_bz()
+  39          {                                                       // 测试LCD忙碌状态
+  40   1              BOOL result;
+  41   1              rs = 0;
+  42   1              rw = 1;
+  43   1              ep = 1;
+  44   1              _nop_();
+  45   1              _nop_();
+  46   1              _nop_();
+  47   1              _nop_();
+  48   1              result = (BOOL)(P0 & 0x80);
+  49   1              ep = 0;
+  50   1              return result;  
+  51   1      }
+  52          
+  53          lcd_wcmd(BYTE cmd)
+  54          {                                                       // 写入指令数据到LCD
+  55   1              while(lcd_bz());
+C51 COMPILER V7.10   LCD                                                                   03/29/2009 20:06:24 PAGE 2   
+
+  56   1              rs = 0;
+  57   1              rw = 0;
+  58   1              ep = 0;
+  59   1              _nop_();
+  60   1              _nop_();        
+  61   1              P0 = cmd;
+  62   1              _nop_();
+  63   1              _nop_();
+  64   1              _nop_();
+  65   1              _nop_();
+  66   1              ep = 1;
+  67   1              _nop_();
+  68   1              _nop_();
+  69   1              _nop_();
+  70   1              _nop_();
+  71   1              ep = 0;         
+  72   1      }
+  73          
+  74          lcd_pos(BYTE pos)
+  75          {                                                       //设定显示位置
+  76   1              lcd_wcmd(pos | 0x80);
+  77   1      }
+  78          
+  79          lcd_wdat(BYTE dat)      
+  80          {                                                       //写入字符显示数据到LCD
+  81   1              while(lcd_bz());
+  82   1              rs = 1;
+  83   1              rw = 0;
+  84   1              ep = 0;
+  85   1              P0 = dat;
+  86   1              _nop_();
+  87   1              _nop_();
+  88   1              _nop_();
+  89   1              _nop_();
+  90   1              ep = 1;
+  91   1              _nop_();
+  92   1              _nop_();
+  93   1              _nop_();
+  94   1              _nop_();
+  95   1              ep = 0; 
+  96   1      }
+  97          
+  98          lcd_init()
+  99          {                                                       //LCD初始化设定
+ 100   1              lcd_wcmd(0x38);                 //
+ 101   1              delay(1);
+ 102   1              lcd_wcmd(0x0c);                 //
+ 103   1              delay(1);
+ 104   1              lcd_wcmd(0x06);                 //
+ 105   1              delay(1);
+ 106   1              lcd_wcmd(0x01);                 //清除LCD的显示内容
+ 107   1              delay(1);
+ 108   1      }
+ 109          
+ 110          main()
+ 111          {
+ 112   1              BYTE i;
+ 113   1              lcd_init();                             // 初始化LCD                    
+ 114   1              delay(10);
+ 115   1              lcd_pos(4);                             // 设置显示位置为第一行的第5个字符
+ 116   1              i = 0;
+ 117   1              while(dis1[i] != '\0')
+C51 COMPILER V7.10   LCD                                                                   03/29/2009 20:06:24 PAGE 3   
+
+ 118   1              {                                               // 显示字符"welcome!"
+ 119   2                      lcd_wdat(dis1[i]);
+ 120   2                      i++;
+ 121   2              }
+ 122   1              lcd_pos(0x41);                  // 设置显示位置为第二行第二个字符
+ 123   1              i = 0;
+ 124   1              while(dis2[i] != '\0')
+ 125   1              {
+ 126   2                      lcd_wdat(dis2[i]);      // 显示字符"  www.PRECHIN.com  "
+ 127   2                      i++;
+ 128   2              }
+ 129   1              while(1);                               // 
+ 130   1      }
+ 131          
+ 132          
+ 133          
+ 134                          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    193    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

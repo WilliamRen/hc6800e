@@ -1,0 +1,57 @@
+A51 MACRO ASSEMBLER  BUTTON                                                               03/15/2010 16:21:16 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN button.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE button.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ; 按键P0.0每按下次加一，通过的P2端口显示   
+                       3     ;连接方法：JP10（P0） 与 JP1 （LED灯）连接，                                               
+                                          *
+                       4     ;          JP11（P2） 与 JP5（按键接口）连接                                    *
+                       5     ; 显示出其的二进制计数值。                                                      *
+                       6     ;                                                                                          
+                                                                                              *
+                       7     ;********************************************************************************
+0000                   8             org     0000h
+0000 0132              9             ajmp    loop
+0030                  10             org         0030h
+0030 74FF             11             mov     a,#0ffh
+0032 308002           12     loop:jnb        p0.0,tt
+0035 80FB             13              jmp    loop
+0037 F5A0             14     tt:      mov    p2,a    ;全不亮
+0039 113E             15              call   delay   ;延时。
+003B 14               16              dec    a               ;每次减一。
+003C 80F4             17              jmp    loop
+003E 7D32             18     delay:  mov     r5,#50  ;延时。
+0040 7E28             19     d1:     mov     r6,#40
+0042 7F14             20     d2:     mov     r7,#20
+0044 DFFE             21             djnz    r7,$
+0046 DEFA             22             djnz    r6,d2
+0048 DDF6             23             djnz    r5,d1
+004A 22               24             ret
+                      25     end
+A51 MACRO ASSEMBLER  BUTTON                                                               03/15/2010 16:21:16 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+D1 . . . . . . . .  C ADDR   0040H   A   
+D2 . . . . . . . .  C ADDR   0042H   A   
+DELAY. . . . . . .  C ADDR   003EH   A   
+LOOP . . . . . . .  C ADDR   0032H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+TT . . . . . . . .  C ADDR   0037H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

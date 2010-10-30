@@ -1,0 +1,3 @@
+"lcd1602jz.obj" 
+TO "lcd+button" 
+RAMSIZE(256) 

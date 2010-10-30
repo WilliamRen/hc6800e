@@ -1,0 +1,301 @@
+; 74hc595-165.SRC generated from: 74hc595-165.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE 74hc595-165.c BROWSE DEBUG OBJECTEXTEND
+
+$NOMOD51
+
+NAME	_74HC595_165
+
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+T2	BIT	090H.0
+EA	BIT	0A8H.7
+MOSIO	BIT	090H.5
+R_CLK	BIT	090H.6
+S_CLK	BIT	090H.7
+IE	DATA	0A8H
+IN_Dat	BIT	0B0H.5
+OE	BIT	0B0H.6
+IN_PL	BIT	0B0H.4
+EXF2	BIT	0C8H.6
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+RCAP2H	DATA	0CBH
+PS	BIT	0B8H.4
+SP	DATA	081H
+T2EX	BIT	090H.1
+OV	BIT	0D0H.2
+RCAP2L	DATA	0CAH
+C_T2	BIT	0C8H.1
+WR	BIT	0B0H.6
+RCLK	BIT	0C8H.5
+TCLK	BIT	0C8H.4
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+CP_RL2	BIT	0C8H.0
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+ET2	BIT	0A8H.5
+TF1	BIT	088H.7
+TF2	BIT	0C8H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+TH2	DATA	0CDH
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+TL2	DATA	0CCH
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+PT2	BIT	0B8H.5
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+TR2	BIT	0C8H.2
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+DPL	DATA	082H
+EXEN2	BIT	0C8H.3
+REN	BIT	098H.4
+T2CON	DATA	0C8H
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+?PR?_HC595SendData?74HC595_165           SEGMENT CODE 
+?PR?ReHC74165?74HC595_165                SEGMENT CODE 
+	EXTRN	CODE (?C?LSHL)
+	EXTRN	CODE (?C?LNOT)
+	PUBLIC	ReHC74165
+	PUBLIC	_HC595SendData
+; 
+;  /*************************此部分为74HC595的驱动程序使用SPI总线连接*************************************/
+
+; #include<reg52.h>
+; #include <intrins.h>
+; #include <Function.h>
+; 
+; #define  NOP()   _nop_()   /* 定义空指令 */
+; #define  _Nop()  _nop_()   /*定义空指令*/
+; 
+; 
+; //SPI IO
+; sbit    MOSIO =P1^5;
+; sbit    R_CLK =P1^6;
+; sbit    S_CLK =P1^7;
+; sbit    IN_PL =P3^4;    //74HC165  shift load   把数据加载到锁存器中
+; sbit    IN_Dat=P3^5;    //74HC165  output       数据移出
+; sbit    OE    =P3^6;
+; 
+; 
+; 
+; /*********************************************************************************************************
+; ** 函数名称: HC595SendData
+; ** 功能描述: 向SPI总线发送数据
+; *********************************************************************************************************/
+; void HC595SendData(unsigned int SendVal)
+
+	RSEG  ?PR?_HC595SendData?74HC595_165
+_HC595SendData:
+	USING	0
+			; SOURCE LINE # 26
+;---- Variable 'SendVal?040' assigned to Register 'R4/R5' ----
+	MOV  	R5,AR7
+	MOV  	R4,AR6
+; {  
+			; SOURCE LINE # 27
+;   unsigned char i;
+; 		
+;   for(i=0;i<16;i++) 
+			; SOURCE LINE # 30
+;---- Variable 'i?041' assigned to Register 'R3' ----
+	CLR  	A
+	MOV  	R3,A
+?C0001:
+;    {
+			; SOURCE LINE # 31
+; 	if((SendVal<<i)&0x8000) MOSIO=1; // set dataline high
+			; SOURCE LINE # 32
+	MOV  	A,R5
+	MOV  	R6,AR4
+	MOV  	R0,AR3
+	INC  	R0
+	SJMP 	?C0013
+?C0012:
+	CLR  	C
+	RLC  	A
+	XCH  	A,R6
+	RLC  	A
+	XCH  	A,R6
+?C0013:
+	DJNZ 	R0,?C0012
+	MOV  	A,R6
+	JNB  	ACC.7,?C0004
+	SETB 	MOSIO
+	SJMP 	?C0005
+?C0004:
+; 	else MOSIO=0;
+			; SOURCE LINE # 33
+	CLR  	MOSIO
+?C0005:
+;  
+; 	S_CLK=0;
+			; SOURCE LINE # 35
+	CLR  	S_CLK
+; 	NOP();
+			; SOURCE LINE # 36
+	NOP  	
+; 	NOP();
+			; SOURCE LINE # 37
+	NOP  	
+; 	S_CLK=1;	
+			; SOURCE LINE # 38
+	SETB 	S_CLK
+;    }
+			; SOURCE LINE # 39
+	INC  	R3
+	CJNE 	R3,#010H,?C0001
+?C0002:
+;    
+; 	
+;   R_CLK=0; //set dataline low
+			; SOURCE LINE # 42
+	CLR  	R_CLK
+;   NOP();
+			; SOURCE LINE # 43
+	NOP  	
+;   NOP();
+			; SOURCE LINE # 44
+	NOP  	
+;   R_CLK=1; //片选
+			; SOURCE LINE # 45
+	SETB 	R_CLK
+;   OE=0;
+			; SOURCE LINE # 46
+	CLR  	OE
+; 
+; }
+			; SOURCE LINE # 48
+	RET  	
+; END OF _HC595SendData
+
+; 
+; /*********************************************************************************************************
+; ** 函数名称: ReHC74165
+; ** 功能描述: 
+; *********************************************************************************************************/
+; unsigned long ReHC74165(void)
+
+	RSEG  ?PR?ReHC74165?74HC595_165
+ReHC74165:
+	USING	0
+			; SOURCE LINE # 54
+; {  
+			; SOURCE LINE # 55
+;   unsigned char i;
+;   unsigned long indata;
+; 		
+;    IN_PL=0;
+			; SOURCE LINE # 59
+	CLR  	IN_PL
+;    NOP();
+			; SOURCE LINE # 60
+	NOP  	
+;    IN_PL=1;
+			; SOURCE LINE # 61
+	SETB 	IN_PL
+;    NOP();            
+			; SOURCE LINE # 62
+	NOP  	
+;    
+;    indata=0;     
+			; SOURCE LINE # 64
+;---- Variable 'indata?143' assigned to Register 'R4/R5/R6/R7' ----
+	MOV  	R7,#00H
+	MOV  	R6,#00H
+	MOV  	R5,#00H
+	MOV  	R4,#00H
+;    for(i=0; i<25; i++)
+			; SOURCE LINE # 65
+;---- Variable 'i?142' assigned to Register 'R3' ----
+	CLR  	A
+	MOV  	R3,A
+?C0007:
+;     { 
+			; SOURCE LINE # 66
+; 	  indata=indata<<1;
+			; SOURCE LINE # 67
+	MOV  	R0,#01H
+	LCALL	?C?LSHL
+;       if(IN_Dat==1)indata=indata+1;
+			; SOURCE LINE # 68
+	JNB  	IN_Dat,?C0010
+	MOV  	A,R7
+	ADD  	A,#01H
+	MOV  	R7,A
+	CLR  	A
+	ADDC 	A,R6
+	MOV  	R6,A
+	CLR  	A
+	ADDC 	A,R5
+	MOV  	R5,A
+	CLR  	A
+	ADDC 	A,R4
+	MOV  	R4,A
+?C0010:
+; 	  S_CLK=1;
+			; SOURCE LINE # 69
+	SETB 	S_CLK
+;       NOP();
+			; SOURCE LINE # 70
+	NOP  	
+;       S_CLK=0;	  
+			; SOURCE LINE # 71
+	CLR  	S_CLK
+; 	} 
+			; SOURCE LINE # 72
+	INC  	R3
+	CJNE 	R3,#019H,?C0007
+?C0008:
+;    
+;    return(~indata);
+			; SOURCE LINE # 74
+	LCALL	?C?LNOT
+;  
+; }
+			; SOURCE LINE # 76
+?C0011:
+	RET  	
+; END OF ReHC74165
+
+	END

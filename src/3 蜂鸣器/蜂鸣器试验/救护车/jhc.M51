@@ -1,0 +1,68 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        11/10/2009  23:24:45  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE jhc.obj TO jhc RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  jhc.obj (JHC)
+
+
+LINK MAP OF MODULE:  jhc (JHC)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0056H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  jhc (JHC)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        JHC
+  C:004CH         SYMBOL        DELAY1
+  C:0051H         SYMBOL        DELAY2
+  C:0032H         SYMBOL        DLV1
+  C:0034H         SYMBOL        DLV2
+  C:003FH         SYMBOL        DLV3
+  C:0041H         SYMBOL        DLV4
+  C:004EH         SYMBOL        LLA
+  C:0053H         SYMBOL        LLB
+  C:0030H         SYMBOL        MAIN
+  D:0090H         SYMBOL        P1
+  C:0000H         LINE#         3
+  C:0030H         LINE#         7
+  C:0032H         LINE#         8
+  C:0034H         LINE#         9
+  C:0036H         LINE#         10
+  C:0039H         LINE#         11
+  C:003BH         LINE#         12
+  C:003DH         LINE#         13
+  C:003FH         LINE#         15
+  C:0041H         LINE#         16
+  C:0043H         LINE#         17
+  C:0046H         LINE#         18
+  C:0048H         LINE#         19
+  C:004AH         LINE#         20
+  C:004CH         LINE#         22
+  C:004EH         LINE#         24
+  C:0050H         LINE#         25
+  C:0051H         LINE#         28
+  C:0053H         LINE#         30
+  C:0055H         LINE#         31
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/10/2009  23:24:45  PAGE 2
+
+
+  -------         ENDMOD        JHC
+
+Program Size: data=8.0 xdata=0 code=86
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

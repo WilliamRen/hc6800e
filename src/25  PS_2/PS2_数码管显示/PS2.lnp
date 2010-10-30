@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"ps2.obj" 
+TO "PS2" 
+RAMSIZE(256) 

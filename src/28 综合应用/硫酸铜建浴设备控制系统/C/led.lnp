@@ -1,0 +1,5 @@
+"STARTUP.obj",
+"led.obj",
+"EEPROM.obj" 
+TO "led" 
+RAMSIZE(256) 

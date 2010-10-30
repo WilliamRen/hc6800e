@@ -1,0 +1,72 @@
+C51 COMPILER V7.10   LED                                                                   05/13/2010 11:25:54 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LED
+OBJECT MODULE PLACED IN led.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *  标题:                  试验动静LED灯——实现动态控制                        *
+   3          *                                                                                                                                                          *
+   4          *  连接方法：P0与J12 用8PIN排线连接      J14短路帽短接                             *
+   5          ********************************************************************************
+   6          *                                                                                                                      *
+   7          * 请学员认真消化本例程，用单片机脚直接控制和138译码器控制数码管                *
+   8          ********************************************************************************/
+   9          
+  10          
+  11          #include <reg51.h> 
+  12          #include <intrins.h>
+  13          
+  14          sbit LED8_1=P1^1;
+  15          
+  16          void delay(unsigned int i);      //函数声名
+  17          
+  18          char DelayCNT;
+  19          char LED;
+  20           
+  21          main()
+  22          {  
+  23   1         LED = 0x01;  
+  24   1         DelayCNT=0;
+  25   1      
+  26   1        while(1)
+  27   1        {      
+  28   2           if(++DelayCNT>=10)   //点亮动静LED灯速度控制
+  29   2               {
+  30   3                      DelayCNT=0;
+  31   3                      LED = LED << 1;     // 左移
+  32   3                      if(LED==0) LED = 1;     // 移位后，后面的位为高电平
+  33   3               }
+  34   2                P0 =LED; 
+  35   2                LED8_1=0;
+  36   2                delay(1000);  //调用延时程序
+  37   2         }   
+  38   1      }       
+  39          
+  40          void delay(unsigned int i)
+  41          {
+  42   1          char j;
+  43   1          for(i; i > 0; i--)
+  44   1              for(j = 200; j > 0; j--);
+  45   1      }
+  46          
+  47          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     75    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+C51 COMPILER V7.10   LED                                                                   05/13/2010 11:25:54 PAGE 2   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

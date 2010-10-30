@@ -1,0 +1,702 @@
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN I2C.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE I2C.SRC SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; I2C.SRC generated from: I2C.C
+                       2     ; COMPILER INVOKED BY:
+                       3     ;        C:\Keil\C51\BIN\C51.EXE I2C.C BROWSE DEBUG OBJECTEXTEND
+                       4     
+                       5     $nomod51 
+                       6     
+                       7     NAME    I2C
+                       8     
+  0080                 9     P0      DATA    080H
+  0090                10     P1      DATA    090H
+  00A0                11     P2      DATA    0A0H
+  00B0                12     P3      DATA    0B0H
+  00B4                13     T0      BIT     0B0H.4
+  00D6                14     AC      BIT     0D0H.6
+  00B5                15     T1      BIT     0B0H.5
+  0090                16     T2      BIT     090H.0
+  00AF                17     EA      BIT     0A8H.7
+  00A8                18     IE      DATA    0A8H
+  00CE                19     EXF2    BIT     0C8H.6
+  00B7                20     RD      BIT     0B0H.7
+  00AC                21     ES      BIT     0A8H.4
+  00B8                22     IP      DATA    0B8H
+  0098                23     RI      BIT     098H.0
+  00B2                24     INT0    BIT     0B0H.2
+  00D7                25     CY      BIT     0D0H.7
+  0099                26     TI      BIT     098H.1
+  00B3                27     INT1    BIT     0B0H.3
+  00CB                28     RCAP2H  DATA    0CBH
+  00BC                29     PS      BIT     0B8H.4
+  0081                30     SP      DATA    081H
+  0091                31     T2EX    BIT     090H.1
+  00D2                32     OV      BIT     0D0H.2
+  00CA                33     RCAP2L  DATA    0CAH
+  00C9                34     C_T2    BIT     0C8H.1
+  00B6                35     WR      BIT     0B0H.6
+  00CD                36     RCLK    BIT     0C8H.5
+  00CC                37     TCLK    BIT     0C8H.4
+  0099                38     SBUF    DATA    099H
+  0087                39     PCON    DATA    087H
+  0098                40     SCON    DATA    098H
+  0089                41     TMOD    DATA    089H
+  0088                42     TCON    DATA    088H
+  0089                43     IE0     BIT     088H.1
+  008B                44     IE1     BIT     088H.3
+  00F0                45     B       DATA    0F0H
+  00C8                46     CP_RL2  BIT     0C8H.0
+  00E0                47     ACC     DATA    0E0H
+  00A9                48     ET0     BIT     0A8H.1
+  00AB                49     ET1     BIT     0A8H.3
+  008D                50     TF0     BIT     088H.5
+  00AD                51     ET2     BIT     0A8H.5
+  008F                52     TF1     BIT     088H.7
+  00CF                53     TF2     BIT     0C8H.7
+  009A                54     RB8     BIT     098H.2
+  008C                55     TH0     DATA    08CH
+  00A8                56     EX0     BIT     0A8H.0
+  0088                57     IT0     BIT     088H.0
+  008D                58     TH1     DATA    08DH
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     2
+
+  009B                59     TB8     BIT     098H.3
+  00AA                60     EX1     BIT     0A8H.2
+  008A                61     IT1     BIT     088H.2
+  00CD                62     TH2     DATA    0CDH
+  00D0                63     P       BIT     0D0H.0
+  009F                64     SM0     BIT     098H.7
+  008A                65     TL0     DATA    08AH
+  009E                66     SM1     BIT     098H.6
+  008B                67     TL1     DATA    08BH
+  009D                68     SM2     BIT     098H.5
+  00CC                69     TL2     DATA    0CCH
+  00B9                70     PT0     BIT     0B8H.1
+  00BB                71     PT1     BIT     0B8H.3
+  00D3                72     RS0     BIT     0D0H.3
+  00BD                73     PT2     BIT     0B8H.5
+  008C                74     TR0     BIT     088H.4
+  00D4                75     RS1     BIT     0D0H.4
+  008E                76     TR1     BIT     088H.6
+  00A1                77     SDA     BIT     0A0H.1
+  00CA                78     TR2     BIT     0C8H.2
+  00B8                79     PX0     BIT     0B8H.0
+  00BA                80     PX1     BIT     0B8H.2
+  0083                81     DPH     DATA    083H
+  0082                82     DPL     DATA    082H
+  00A0                83     SCL     BIT     0A0H.0
+  00CB                84     EXEN2   BIT     0C8H.3
+  009C                85     REN     BIT     098H.4
+  00C8                86     T2CON   DATA    0C8H
+  00B0                87     RXD     BIT     0B0H.0
+  00B1                88     TXD     BIT     0B0H.1
+  00D5                89     F0      BIT     0D0H.5
+  00D0                90     PSW     DATA    0D0H
+                      91     ?PR?Start_I2c?I2C    SEGMENT CODE 
+                      92     ?PR?Stop_I2c?I2C     SEGMENT CODE 
+                      93     ?PR?_SendByte?I2C    SEGMENT CODE 
+                      94     ?PR?RcvByte?I2C      SEGMENT CODE 
+                      95     ?PR?Ack_I2c?I2C      SEGMENT CODE 
+                      96     ?BI?Ack_I2c?I2C      SEGMENT BIT OVERLAYABLE 
+                      97     ?BI?I2C              SEGMENT BIT 
+                      98             PUBLIC  ack
+                      99             PUBLIC  ?Ack_I2c?BIT
+                     100             PUBLIC  Ack_I2c
+                     101             PUBLIC  RcvByte
+                     102             PUBLIC  _SendByte
+                     103             PUBLIC  Stop_I2c
+                     104             PUBLIC  Start_I2c
+                     105     
+----                 106             RSEG  ?BI?Ack_I2c?I2C
+0000                 107     ?Ack_I2c?BIT:
+0000                 108               a?444:   DBIT   1
+                     109     
+----                 110             RSEG  ?BI?I2C
+0000                 111                 ack:   DBIT   1
+                     112     ; 
+                     113     ;  /*************************此部分为I2C总线的驱动程序*************************************
+                             /
+                     114     
+                     115     ; #include<reg52.h>
+                     116     ; #include <intrins.h>
+                     117     ; #include<Function.h>
+                     118     ; 
+                     119     ; #define  NOP()   _nop_()   /* 定义空指令 */
+                     120     ; #define  _Nop()  _nop_()   /*定义空指令*/
+                     121     ; 
+                     122     ;  
+                     123     ; sbit     SCL=P2^0;     //I2C  时钟 
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     3
+
+                     124     ; sbit     SDA=P2^1;     //I2C  数据 
+                     125     ; 
+                     126     ; bit ack;                 /*应答标志位*/
+                     127     ;    
+                     128     ; 
+                     129     ; /*******************************************************************
+                     130     ;                      起动总线函数               
+                     131     ; 函数原型: void  Start_I2c();  
+                     132     ; 功能:     启动I2C总线,即发送I2C起始条件.  
+                     133     ; ********************************************************************/
+                     134     ; void Start_I2c()
+                     135     
+----                 136             RSEG  ?PR?Start_I2c?I2C
+0000                 137     Start_I2c:
+                     138                             ; SOURCE LINE # 23
+                     139     ; {
+                     140                             ; SOURCE LINE # 24
+                     141     ;   SDA=1;         /*发送起始条件的数据信号*/
+                     142                             ; SOURCE LINE # 25
+0000 D2A1            143             SETB    SDA
+                     144     ;   _Nop();
+                     145                             ; SOURCE LINE # 26
+0002 00              146             NOP     
+                     147     ;   SCL=1;
+                     148                             ; SOURCE LINE # 27
+0003 D2A0            149             SETB    SCL
+                     150     ;   _Nop();        /*起始条件建立时间大于4.7us,延时*/
+                     151                             ; SOURCE LINE # 28
+0005 00              152             NOP     
+                     153     ;   _Nop();
+                     154                             ; SOURCE LINE # 29
+0006 00              155             NOP     
+                     156     ;   _Nop();
+                     157                             ; SOURCE LINE # 30
+0007 00              158             NOP     
+                     159     ;   _Nop();
+                     160                             ; SOURCE LINE # 31
+0008 00              161             NOP     
+                     162     ;   _Nop();    
+                     163                             ; SOURCE LINE # 32
+0009 00              164             NOP     
+                     165     ;   SDA=0;         /*发送起始信号*/
+                     166                             ; SOURCE LINE # 33
+000A C2A1            167             CLR     SDA
+                     168     ;   _Nop();        /* 起始条件锁定时间大于4μs*/
+                     169                             ; SOURCE LINE # 34
+000C 00              170             NOP     
+                     171     ;   _Nop();
+                     172                             ; SOURCE LINE # 35
+000D 00              173             NOP     
+                     174     ;   _Nop();
+                     175                             ; SOURCE LINE # 36
+000E 00              176             NOP     
+                     177     ;   _Nop();
+                     178                             ; SOURCE LINE # 37
+000F 00              179             NOP     
+                     180     ;   _Nop();       
+                     181                             ; SOURCE LINE # 38
+0010 00              182             NOP     
+                     183     ;   SCL=0;       /*钳住I2C总线，准备发送或接收数据 */
+                     184                             ; SOURCE LINE # 39
+0011 C2A0            185             CLR     SCL
+                     186     ;   _Nop();
+                     187                             ; SOURCE LINE # 40
+0013 00              188             NOP     
+                     189     ;   _Nop();
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     4
+
+                     190                             ; SOURCE LINE # 41
+0014 00              191             NOP     
+                     192     ; }
+                     193                             ; SOURCE LINE # 42
+0015 22              194             RET     
+                     195     ; END OF Start_I2c
+                     196     
+                     197     ; 
+                     198     ; /*******************************************************************
+                     199     ;                       结束总线函数               
+                     200     ; 函数原型: void  Stop_I2c();  
+                     201     ; 功能:     结束I2C总线,即发送I2C结束条件.  
+                     202     ; ********************************************************************/
+                     203     ; void Stop_I2c()
+                     204     
+----                 205             RSEG  ?PR?Stop_I2c?I2C
+0000                 206     Stop_I2c:
+                     207                             ; SOURCE LINE # 49
+                     208     ; {
+                     209                             ; SOURCE LINE # 50
+                     210     ;   SDA=0;      /*发送结束条件的数据信号*/
+                     211                             ; SOURCE LINE # 51
+0000 C2A1            212             CLR     SDA
+                     213     ;   _Nop();       /*发送结束条件的时钟信号*/
+                     214                             ; SOURCE LINE # 52
+0002 00              215             NOP     
+                     216     ;   SCL=1;      /*结束条件建立时间大于4μs*/
+                     217                             ; SOURCE LINE # 53
+0003 D2A0            218             SETB    SCL
+                     219     ;   _Nop();
+                     220                             ; SOURCE LINE # 54
+0005 00              221             NOP     
+                     222     ;   _Nop();
+                     223                             ; SOURCE LINE # 55
+0006 00              224             NOP     
+                     225     ;   _Nop();
+                     226                             ; SOURCE LINE # 56
+0007 00              227             NOP     
+                     228     ;   _Nop();
+                     229                             ; SOURCE LINE # 57
+0008 00              230             NOP     
+                     231     ;   _Nop();
+                     232                             ; SOURCE LINE # 58
+0009 00              233             NOP     
+                     234     ;   SDA=1;      /*发送I2C总线结束信号*/
+                     235                             ; SOURCE LINE # 59
+000A D2A1            236             SETB    SDA
+                     237     ;   _Nop();
+                     238                             ; SOURCE LINE # 60
+000C 00              239             NOP     
+                     240     ;   _Nop();
+                     241                             ; SOURCE LINE # 61
+000D 00              242             NOP     
+                     243     ;   _Nop();
+                     244                             ; SOURCE LINE # 62
+000E 00              245             NOP     
+                     246     ;   _Nop();
+                     247                             ; SOURCE LINE # 63
+000F 00              248             NOP     
+                     249     ; }
+                     250                             ; SOURCE LINE # 64
+0010 22              251             RET     
+                     252     ; END OF Stop_I2c
+                     253     
+                     254     ; 
+                     255     ; /*******************************************************************
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     5
+
+                     256     ;                  字节数据发送函数               
+                     257     ; 函数原型: void  SendByte(UCHAR c);
+                     258     ; 功能:     将数据c发送出去,可以是地址,也可以是数据,发完后等待应答,并对
+                     259     ;           此状态位进行操作.(不应答或非应答都使ack=0)     
+                     260     ;            发送数据正常，ack=1; ack=0表示被控器无应答或损坏。
+                     261     ; ********************************************************************/
+                     262     ; void  SendByte(unsigned char  c)
+                     263     
+----                 264             RSEG  ?PR?_SendByte?I2C
+0000                 265     _SendByte:
+                     266             USING   0
+                     267                             ; SOURCE LINE # 73
+                     268     ;---- Variable 'c?240' assigned to Register 'R7' ----
+                     269     ; {
+                     270                             ; SOURCE LINE # 74
+                     271     ;  unsigned char  BitCnt;
+                     272     ;  
+                     273     ;  for(BitCnt=0;BitCnt<8;BitCnt++)  /*要传送的数据长度为8位*/
+                     274                             ; SOURCE LINE # 77
+                     275     ;---- Variable 'BitCnt?241' assigned to Register 'R6' ----
+0000 E4              276             CLR     A
+0001 FE              277             MOV     R6,A
+0002                 278     ?C0003:
+                     279     ;     {
+                     280                             ; SOURCE LINE # 78
+                     281     ;      if((c<<BitCnt)&0x80)SDA=1;   /*判断发送位*/
+                     282                             ; SOURCE LINE # 79
+0002 EF              283             MOV     A,R7
+0003 A806            284             MOV     R0,AR6
+0005 08              285             INC     R0
+0006 8002            286             SJMP    ?C0020
+0008                 287     ?C0019:
+0008 C3              288             CLR     C
+0009 33              289             RLC     A
+000A                 290     ?C0020:
+000A D8FC            291             DJNZ    R0,?C0019
+000C 30E704          292             JNB     ACC.7,?C0006
+000F D2A1            293             SETB    SDA
+0011 8002            294             SJMP    ?C0007
+0013                 295     ?C0006:
+                     296     ;        else  SDA=0;                
+                     297                             ; SOURCE LINE # 80
+0013 C2A1            298             CLR     SDA
+0015                 299     ?C0007:
+                     300     ;      _Nop();
+                     301                             ; SOURCE LINE # 81
+0015 00              302             NOP     
+                     303     ;      SCL=1;               /*置时钟线为高，通知被控器开始接收数据位*/
+                     304                             ; SOURCE LINE # 82
+0016 D2A0            305             SETB    SCL
+                     306     ;       _Nop(); 
+                     307                             ; SOURCE LINE # 83
+0018 00              308             NOP     
+                     309     ;       _Nop();             /*保证时钟高电平周期大于4μs*/
+                     310                             ; SOURCE LINE # 84
+0019 00              311             NOP     
+                     312     ;       _Nop();
+                     313                             ; SOURCE LINE # 85
+001A 00              314             NOP     
+                     315     ;       _Nop();
+                     316                             ; SOURCE LINE # 86
+001B 00              317             NOP     
+                     318     ;       _Nop();         
+                     319                             ; SOURCE LINE # 87
+001C 00              320             NOP     
+                     321     ;      SCL=0; 
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     6
+
+                     322                             ; SOURCE LINE # 88
+001D C2A0            323             CLR     SCL
+                     324     ;     }
+                     325                             ; SOURCE LINE # 89
+001F 0E              326             INC     R6
+0020 BE08DF          327             CJNE    R6,#08H,?C0003
+0023                 328     ?C0004:
+                     329     ;     
+                     330     ;     _Nop();
+                     331                             ; SOURCE LINE # 91
+0023 00              332             NOP     
+                     333     ;     _Nop();
+                     334                             ; SOURCE LINE # 92
+0024 00              335             NOP     
+                     336     ;     SDA=1;                /*8位发送完后释放数据线，准备接收应答位*/
+                     337                             ; SOURCE LINE # 93
+0025 D2A1            338             SETB    SDA
+                     339     ;     _Nop();
+                     340                             ; SOURCE LINE # 94
+0027 00              341             NOP     
+                     342     ;     _Nop();   
+                     343                             ; SOURCE LINE # 95
+0028 00              344             NOP     
+                     345     ;     SCL=1;
+                     346                             ; SOURCE LINE # 96
+0029 D2A0            347             SETB    SCL
+                     348     ;     _Nop();
+                     349                             ; SOURCE LINE # 97
+002B 00              350             NOP     
+                     351     ;     _Nop();
+                     352                             ; SOURCE LINE # 98
+002C 00              353             NOP     
+                     354     ;     _Nop();
+                     355                             ; SOURCE LINE # 99
+002D 00              356             NOP     
+                     357     ;     if(SDA==1)ack=0;     
+                     358                             ; SOURCE LINE # 100
+002E 30A104          359             JNB     SDA,?C0008
+0031 C200     F      360             CLR     ack
+0033 8002            361             SJMP    ?C0009
+0035                 362     ?C0008:
+                     363     ;        else ack=1;        /*判断是否接收到应答信号*/
+                     364                             ; SOURCE LINE # 101
+0035 D200     F      365             SETB    ack
+0037                 366     ?C0009:
+                     367     ;     SCL=0;
+                     368                             ; SOURCE LINE # 102
+0037 C2A0            369             CLR     SCL
+                     370     ;     _Nop();
+                     371                             ; SOURCE LINE # 103
+0039 00              372             NOP     
+                     373     ;     _Nop();
+                     374                             ; SOURCE LINE # 104
+003A 00              375             NOP     
+                     376     ; }
+                     377                             ; SOURCE LINE # 105
+003B 22              378             RET     
+                     379     ; END OF _SendByte
+                     380     
+                     381     ; 
+                     382     ; /*******************************************************************
+                     383     ;                  字节数据接收函数               
+                     384     ; 函数原型: UCHAR  RcvByte();
+                     385     ; 功能:        用来接收从器件传来的数据,并判断总线错误(不发应答信号)，
+                     386     ;           发完后请用应答函数应答从机。  
+                     387     ; ********************************************************************/    
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     7
+
+                     388     ; unsigned char   RcvByte()
+                     389     
+----                 390             RSEG  ?PR?RcvByte?I2C
+0000                 391     RcvByte:
+                     392             USING   0
+                     393                             ; SOURCE LINE # 113
+                     394     ; {
+                     395                             ; SOURCE LINE # 114
+                     396     ;   unsigned char  retc;
+                     397     ;   unsigned char  BitCnt;
+                     398     ;   
+                     399     ;   retc=0; 
+                     400                             ; SOURCE LINE # 118
+                     401     ;---- Variable 'retc?342' assigned to Register 'R7' ----
+0000 E4              402             CLR     A
+0001 FF              403             MOV     R7,A
+                     404     ;   SDA=1;                       /*置数据线为输入方式*/
+                     405                             ; SOURCE LINE # 119
+0002 D2A1            406             SETB    SDA
+                     407     ;   for(BitCnt=0;BitCnt<8;BitCnt++)
+                     408                             ; SOURCE LINE # 120
+                     409     ;---- Variable 'BitCnt?343' assigned to Register 'R6' ----
+0004 FE              410             MOV     R6,A
+0005                 411     ?C0011:
+                     412     ;       {
+                     413                             ; SOURCE LINE # 121
+                     414     ;         _Nop();           
+                     415                             ; SOURCE LINE # 122
+0005 00              416             NOP     
+                     417     ;         SCL=0;                  /*置时钟线为低，准备接收数据位*/
+                     418                             ; SOURCE LINE # 123
+0006 C2A0            419             CLR     SCL
+                     420     ;         _Nop();
+                     421                             ; SOURCE LINE # 124
+0008 00              422             NOP     
+                     423     ;         _Nop();                 /*时钟低电平周期大于4.7μs*/
+                     424                             ; SOURCE LINE # 125
+0009 00              425             NOP     
+                     426     ;         _Nop();
+                     427                             ; SOURCE LINE # 126
+000A 00              428             NOP     
+                     429     ;         _Nop();
+                     430                             ; SOURCE LINE # 127
+000B 00              431             NOP     
+                     432     ;         _Nop();
+                     433                             ; SOURCE LINE # 128
+000C 00              434             NOP     
+                     435     ;         SCL=1;                  /*置时钟线为高使数据线上数据有效*/
+                     436                             ; SOURCE LINE # 129
+000D D2A0            437             SETB    SCL
+                     438     ;         _Nop();
+                     439                             ; SOURCE LINE # 130
+000F 00              440             NOP     
+                     441     ;         _Nop();
+                     442                             ; SOURCE LINE # 131
+0010 00              443             NOP     
+                     444     ;         retc=retc<<1;
+                     445                             ; SOURCE LINE # 132
+0011 EF              446             MOV     A,R7
+0012 25E0            447             ADD     A,ACC
+0014 FF              448             MOV     R7,A
+                     449     ;         if(SDA==1)retc=retc+1;  /*读数据位,接收的数据位放入retc中 */
+                     450                             ; SOURCE LINE # 133
+0015 30A101          451             JNB     SDA,?C0014
+0018 0F              452             INC     R7
+0019                 453     ?C0014:
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     8
+
+                     454     ;         _Nop();
+                     455                             ; SOURCE LINE # 134
+0019 00              456             NOP     
+                     457     ;         _Nop(); 
+                     458                             ; SOURCE LINE # 135
+001A 00              459             NOP     
+                     460     ;       }
+                     461                             ; SOURCE LINE # 136
+001B 0E              462             INC     R6
+001C BE08E6          463             CJNE    R6,#08H,?C0011
+001F                 464     ?C0012:
+                     465     ;   SCL=0;    
+                     466                             ; SOURCE LINE # 137
+001F C2A0            467             CLR     SCL
+                     468     ;   _Nop();
+                     469                             ; SOURCE LINE # 138
+0021 00              470             NOP     
+                     471     ;   _Nop();
+                     472                             ; SOURCE LINE # 139
+0022 00              473             NOP     
+                     474     ;   return(retc);
+                     475                             ; SOURCE LINE # 140
+                     476     ; }
+                     477                             ; SOURCE LINE # 141
+0023                 478     ?C0015:
+0023 22              479             RET     
+                     480     ; END OF RcvByte
+                     481     
+                     482     ; 
+                     483     ; /********************************************************************
+                     484     ;                      应答子函数
+                     485     ; 函数原型:  void Ack_I2c(bit a);
+                     486     ; 功能:      主控器进行应答信号(可以是应答或非应答信号，由位参数a决定)
+                     487     ; ********************************************************************/
+                     488     ; void Ack_I2c(bit a)
+                     489     
+----                 490             RSEG  ?PR?Ack_I2c?I2C
+0000                 491     Ack_I2c:
+                     492                             ; SOURCE LINE # 148
+                     493     ; {
+                     494                             ; SOURCE LINE # 149
+                     495     ;   
+                     496     ;   if(a==0)SDA=0;              /*在此发出应答或非应答信号 */
+                     497                             ; SOURCE LINE # 151
+0000 200004   F      498             JB      a?444,?C0016
+0003 C2A1            499             CLR     SDA
+0005 8002            500             SJMP    ?C0017
+0007                 501     ?C0016:
+                     502     ;   else SDA=1;
+                     503                             ; SOURCE LINE # 152
+0007 D2A1            504             SETB    SDA
+0009                 505     ?C0017:
+                     506     ;   _Nop();
+                     507                             ; SOURCE LINE # 153
+0009 00              508             NOP     
+                     509     ;   _Nop();
+                     510                             ; SOURCE LINE # 154
+000A 00              511             NOP     
+                     512     ;   _Nop();      
+                     513                             ; SOURCE LINE # 155
+000B 00              514             NOP     
+                     515     ;   SCL=1;
+                     516                             ; SOURCE LINE # 156
+000C D2A0            517             SETB    SCL
+                     518     ;   _Nop();
+                     519                             ; SOURCE LINE # 157
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE     9
+
+000E 00              520             NOP     
+                     521     ;   _Nop();                    /*时钟低电平周期大于4μs*/
+                     522                             ; SOURCE LINE # 158
+000F 00              523             NOP     
+                     524     ;   _Nop();
+                     525                             ; SOURCE LINE # 159
+0010 00              526             NOP     
+                     527     ;   _Nop();
+                     528                             ; SOURCE LINE # 160
+0011 00              529             NOP     
+                     530     ;   _Nop();  
+                     531                             ; SOURCE LINE # 161
+0012 00              532             NOP     
+                     533     ;   SCL=0;                     /*清时钟线，钳住I2C总线以便继续接收*/
+                     534                             ; SOURCE LINE # 162
+0013 C2A0            535             CLR     SCL
+                     536     ;   _Nop();
+                     537                             ; SOURCE LINE # 163
+0015 00              538             NOP     
+                     539     ;   _Nop();    
+                     540                             ; SOURCE LINE # 164
+0016 00              541             NOP     
+                     542     ; }
+                     543                             ; SOURCE LINE # 165
+0017 22              544             RET     
+                     545     ; END OF Ack_I2c
+                     546     
+                     547             END
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE    10
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+?ACK_I2C?BIT . . .  B ADDR   0000H.0 R   SEG=?BI?ACK_I2C?I2C
+?BI?ACK_I2C?I2C. .  B SEG    0001H       REL=UNIT
+?BI?I2C. . . . . .  B SEG    0001H       REL=UNIT
+?C0003 . . . . . .  C ADDR   0002H   R   SEG=?PR?_SENDBYTE?I2C
+?C0004 . . . . . .  C ADDR   0023H   R   SEG=?PR?_SENDBYTE?I2C
+?C0006 . . . . . .  C ADDR   0013H   R   SEG=?PR?_SENDBYTE?I2C
+?C0007 . . . . . .  C ADDR   0015H   R   SEG=?PR?_SENDBYTE?I2C
+?C0008 . . . . . .  C ADDR   0035H   R   SEG=?PR?_SENDBYTE?I2C
+?C0009 . . . . . .  C ADDR   0037H   R   SEG=?PR?_SENDBYTE?I2C
+?C0011 . . . . . .  C ADDR   0005H   R   SEG=?PR?RCVBYTE?I2C
+?C0012 . . . . . .  C ADDR   001FH   R   SEG=?PR?RCVBYTE?I2C
+?C0014 . . . . . .  C ADDR   0019H   R   SEG=?PR?RCVBYTE?I2C
+?C0015 . . . . . .  C ADDR   0023H   R   SEG=?PR?RCVBYTE?I2C
+?C0016 . . . . . .  C ADDR   0007H   R   SEG=?PR?ACK_I2C?I2C
+?C0017 . . . . . .  C ADDR   0009H   R   SEG=?PR?ACK_I2C?I2C
+?C0019 . . . . . .  C ADDR   0008H   R   SEG=?PR?_SENDBYTE?I2C
+?C0020 . . . . . .  C ADDR   000AH   R   SEG=?PR?_SENDBYTE?I2C
+?PR?ACK_I2C?I2C. .  C SEG    0018H       REL=UNIT
+?PR?RCVBYTE?I2C. .  C SEG    0024H       REL=UNIT
+?PR?START_I2C?I2C.  C SEG    0016H       REL=UNIT
+?PR?STOP_I2C?I2C .  C SEG    0011H       REL=UNIT
+?PR?_SENDBYTE?I2C.  C SEG    003CH       REL=UNIT
+A?444. . . . . . .  B ADDR   0000H.0 R   SEG=?BI?ACK_I2C?I2C
+AC . . . . . . . .  B ADDR   00D0H.6 A   
+ACC. . . . . . . .  D ADDR   00E0H   A   
+ACK. . . . . . . .  B ADDR   0000H.0 R   SEG=?BI?I2C
+ACK_I2C. . . . . .  C ADDR   0000H   R   SEG=?PR?ACK_I2C?I2C
+AR6. . . . . . . .  D ADDR   0006H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+CP_RL2 . . . . . .  B ADDR   00C8H.0 A   
+CY . . . . . . . .  B ADDR   00D0H.7 A   
+C_T2 . . . . . . .  B ADDR   00C8H.1 A   
+DPH. . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . .  D ADDR   0082H   A   
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ES . . . . . . . .  B ADDR   00A8H.4 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+ET1. . . . . . . .  B ADDR   00A8H.3 A   
+ET2. . . . . . . .  B ADDR   00A8H.5 A   
+EX0. . . . . . . .  B ADDR   00A8H.0 A   
+EX1. . . . . . . .  B ADDR   00A8H.2 A   
+EXEN2. . . . . . .  B ADDR   00C8H.3 A   
+EXF2 . . . . . . .  B ADDR   00C8H.6 A   
+F0 . . . . . . . .  B ADDR   00D0H.5 A   
+I2C. . . . . . . .  N NUMB   -----       
+IE . . . . . . . .  D ADDR   00A8H   A   
+IE0. . . . . . . .  B ADDR   0088H.1 A   
+IE1. . . . . . . .  B ADDR   0088H.3 A   
+INT0 . . . . . . .  B ADDR   00B0H.2 A   
+INT1 . . . . . . .  B ADDR   00B0H.3 A   
+IP . . . . . . . .  D ADDR   00B8H   A   
+IT0. . . . . . . .  B ADDR   0088H.0 A   
+IT1. . . . . . . .  B ADDR   0088H.2 A   
+OV . . . . . . . .  B ADDR   00D0H.2 A   
+P. . . . . . . . .  B ADDR   00D0H.0 A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+PCON . . . . . . .  D ADDR   0087H   A   
+A51 MACRO ASSEMBLER  I2C                                                                  09/16/2009 23:41:28 PAGE    11
+
+PS . . . . . . . .  B ADDR   00B8H.4 A   
+PSW. . . . . . . .  D ADDR   00D0H   A   
+PT0. . . . . . . .  B ADDR   00B8H.1 A   
+PT1. . . . . . . .  B ADDR   00B8H.3 A   
+PT2. . . . . . . .  B ADDR   00B8H.5 A   
+PX0. . . . . . . .  B ADDR   00B8H.0 A   
+PX1. . . . . . . .  B ADDR   00B8H.2 A   
+RB8. . . . . . . .  B ADDR   0098H.2 A   
+RCAP2H . . . . . .  D ADDR   00CBH   A   
+RCAP2L . . . . . .  D ADDR   00CAH   A   
+RCLK . . . . . . .  B ADDR   00C8H.5 A   
+RCVBYTE. . . . . .  C ADDR   0000H   R   SEG=?PR?RCVBYTE?I2C
+RD . . . . . . . .  B ADDR   00B0H.7 A   
+REN. . . . . . . .  B ADDR   0098H.4 A   
+RI . . . . . . . .  B ADDR   0098H.0 A   
+RS0. . . . . . . .  B ADDR   00D0H.3 A   
+RS1. . . . . . . .  B ADDR   00D0H.4 A   
+RXD. . . . . . . .  B ADDR   00B0H.0 A   
+SBUF . . . . . . .  D ADDR   0099H   A   
+SCL. . . . . . . .  B ADDR   00A0H.0 A   
+SCON . . . . . . .  D ADDR   0098H   A   
+SDA. . . . . . . .  B ADDR   00A0H.1 A   
+SM0. . . . . . . .  B ADDR   0098H.7 A   
+SM1. . . . . . . .  B ADDR   0098H.6 A   
+SM2. . . . . . . .  B ADDR   0098H.5 A   
+SP . . . . . . . .  D ADDR   0081H   A   
+START_I2C. . . . .  C ADDR   0000H   R   SEG=?PR?START_I2C?I2C
+STOP_I2C . . . . .  C ADDR   0000H   R   SEG=?PR?STOP_I2C?I2C
+T0 . . . . . . . .  B ADDR   00B0H.4 A   
+T1 . . . . . . . .  B ADDR   00B0H.5 A   
+T2 . . . . . . . .  B ADDR   0090H.0 A   
+T2CON. . . . . . .  D ADDR   00C8H   A   
+T2EX . . . . . . .  B ADDR   0090H.1 A   
+TB8. . . . . . . .  B ADDR   0098H.3 A   
+TCLK . . . . . . .  B ADDR   00C8H.4 A   
+TCON . . . . . . .  D ADDR   0088H   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TF1. . . . . . . .  B ADDR   0088H.7 A   
+TF2. . . . . . . .  B ADDR   00C8H.7 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TH1. . . . . . . .  D ADDR   008DH   A   
+TH2. . . . . . . .  D ADDR   00CDH   A   
+TI . . . . . . . .  B ADDR   0098H.1 A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TL1. . . . . . . .  D ADDR   008BH   A   
+TL2. . . . . . . .  D ADDR   00CCH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+TR1. . . . . . . .  B ADDR   0088H.6 A   
+TR2. . . . . . . .  B ADDR   00C8H.2 A   
+TXD. . . . . . . .  B ADDR   00B0H.1 A   
+WR . . . . . . . .  B ADDR   00B0H.6 A   
+_SENDBYTE. . . . .  C ADDR   0000H   R   SEG=?PR?_SENDBYTE?I2C
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

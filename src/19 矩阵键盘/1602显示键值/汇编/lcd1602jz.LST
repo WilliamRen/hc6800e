@@ -1,0 +1,327 @@
+A51 MACRO ASSEMBLER  LCD1602JZ                                                            11/05/2009 11:36:22 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN lcd1602jz.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE lcd1602jz.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     ;/********************************************************************************
+                       3     ;*  描述:                                                                       *    
+                       4     ;*         矩阵键盘1602液晶显示键值                                             *    
+                       5     ;*         矩阵键盘定义：                                                       *
+                       6     ;*         P1.1-P1.3为列线,P1.4-P1.7为行线                                      *    
+                       7     ;*        喇叭接P1.5口  矩阵键盘P1口，1602LCD                                   *          
+                                        
+                       8     ;********************************************************************************/
+                       9     ;--------------------------------------------------------------
+  0094                10                RELAY  EQU  P1.4
+  0095                11                BEEP   EQU  P1.5
+                      12     ;--------------------------------------------------------------
+  00A6                13                RS    EQU  P2.6
+  00A5                14                RW    EQU  P2.5
+  00A7                15                EN    EQU  P2.7
+  0026                16                X     EQU  26H       ;LCD 地址变量
+                      17     ;--------------------------------------------------------------
+0000                  18                ORG  0000H
+0000 8000             19                JMP  MAIN
+                      20     ;--------------------------------------------------------------
+0002 758130           21     MAIN:      MOV  SP,#30H
+0005 C2A7             22                CLR   EN
+0007 111D             23                        CALL  SET_LCD
+0009 117F             24                CALL  MENU1
+000B                  25     LOOP0:
+000B 7590F0           26                MOV  P1,#0F0H
+000E E590             27                MOV  A,P1
+0010 B4F002           28                CJNE  A,#0F0H,LOOP1  ;有键按下转LOOP1
+0013 80F6             29                JMP   LOOP0
+0015                  30     LOOP1:
+0015 11E6             31                CALL  KEY_IN
+0017 3111             32                CALL  CONV
+0019 3142             33                CALL  BEEP_BL
+001B 80EE             34                JMP  LOOP0
+                      35     ;-----------------------------------------------------
+                      36     ;  LCD 初始化设置
+                      37     ;-----------------------------------------------------
+001D                  38     SET_LCD:
+001D C2A7             39               CLR  EN
+001F 1132             40               CALL  INIT_LCD     ;初始化 LCD
+0021 3160             41               CALL  DELAY1
+0023 900098           42               MOV  DPTR,#INFO1   ;指针指到显示信息1
+0026 7401             43               MOV  A,#1          ;显示在第一行
+0028 1151             44               CALL  LCD_SHOW
+002A 9000A9           45               MOV  DPTR,#INFO2   ;指针指到显示信息2
+002D 7402             46               MOV  A,#2          ;显示在第二行
+002F 1151             47               CALL  LCD_SHOW
+0031 22               48               RET
+                      49     ;-----------------------------------------------------
+0032                  50     INIT_LCD:                 ;8位I/O控制 LCD 接口初始化
+0032 7438             51               MOV  A,#38H     ;双列显示，字形5*7点阵
+0034 11BA             52               CALL  WCOM
+0036 3160             53               CALL  DELAY1
+0038 7438             54               MOV  A,#38H     ;双列显示，字形5*7点阵
+003A 11BA             55               CALL  WCOM
+003C 3160             56               CALL  DELAY1
+003E 7438             57               MOV  A,#38H     ;双列显示，字形5*7点阵
+A51 MACRO ASSEMBLER  LCD1602JZ                                                            11/05/2009 11:36:22 PAGE     2
+
+0040 11BA             58               CALL  WCOM
+0042 3160             59               CALL  DELAY1
+0044 740C             60               MOV  A,#0CH     ;开显示，关光标，
+0046 11BA             61               CALL  WCOM
+0048 3160             62               CALL  DELAY1
+004A 7401             63               MOV  A,#01H     ;清除 LCD 显示屏
+004C 11BA             64               CALL  WCOM
+004E 3160             65               CALL  DELAY1
+0050 22               66               RET
+                      67     ;----------------------------------------------------
+0051                  68     LCD_SHOW:       ;在LCD的第一行或第二行显示信息字符
+                      69     
+0051 B4010C           70               CJNE  A,#1,LINE2  ;判断是否为第一行
+0054 7480             71       LINE1:  MOV  A,#80H       ;设置 LCD 的第一行地址
+0056 11BA             72               CALL  WCOM        ;写入命令
+0058 1176             73               CALL  CLR_LINE    ;清除该行字符数据
+005A 7480             74               MOV  A,#80H       ;设置 LCD 的第一行地址
+005C 11BA             75               CALL  WCOM        ;写入命令
+005E 800A             76               JMP  FILL
+                      77     
+0060 74C0             78       LINE2:  MOV  A,#0C0H      ;设置 LCD 的第二行地址
+0062 11BA             79               CALL  WCOM        ;写入命令
+0064 1176             80               CALL  CLR_LINE    ;清除该行字符数据
+0066 74C0             81               MOV  A,#0C0H      ;设置 LCD 的第二行地址
+0068 11BA             82               CALL  WCOM
+006A E4               83       FILL:   CLR  A            ;填入字符
+006B 93               84               MOVC  A,@A+DPTR   ;由信息区取出字符
+006C B40001           85               CJNE  A,#0,LC1    ;判断是否为结束码
+006F 22               86               RET
+0070 11C7             87       LC1:    CALL  WDATA       ;写入数据
+0072 A3               88               INC  DPTR         ;指针加1
+0073 80F5             89               JMP  FILL         ;继续填入字符
+0075 22               90               RET
+                      91     ;---------------------------------------------------
+0076                  92     CLR_LINE:                  ;清除该行 LCD 的字符
+0076 7818             93               MOV  R0,#24
+0078 7420             94        CL1:   MOV  A,#' '
+007A 11C7             95               CALL  WDATA
+007C D8FA             96               DJNZ  R0,CL1
+007E 22               97               RET
+                      98     ;----------------------------------------------------
+007F                  99     MENU1:                      ;LCD 显示工作菜单信息
+007F 900087          100              MOV   DPTR,#MENU2
+0082 7401            101              MOV   A,#1         ;在第一行显示信息
+0084 1151            102              CALL  LCD_SHOW
+0086 22              103              RET
+0087 2020204B        104     MENU2:  DB  "   KEY NUMBER   ",0
+008B 4559204E                
+008F 554D4245                
+0093 52202020                
+0097 00                      
+                     105     ;-----------------------------------------------------
+0098 20202020        106     INFO1:  DB  "                ",0  ;LCD 第一行显示信息
+009C 20202020                
+00A0 20202020                
+00A4 20202020                
+00A8 00                      
+00A9 204B4559        107     INFO2:  DB  " KEY-CODE: -- H ",0  ;LCD 第二行显示信息
+00AD 2D434F44                
+00B1 453A202D                
+00B5 2D204820                
+00B9 00                      
+                     108     ;-----------------------------------------------------
+                     109     ; 写指令、数据使能子程序
+                     110     ;-----------------------------------------------------
+00BA                 111     WCOM:                      ;写指令使能
+A51 MACRO ASSEMBLER  LCD1602JZ                                                            11/05/2009 11:36:22 PAGE     3
+
+00BA F580            112               MOV  P0,A
+00BC C2A6            113               CLR RS           ;RS=L,RW=L,D0-D7=指令码，E=高脉冲
+00BE C2A5            114               CLR RW
+00C0 D2A7            115               SETB EN
+00C2 11D4            116               CALL  DELAY0
+00C4 C2A7            117               CLR EN
+00C6 22              118               RET
+00C7                 119     WDATA:                    ;写数据使能
+00C7 F580            120               MOV  P0,A
+00C9 D2A6            121               SETB  RS        ;RS=H,RW=L,D0-D7=数据，E=高脉冲
+00CB C2A5            122               CLR   RW
+00CD D2A7            123               SETB  EN
+00CF 11D4            124               CALL  DELAY0
+00D1 C2A7            125               CLR   EN
+00D3 22              126               RET
+                     127     
+00D4 7FFA            128     DELAY0:   MOV  R7,#250      ;延时500微秒
+00D6 DFFE            129               DJNZ  R7,$
+00D8 22              130               RET
+                     131     ;---------------------------------------------------
+                     132     ;在 LCD 第二行显示字符
+                     133     ;A=ASC DATA, B=LINE X POS
+                     134     ;---------------------------------------------------
+00D9                 135     LCDP2:                    ;在LCD的第二行显示字符
+00D9 C0E0            136              PUSH  ACC        ;
+00DB E5F0            137              MOV  A,B         ;设置显示地址
+00DD 24C0            138              ADD  A,#0C0H     ;设置LCD的第二行地址
+00DF 11BA            139              CALL  WCOM       ;写入命令
+00E1 D0E0            140              POP  ACC         ;由堆栈取出A
+00E3 11C7            141              CALL  WDATA      ;写入数据
+00E5 22              142              RET
+                     143     ;-----------------------------------------------------
+                     144     ;矩阵键盘键值读取子程序
+                     145     ;-----------------------------------------------------
+00E6 7590F0          146     KEY_IN:    MOV  P1,#0F0H    ;高四位作为输入  置行线为高电平 , 列线为低电平
+00E9 E590            147                MOV  A,P1
+00EB 54F0            148                ANL  A,#0F0H         ;屏蔽低四位
+00ED F5F0            149                MOV  B,A
+00EF 75900F          150                MOV  P1,#0FH     ;高四位作为输入  ;置列线为高电平，行线为低电平
+00F2 E590            151                MOV  A,P1
+00F4 540F            152                ANL  A,#0FH
+00F6 45F0            153                ORL  A,B               ;高四位与低四位重新组合
+00F8 B4FF01          154                CJNE  A,#0FFH,KEY_IN1  ;0FFH为末按键
+00FB 22              155                RET
+00FC F5F0            156     KEY_IN1:   MOV  B,A
+00FE 900169          157                MOV  DPTR,#KEYTABLE
+0101 7BFF            158                MOV  R3,#0FFH
+0103 0B              159     KEY_IN2:   INC  R3
+0104 EB              160                MOV  A,R3
+0105 93              161                MOVC  A,@A+DPTR
+0106 B5F004          162                CJNE  A,B,KEY_IN3
+0109 EB              163                MOV  A,R3              ;找到，取顺序码
+010A 7D08            164                MOV  R5,#08H           ;延时
+010C 22              165                RET
+010D B400F3          166     KEY_IN3:   CJNE  A,#00H,KEY_IN2  ;末完，继续查
+0110 22              167                RET                    ;00H为结束码
+                     168     ;-------------------------------------------------
+0111                 169     CONV:
+0111 75260B          170               MOV   X,#11        ;设置显示起始位置
+0114 EB              171               MOV   A,R3
+0115 54F0            172               ANL   A,#0F0H      ;取出高四位二进制数
+0117 C4              173               SWAP  A            ;高四位与低四位互换
+0118 C0E0            174               PUSH  ACC          ;压入堆栈
+011A C3              175               CLR   C            ;C=0
+011B 940A            176               SUBB  A,#0AH       ;减10
+011D D0E0            177               POP   ACC          ;弹出堆栈
+A51 MACRO ASSEMBLER  LCD1602JZ                                                            11/05/2009 11:36:22 PAGE     4
+
+011F 4002            178               JC    ASCII0       ;该数小于10，转ASCII0
+0121 2407            179               ADD   A,#07H       ;大于10的数加上37H
+0123 2430            180     ASCII0:   ADD   A,#30H       ;小于10的数加上30H
+0125 8526F0          181               MOV   B,X
+0128 11D9            182               CALL  LCDP2
+                     183     
+012A EB              184               MOV   A,R3
+012B 540F            185               ANL   A,#0FH        ;取出低四位二进制数
+012D C0E0            186               PUSH  ACC
+012F C3              187               CLR   C
+0130 940A            188               SUBB  A,#0AH        ;减10
+0132 D0E0            189               POP   ACC
+0134 4002            190               JC    ASCII1        ;该数小于10，转ASCII0
+0136 2407            191               ADD   A,#07H        ;大于10的数加上37H
+0138 2430            192     ASCII1:   ADD   A,#30H        ;小于10的数加上30H
+013A 0526            193               INC   X
+013C 8526F0          194               MOV   B,X
+013F 11D9            195               CALL  LCDP2
+0141 22              196               RET
+                     197     ;--------------------------------------------------------
+                     198     ;蜂鸣器响一声子程序
+                     199     ;--------------------------------------------------------
+0142                 200     BEEP_BL:
+0142 7EC8            201              MOV  R6,#200
+0144 314F            202       BL1:   CALL  DEX1
+0146 B295            203              CPL   BEEP
+0148 DEFA            204              DJNZ  R6,BL1
+014A 7D32            205              MOV  R5,#50
+014C 3155            206              CALL  DELAY
+014E 22              207              RET
+014F 7FDC            208      DEX1:   MOV  R7,#220
+0151 00              209      DEX2:   NOP
+0152 DFFD            210              DJNZ  R7,DEX2
+0154 22              211              RET
+0155                 212     DELAY:                    ;延时R5×10MS
+0155 7E03            213              MOV  R6,#03H
+0157 7F64            214       D1:    MOV  R7,#100
+0159 DFFE            215              DJNZ  R7,$
+015B DEFA            216              DJNZ  R6,D1
+015D DDF6            217              DJNZ  R5,DELAY
+015F 22              218              RET
+                     219     ;-----------------------------------------------------
+0160                 220     DELAY1:                    ;延时5MS
+0160 7E19            221              MOV  R6,#25
+0162 7F64            222       D2:    MOV  R7,#100
+0164 DFFE            223              DJNZ  R7,$
+0166 DEFA            224              DJNZ  R6,D2
+0168 22              225              RET
+                     226     ;-----------------------------------------------------
+0169                 227     KEYTABLE:
+                     228     
+0169 EDDDBD7D        229     DB   0EDH,0DDH,0BDH,07Dh,  0EBh,0DBh ,0BBh,07Bh, 0E7h, 0D7h,0B7h,077h,  00H
+016D EBDBBB7B                
+0171 E7D7B777                
+0175 00                      
+                     230         
+                     231     ;-----------------------------------------------------
+                     232         END
+                             
+                             
+A51 MACRO ASSEMBLER  LCD1602JZ                                                            11/05/2009 11:36:22 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+ASCII0 . . . . . .  C ADDR   0123H   A   
+ASCII1 . . . . . .  C ADDR   0138H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+BEEP . . . . . . .  B ADDR   0090H.5 A   
+BEEP_BL. . . . . .  C ADDR   0142H   A   
+BL1. . . . . . . .  C ADDR   0144H   A   
+CL1. . . . . . . .  C ADDR   0078H   A   
+CLR_LINE . . . . .  C ADDR   0076H   A   
+CONV . . . . . . .  C ADDR   0111H   A   
+D1 . . . . . . . .  C ADDR   0157H   A   
+D2 . . . . . . . .  C ADDR   0162H   A   
+DELAY. . . . . . .  C ADDR   0155H   A   
+DELAY0 . . . . . .  C ADDR   00D4H   A   
+DELAY1 . . . . . .  C ADDR   0160H   A   
+DEX1 . . . . . . .  C ADDR   014FH   A   
+DEX2 . . . . . . .  C ADDR   0151H   A   
+EN . . . . . . . .  B ADDR   00A0H.7 A   
+FILL . . . . . . .  C ADDR   006AH   A   
+INFO1. . . . . . .  C ADDR   0098H   A   
+INFO2. . . . . . .  C ADDR   00A9H   A   
+INIT_LCD . . . . .  C ADDR   0032H   A   
+KEYTABLE . . . . .  C ADDR   0169H   A   
+KEY_IN . . . . . .  C ADDR   00E6H   A   
+KEY_IN1. . . . . .  C ADDR   00FCH   A   
+KEY_IN2. . . . . .  C ADDR   0103H   A   
+KEY_IN3. . . . . .  C ADDR   010DH   A   
+LC1. . . . . . . .  C ADDR   0070H   A   
+LCDP2. . . . . . .  C ADDR   00D9H   A   
+LCD_SHOW . . . . .  C ADDR   0051H   A   
+LINE1. . . . . . .  C ADDR   0054H   A   
+LINE2. . . . . . .  C ADDR   0060H   A   
+LOOP0. . . . . . .  C ADDR   000BH   A   
+LOOP1. . . . . . .  C ADDR   0015H   A   
+MAIN . . . . . . .  C ADDR   0002H   A   
+MENU1. . . . . . .  C ADDR   007FH   A   
+MENU2. . . . . . .  C ADDR   0087H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+RELAY. . . . . . .  B ADDR   0090H.4 A   
+RS . . . . . . . .  B ADDR   00A0H.6 A   
+RW . . . . . . . .  B ADDR   00A0H.5 A   
+SET_LCD. . . . . .  C ADDR   001DH   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+WCOM . . . . . . .  C ADDR   00BAH   A   
+WDATA. . . . . . .  C ADDR   00C7H   A   
+X. . . . . . . . .  N NUMB   0026H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

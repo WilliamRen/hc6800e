@@ -1,0 +1,5 @@
+"STARTUP.obj",
+"TFT-Photo.obj",
+"LCD-Driver.obj" 
+TO "TFT-Photo" 
+RAMSIZE(256) 

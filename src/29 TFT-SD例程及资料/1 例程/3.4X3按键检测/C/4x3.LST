@@ -1,0 +1,126 @@
+C51 COMPILER V7.10   4X3                                                                   10/01/2010 19:14:18 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 4X3
+OBJECT MODULE PLACED IN 4x3.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 4x3.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1                                                                                                                                           
+   2          /********************************************************************************
+   3          *  描述:                                                                        *    
+   4          *        矩阵键盘1602液晶显示键值                                               *    
+   5          *   连接方法：JP8（P1） 与JP4（矩阵键盘接口） 连接                              *    
+   6          *         矩阵键盘定义：                                                        *
+   7          *         P1.1-P1.4为列线,P1.4-P1.7为行线                                       *    
+   8          *         喇叭接P1.5口  矩阵键盘P1口，                                          *    
+   9          *  注意：请将JP165短路冒断开                                                    *                         
+             -   
+  10          *********************************************************************************/
+  11          #include <reg52.h>
+  12          #include <intrins.h>
+  13          #include"4x3.h"
+  14          
+  15          uchar  temp;
+  16          uchar  key;                //键顺序吗
+  17          uchar  dis_buf;            //显示缓存
+  18          
+  19          
+  20          #define delayNOP(); {_nop_();_nop_();_nop_();_nop_();};
+  21          
+  22          /*************************************************************/
+  23          /*                                                           */
+  24          /* 延时子程序                                                */
+  25          /*                                                           */
+  26          /*************************************************************/
+  27          
+  28          void  delay(uchar x)
+  29          { uchar j;
+  30   1          while((x--)!=0)
+  31   1          { for(j=0;j<125;j++)
+  32   2               {;}
+  33   2          }
+  34   1      }
+  35          
+  36          
+  37          
+  38          /*************************************************************/
+  39          /*                                                           */
+  40          /* 键扫描子程序  (4*3 的矩阵) P1.4 P1.5 P1.6 P1.7为行        */
+  41          /*                                                        P1.1 P1.2 P1.3为列             */
+  42          /*                                                                                       */
+  43          /*************************************************************/
+  44          
+  45           void  keyscan(void)
+  46           {      temp = 0;
+  47   1          P1=0xF0;                 //高四位输入   行为高电平  列为低电平
+  48   1          delay(1);
+  49   1              temp=P1;                 //读P1口 
+  50   1          temp=temp&0xF0;                      //屏蔽低四位
+  51   1          temp=~((temp>>4)|0xF0);       
+  52   1          if(temp==1)   // p1.4 被拉低
+  53   1              key=0;
+  54   1          else if(temp==2)   // p1.5 被拉低
+C51 COMPILER V7.10   4X3                                                                   10/01/2010 19:14:18 PAGE 2   
+
+  55   1              key=1;
+  56   1          else if(temp==4)   // p1.6 被拉低
+  57   1              key=2;
+  58   1          else if(temp==8)   // p1.7 被拉低
+  59   1               key=3;
+  60   1          else
+  61   1              key=16;
+  62   1              
+  63   1          P1=0x0F;                //低四位输入  列为高电平 行为低电平
+  64   1          delay(1);
+  65   1              temp=P1;                //读P1口       
+  66   1          temp=temp&0x0F;
+  67   1          temp=~(temp|0xF0);
+  68   1          if(temp==2)            // p1.1  被拉低
+  69   1              key=key+0;
+  70   1          else if(temp==4)   // p1.2  被拉低
+  71   1              key=key+4;
+  72   1          else if(temp==8)    // p1.3  被拉低
+  73   1              key=key+8;
+  74   1          else
+  75   1              key=16;  
+  76   1              
+  77   1           dis_buf = key;                  //键值入显示缓存
+  78   1           dis_buf = dis_buf & 0x0f;
+  79   1       
+  80   1               if(dis_buf>9)               //转换为ASCII码
+  81   1            dis_buf = dis_buf+0x37;
+  82   1           else
+  83   1                dis_buf = dis_buf+0x30;
+  84   1       }
+  85          
+  86          /*************************************************************/
+  87          /*                                                           */
+  88          /*判断键是否按下                                             */
+  89          /*                                                           */
+  90          /*************************************************************/
+  91          
+  92           void  keydown(void)
+  93           {  
+  94   1              P1=0xF0;
+  95   1              if(P1!=0xF0)  //判断按键是否按下 如果按钮按下 会拉低P1其中的一个端口
+  96   1              {
+  97   2                keyscan();
+  98   2          }
+  99   1       }
+ 100          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    177    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

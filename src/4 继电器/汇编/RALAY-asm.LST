@@ -1,0 +1,49 @@
+A51 MACRO ASSEMBLER  RALAY_ASM                                                            03/15/2010 17:53:16 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN RALAY-asm.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE RALAY-asm.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+                       5     
+                       6     
+                       7     
+                       8     
+0000                   9            ORG        0000h
+0000 0130             10            AJMP  MAIN
+0030                  11            ORG   0030H
+0030                  12     MAIN:
+0030 75A0FF           13            MOV   P2,   #0FFH         
+0033 E5A0             14                MOV   A ,    P2
+0035 B4FF04           15                CJNE  A ,    #0FFH, GO   
+0038 D294             16                SETB  P1.4                       
+003A 0130             17                AJMP MAIN                      
+                      18     
+003C C294             19     GO:    CLR   P1.4                   
+                      20     
+                      21     
+                      22     END                                                                 
+A51 MACRO ASSEMBLER  RALAY_ASM                                                            03/15/2010 17:53:16 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+GO . . . . . . . .  C ADDR   003CH   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

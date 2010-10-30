@@ -1,0 +1,385 @@
+C51 COMPILER V7.10   MAIN                                                                  09/26/2010 20:27:21 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /***********************************************************************
+   2          *                                                                      *
+   3          *              HMI人机界面步进电机调速系统                             *
+   4          *                （  普中科技  ）                                      *
+   5          *                                                                      *
+   6          * 实验目的：1.掌握TFT彩屏驱动程序的编写、                                                          *
+   7          *           2.学会运用取字模软件应用(取字符和汉字数组)                             *
+   8          *                       3.掌握通过TFT显示平台如何对步进电机调速和控制转速          *
+   9          *                                                                      *
+  10          *实验现象：彩屏中显示汉字、数字、字母、光标闪烁！                      *
+  11          *                                                                      *
+  12          *功能:1.可以设定转速和圈数                                             *
+  13                2.可以保存设定数据到AT24CO2EEPROM中，(当光标离开时，数据自动保存)*
+  14          *                                                                      *
+  15          * 建议：学员可以试着用51的定时中断来处理 马达运行，效果又怎样呢？      *
+  16          ***********************************************************************/
+  17          #include "system.h"
+  18          #include "lcd.h"
+  19          #include"Function.h"
+  20          
+  21          
+  22          bit flag,Ch_Focus_J , Inc_num_J , Dec_num_J ;
+  23          unsigned char Set_Data[5] = {0,0,0,0} ;
+  24          unsigned char Index = 0 , old_Index;
+  25          unsigned char *pold;
+  26          unsigned char xdata  pDat[16];
+  27          unsigned int  xdata D[32]; 
+  28          
+  29          unsigned char xdata X[] = {0,28,94,28,94,28,94,28,94};    //寄存器X坐标
+  30          unsigned char xdata Y[] = {0,24,24,60,60,96,96,132,132};  //寄存器Y坐标
+  31          /***********************************************************
+  32          purpose: 系统初始化
+  33          /**********************************************************/
+  34          void system_Ini()
+  35          { 
+  36   1          TMOD|= 0x11;
+  37   1              IE = 0x8A;
+  38   1      
+  39   1          TH0=0xDC; //11.0592M
+  40   1          TL0=0x00;
+  41   1          TR0  = 1;
+  42   1       
+  43   1      }
+  44          
+  45          /**********************************************************
+  46          
+  47            主函数
+  48          
+  49          **********************************************************/
+  50          void main(void)
+  51          {   char i;
+  52   1          
+  53   1      
+  54   1         P2 = 0xff;
+  55   1         P0 = 0xff;
+C51 COMPILER V7.10   MAIN                                                                  09/26/2010 20:27:21 PAGE 2   
+
+  56   1      
+  57   1         LCD_init();
+  58   1         LCD_clear(5);
+  59   1      
+  60   1           
+  61   1         ChineseChar(4,4,1,colors[0],colors[5],1);    //步
+  62   1         ChineseChar(20,4,1,colors[0],colors[5],2);   //进
+  63   1         ChineseChar(36,4,1,colors[0],colors[5],3);   //电
+  64   1         ChineseChar(52,4,1,colors[0],colors[5],4);   //机
+  65   1         ChineseChar(68,4,1,colors[0],colors[5],5);   //一
+  66   1         
+  67   1          //步进马达一
+  68   1         ChineseChar(2,24,0,colors[0],colors[5],1);   //转
+  69   1         ChineseChar(14,24,0,colors[0],colors[5],2);  //速
+  70   1         ChineseChar(64,24,0,colors[0],colors[5],3);  //圈
+  71   1         ChineseChar(76,24,0,colors[0],colors[5],4);  //数
+  72   1      
+  73   1      /*****************************************************************/
+  74   1         ChineseChar(4,40,1,colors[0],colors[5],1);   //步
+  75   1         ChineseChar(20,40,1,colors[0],colors[5],2);  //进
+  76   1         ChineseChar(36,40,1,colors[0],colors[5],3);  //电
+  77   1         ChineseChar(52,40,1,colors[0],colors[5],4);  //机
+  78   1         ChineseChar(68,40,1,colors[0],colors[5],6);  //二
+  79   1       
+  80   1         //步进马达二
+  81   1         ChineseChar(2,60,0,colors[0],colors[5],1);   //圈 
+  82   1         ChineseChar(14,60,0,colors[0],colors[5],2);  //数
+  83   1         ChineseChar(64,60,0,colors[0],colors[5],3);  //转
+  84   1         ChineseChar(76,60,0,colors[0],colors[5],4);  //速
+  85   1      
+  86   1      /*****************************************************************/
+  87   1         ChineseChar(4,76,1,colors[0],colors[5],1);   //步
+  88   1         ChineseChar(20,76,1,colors[0],colors[5],2);  //进
+  89   1         ChineseChar(36,76,1,colors[0],colors[5],3);  //电
+  90   1         ChineseChar(52,76,1,colors[0],colors[5],4);  //机
+  91   1         ChineseChar(68,76,1,colors[0],colors[5],7);  //三
+  92   1         
+  93   1          //步进马达三
+  94   1         ChineseChar(2,96,0,colors[0],colors[5],1);   //圈 
+  95   1         ChineseChar(14,96,0,colors[0],colors[5],2);  //数
+  96   1         ChineseChar(64,96,0,colors[0],colors[5],3);  //转
+  97   1         ChineseChar(76,96,0,colors[0],colors[5],4);  //速
+  98   1      
+  99   1      /*****************************************************************/
+ 100   1         ChineseChar(4,112,1,colors[0],colors[5],1);  //步
+ 101   1         ChineseChar(20,112,1,colors[0],colors[5],2); //进
+ 102   1         ChineseChar(36,112,1,colors[0],colors[5],3); //电
+ 103   1         ChineseChar(52,112,1,colors[0],colors[5],4); //机
+ 104   1         ChineseChar(68,112,1,colors[0],colors[5],8); //四
+ 105   1      
+ 106   1          //步进马达四
+ 107   1         ChineseChar(2,132,0,colors[0],colors[5],1);  //圈 
+ 108   1         ChineseChar(14,132,0,colors[0],colors[5],2); //数
+ 109   1         ChineseChar(64,132,0,colors[0],colors[5],3); //转
+ 110   1         ChineseChar(76,132,0,colors[0],colors[5],4); //速
+ 111   1        
+ 112   1          
+ 113   1          ReadData();  // 读取上次设定数据
+ 114   1            
+ 115   1          for (i = 1; i<9 ; i++)
+ 116   1         {
+ 117   2             handle_ASCII(i);
+C51 COMPILER V7.10   MAIN                                                                  09/26/2010 20:27:21 PAGE 3   
+
+ 118   2             LCD_ShowString(X[i],Y[i],colors[4],colors[7],Set_Data);
+ 119   2         }
+ 120   1       
+ 121   1         system_Ini();
+ 122   1        
+ 123   1         while(1)     
+ 124   1         {     
+ 125   2            
+ 126   2            ChangeNumber();
+ 127   2            changefocus(Index);
+ 128   2            MotorRun(D);
+ 129   2         }
+ 130   1      
+ 131   1      }
+ 132          
+ 133          /*********************************************************/
+ 134          
+ 135          void ChangeNumber()
+ 136          {  static unsigned int C_Inc , C_Dec;
+ 137   1           //按钮脉冲处理
+ 138   1         if(~Ch_Focus & Ch_Focus_J)  
+ 139   1              {   
+ 140   2                 old_Index = Index;  //保存上次光标的位置
+ 141   2             pold = Set_Data;    //保存上次光标数据
+ 142   2          
+ 143   2             Index++; //改变光标
+ 144   2             if(Index > 8) Index = 0;
+ 145   2      
+ 146   2             if (X[old_Index] != 0)  LCD_ShowString(X[old_Index],Y[old_Index],colors[4],colors[7],pold); // 显示
+             -前一个光标内容
+ 147   2           
+ 148   2             SaveData(); //光标改变时 保存数据
+ 149   2            
+ 150   2              } 
+ 151   1           Ch_Focus_J=~(~Ch_Focus);
+ 152   1      
+ 153   1      /**************************************************************************/
+ 154   1       
+ 155   1               if(Index > 0)  
+ 156   1               {    // 加数据 按钮脉冲处理
+ 157   2                 if(~Inc_num&Inc_num_J)  
+ 158   2                      {   
+ 159   3                               //D[Index]++;
+ 160   3               if( D[Index]< 9999)  D[Index]++;
+ 161   3               if(D[Index]> 9999) D[Index] = 0;
+ 162   3                      } //if
+ 163   2                      Inc_num_J=~(~Inc_num);
+ 164   2      
+ 165   2               // 减数据 按钮脉冲处理
+ 166   2             if(~Dec_num&Dec_num_J)  
+ 167   2                      {   
+ 168   3                      //       D[Index]--;
+ 169   3               if( D[Index]> 0 ) D[Index]--;
+ 170   3               if(D[Index]> 9999) D[Index] = 0;
+ 171   3                      } //if
+ 172   2                      Dec_num_J=~(~Dec_num);
+ 173   2              }//if
+ 174   1      /**********************************************************/
+ 175   1      //       快速加减调整数据   
+ 176   1         if(!Inc_num & Dec_num) 
+ 177   1         {
+ 178   2            if( C_Inc <= 30)   C_Inc++;
+C51 COMPILER V7.10   MAIN                                                                  09/26/2010 20:27:21 PAGE 4   
+
+ 179   2            else 
+ 180   2            {  if( D[Index]< 9999)  D[Index]++;
+ 181   3               if(D[Index]> 9999) D[Index] = 0;
+ 182   3            }
+ 183   2         }//if
+ 184   1         else   C_Inc = 0;
+ 185   1      
+ 186   1         if(!Dec_num & Inc_num) 
+ 187   1         {
+ 188   2            if(C_Dec <= 30) C_Dec++;
+ 189   2            else 
+ 190   2             { if( D[Index]> 0 ) D[Index]--;
+ 191   3               if(D[Index]> 9999) D[Index] = 0;
+ 192   3             }
+ 193   2         }//if  
+ 194   1         else C_Dec = 0;
+ 195   1      
+ 196   1        
+ 197   1      
+ 198   1      /**********************************************************************************/
+ 199   1      
+ 200   1      
+ 201   1      
+ 202   1      }
+ 203          
+ 204          
+ 205          
+ 206          /********************************************************
+ 207          *                                                       *
+ 208          *                改变光标                               *
+ 209          *                                                       *
+ 210          *********************************************************/
+ 211          void changefocus(unsigned char index)
+ 212          {
+ 213   1        handle_ASCII(Index);
+ 214   1       switch(index)
+ 215   1       {
+ 216   2         case 1:
+ 217   2         Focus_Flash(X[1],Y[1]);  
+ 218   2         break;
+ 219   2      
+ 220   2         case 2:
+ 221   2         Focus_Flash(X[2],Y[2]);
+ 222   2         break;
+ 223   2         
+ 224   2         case 3:
+ 225   2         Focus_Flash(X[3],Y[3]);
+ 226   2         break;
+ 227   2      
+ 228   2         case 4:
+ 229   2         Focus_Flash(X[4],Y[4]);
+ 230   2         break;
+ 231   2      
+ 232   2         case 5:
+ 233   2         Focus_Flash(X[5],Y[5]);
+ 234   2         break;
+ 235   2         
+ 236   2         case 6:
+ 237   2         Focus_Flash(X[6],Y[6]);
+ 238   2       
+ 239   2         break;
+ 240   2      
+C51 COMPILER V7.10   MAIN                                                                  09/26/2010 20:27:21 PAGE 5   
+
+ 241   2         case 7:
+ 242   2         Focus_Flash(X[7],Y[7]);
+ 243   2        
+ 244   2         break;
+ 245   2      
+ 246   2         case 8:
+ 247   2         Focus_Flash(X[8],Y[8]);
+ 248   2         break;
+ 249   2      
+ 250   2         }
+ 251   1      
+ 252   1      }
+ 253          
+ 254          
+ 255          /*********************************************************/
+ 256          
+ 257          void handle_ASCII(unsigned char index)
+ 258          {    unsigned int i;
+ 259   1           
+ 260   1           i = D[index];
+ 261   1      
+ 262   1           Set_Data[0] = i%10000/1000  + 0x30;           //千位+0x30 转换成ASCII编码
+ 263   1           Set_Data[1] = i%1000/100  + 0x30;         //百位+0x30 转换成ASCII编码
+ 264   1           Set_Data[2] = i%100/10 + 0x30;            //十位
+ 265   1           Set_Data[3] = i%10 + 0x30;                //个位
+ 266   1           Set_Data[4] = '\0';
+ 267   1      
+ 268   1      }
+ 269          
+ 270          /********************************************************
+ 271          *                                                       *
+ 272          *  光标闪烁程序                                         *
+ 273          *                                                       *
+ 274          *********************************************************/
+ 275          void Focus_Flash(unsigned char x, unsigned char y)
+ 276          { 
+ 277   1      
+ 278   1       if(flag)
+ 279   1         
+ 280   1         LCD_ShowString(x,y,colors[4],colors[7],Set_Data);
+ 281   1       
+ 282   1       else
+ 283   1      
+ 284   1         LCD_ShowString(x,y,colors[7],colors[0],Set_Data);
+ 285   1       
+ 286   1      }
+ 287          
+ 288          
+ 289          
+ 290          
+ 291          /********************************************************
+ 292          *                  保存数据                             *
+ 293          *                                                       *
+ 294          *********************************************************/
+ 295          void SaveData()
+ 296          { char i ;
+ 297   1       
+ 298   1        for (i=0; i<8; i++)
+ 299   1       {
+ 300   2          pDat[i*2+0]=D[1+i];
+ 301   2          pDat[i*2+1]=D[1+i]>>8;
+ 302   2       }
+C51 COMPILER V7.10   MAIN                                                                  09/26/2010 20:27:21 PAGE 6   
+
+ 303   1         ISendStr(AT24C02, 0 , pDat, 8); 
+ 304   1         ISendStr(AT24C02+1, 0 , pDat+8, 8); 
+ 305   1      
+ 306   1      }
+ 307          
+ 308          /********************************************************
+ 309          *                  读取设定数据                         *
+ 310          *                                                       *
+ 311          *********************************************************/
+ 312          void ReadData()
+ 313          { unsigned char i;
+ 314   1          IRcvStr(AT24C02, 0 , pDat, 8);   
+ 315   1          IRcvStr(AT24C02+1, 0 , pDat+8, 8); 
+ 316   1          for (i=0; i<8; i++)
+ 317   1              {
+ 318   2                 D[1+i]=pDat[i*2+0] + pDat[i*2+1]*0x100;
+ 319   2              }
+ 320   1      
+ 321   1      }
+ 322          
+ 323          /*************************************
+ 324           [ t1 (1ms)中断] 中断
+ 325          
+ 326          *************************************/
+ 327          void T1zd(void) interrupt 1      //3定时器1的中断号  1定时器0的中断号 0外部中断1 2外部中断2  4串口中断
+ 328          { static unsigned int LedNumVal;
+ 329   1              // TH1 = 0x1c;    //12.000
+ 330   1              // TL1 = 0x18;
+ 331   1      
+ 332   1          TH0 = 0xfe;    //11.0592
+ 333   1          TL0 = 0x33;
+ 334   1      
+ 335   1           // TH0 = 0x1c;    //11.0592
+ 336   1           // TL0 = 0x18;
+ 337   1          
+ 338   1          if(LedNumVal++ > 1100)  //改变闪烁频率
+ 339   1          {
+ 340   2           flag = ~flag;  //改变光标标志
+ 341   2           LedNumVal = 0 ;
+ 342   2      
+ 343   2            
+ 344   2          }
+ 345   1      
+ 346   1        
+ 347   1       Tick_10ms++;
+ 348   1              
+ 349   1       
+ 350   1      }
+ 351          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2269    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     98    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      4    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

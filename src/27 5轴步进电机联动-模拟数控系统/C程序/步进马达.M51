@@ -1,0 +1,448 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        07/25/2010  10:59:53  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, 步进马达.obj TO 步进马达 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  步进马达.obj (步絖马达)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CILDPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?ILDPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?ISTPTR)
+
+
+LINK MAP OF MODULE:  步进马达 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0047H     UNIT         ?DT?步絖马达
+            DATA    004FH     0010H     UNIT         _DATA_GROUP_
+            IDATA   005FH     0001H     UNIT         ?STACK
+
+            * * * * * * *  X D A T A   M E M O R Y  * * * * * * *
+            XDATA   0000H     000AH     UNIT         ?XD?步絖马达
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     0151H     UNIT         ?PR?MAIN?步絖马达
+            CODE    015FH     008CH     UNIT         ?C_C51STARTUP
+            CODE    01EBH     0085H     UNIT         ?C?LIB_CODE
+            CODE    0270H     007DH     UNIT         ?C_INITSEG
+            CODE    02EDH     005EH     UNIT         ?PR?_ACCELERATION?步絖马达
+            CODE    034BH     004EH     UNIT         ?PR?_SETMOTOR1?步絖马达
+            CODE    0399H     004EH     UNIT         ?PR?_SETMOTOR2?步絖马达
+            CODE    03E7H     004EH     UNIT         ?PR?_SETMOTOR3?步絖马达
+            CODE    0435H     004EH     UNIT         ?PR?_SETMOTOR4?步絖马达
+            CODE    0483H     004EH     UNIT         ?PR?_SETMOTOR5?步絖马达
+            CODE    04D1H     0023H     UNIT         ?PR?_TICKOUT?步絖马达
+            CODE    04F4H     0013H     UNIT         ?PR?TZD?步絖马达
+            CODE    0507H     0010H     UNIT         ?CO?步絖马达
+            CODE    0517H     000FH     UNIT         ?PR?SYSTEM_INI?步絖马达
+
+
+
+OVERLAY MAP OF MODULE:   步进马达 (?C_STARTUP)
+
+
+SEGMENT                              DATA_GROUP 
+  +--> CALLED SEGMENT              START    LENGTH
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 2
+
+
+--------------------------------------------------
+?C_C51STARTUP                      -----    -----
+  +--> ?PR?MAIN?步絖马达
+  +--> ?C_INITSEG
+
+?PR?MAIN?步絖马达                  004FH    0005H
+  +--> ?PR?SYSTEM_INI?步絖马达
+  +--> ?PR?_ACCELERATION?步絖马达
+  +--> ?PR?_SETMOTOR1?步絖马达
+  +--> ?PR?_SETMOTOR2?步絖马达
+  +--> ?PR?_SETMOTOR3?步絖马达
+  +--> ?PR?_SETMOTOR4?步絖马达
+  +--> ?PR?_SETMOTOR5?步絖马达
+
+?PR?_ACCELERATION?步絖马达         0054H    000BH
+  +--> ?PR?_TICKOUT?步絖马达
+
+?PR?_SETMOTOR1?步絖马达            -----    -----
+  +--> ?PR?_TICKOUT?步絖马达
+  +--> ?CO?步絖马达
+
+?PR?_SETMOTOR2?步絖马达            -----    -----
+  +--> ?PR?_TICKOUT?步絖马达
+  +--> ?CO?步絖马达
+
+?PR?_SETMOTOR3?步絖马达            -----    -----
+  +--> ?PR?_TICKOUT?步絖马达
+  +--> ?CO?步絖马达
+
+?PR?_SETMOTOR4?步絖马达            -----    -----
+  +--> ?PR?_TICKOUT?步絖马达
+  +--> ?CO?步絖马达
+
+?PR?_SETMOTOR5?步絖马达            -----    -----
+  +--> ?PR?_TICKOUT?步絖马达
+  +--> ?CO?步絖马达
+
+
+
+SYMBOL TABLE OF MODULE:  步进马达 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:015FH         SEGMENT       ?C_C51STARTUP
+  I:005FH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0162H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 3
+
+
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:015FH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:015FH         LINE#         99
+  C:0161H         LINE#         100
+  C:0162H         LINE#         101
+  C:0163H         LINE#         102
+  C:0165H         LINE#         151
+  C:0168H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        步絖马达
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:050FH         PUBLIC        FFW_H
+  D:00A8H         PUBLIC        IE
+  C:0507H         PUBLIC        FFW_L
+  D:001CH         PUBLIC        CT
+  D:00B8H         PUBLIC        IP
+  C:000EH         PUBLIC        main
+  C:04D1H         PUBLIC        _TickOut
+  C:0517H         PUBLIC        system_Ini
+  X:0000H         PUBLIC        Delay_Tim1
+  X:0002H         PUBLIC        Delay_Tim2
+  D:001EH         PUBLIC        Tick_10ms
+  X:0004H         PUBLIC        Delay_Tim3
+  X:0006H         PUBLIC        Delay_Tim4
+  C:02F0H         PUBLIC        _Acceleration
+  C:04F4H         PUBLIC        Tzd
+  X:0008H         PUBLIC        Delay_Tim5
+  D:0020H         PUBLIC        Acc_Flg1
+  D:0098H         PUBLIC        SCON
+  D:0022H         PUBLIC        Acc_Flg2
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:0024H         PUBLIC        Acc_Flg3
+  D:0026H         PUBLIC        Acc_Flg4
+  D:0028H         PUBLIC        Acc_Flg5
+  D:002AH         PUBLIC        MotorDelay1
+  D:002CH         PUBLIC        MotorDelay2
+  D:002EH         PUBLIC        MotorDelay3
+  D:0030H         PUBLIC        MotorDelay4
+  D:0032H         PUBLIC        MotorDelay5
+  D:0034H         PUBLIC        speed1
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 4
+
+
+  D:0035H         PUBLIC        speed2
+  D:0036H         PUBLIC        speed3
+  D:0037H         PUBLIC        speed4
+  D:0038H         PUBLIC        speed5
+  D:0039H         PUBLIC        MotorTimer1
+  D:003BH         PUBLIC        MotorTimer2
+  D:003DH         PUBLIC        MotorTimer3
+  D:008CH         PUBLIC        TH0
+  D:003FH         PUBLIC        MotorTimer4
+  D:0041H         PUBLIC        MotorTimer5
+  D:008AH         PUBLIC        TL0
+  C:034BH         PUBLIC        _SetMotor1
+  C:0399H         PUBLIC        _SetMotor2
+  C:03E7H         PUBLIC        _SetMotor3
+  C:0435H         PUBLIC        _SetMotor4
+  B:0088H.4       PUBLIC        TR0
+  C:0483H         PUBLIC        _SetMotor5
+  D:0043H         PUBLIC        Base_T1
+  D:0045H         PUBLIC        Base_T2
+  D:0047H         PUBLIC        Base_T3
+  D:0049H         PUBLIC        Base_T4
+  D:004BH         PUBLIC        Base_T5
+  D:00C8H         PUBLIC        T2CON
+  D:004DH         PUBLIC        TIM
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          SYSTEM_INI
+  C:0517H         LINE#         33
+  C:0517H         LINE#         34
+  C:0517H         LINE#         35
+  C:051AH         LINE#         38
+  C:051DH         LINE#         39
+  C:0520H         LINE#         40
+  C:0523H         LINE#         41
+  C:0525H         LINE#         46
+  -------         ENDPROC       SYSTEM_INI
+  -------         PROC          _SETMOTOR1
+  D:0006H         SYMBOL        step
+  D:0004H         SYMBOL        Speed
+  -------         DO            
+  D:0009H         SYMBOL        Circle
+  D:000BH         SYMBOL        ret
+  -------         DO            
+  D:0008H         SYMBOL        i
+  -------         ENDDO         
+  -------         ENDDO         
+  C:034BH         LINE#         52
+  C:034BH         LINE#         53
+  C:034BH         LINE#         56
+  C:0355H         LINE#         57
+  C:035EH         LINE#         58
+  C:035EH         LINE#         59
+  C:036EH         LINE#         60
+  C:036EH         LINE#         61
+  C:0385H         LINE#         62
+  C:038EH         LINE#         63
+  C:0396H         LINE#         64
+  C:0396H         LINE#         65
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 5
+
+
+  C:0396H         LINE#         67
+  C:0398H         LINE#         68
+  -------         ENDPROC       _SETMOTOR1
+  -------         PROC          _SETMOTOR2
+  D:0006H         SYMBOL        step
+  D:0004H         SYMBOL        Speed
+  -------         DO            
+  D:000DH         SYMBOL        Circle
+  D:000FH         SYMBOL        ret
+  -------         DO            
+  D:000CH         SYMBOL        i
+  -------         ENDDO         
+  -------         ENDDO         
+  C:0399H         LINE#         73
+  C:0399H         LINE#         74
+  C:0399H         LINE#         76
+  C:03A3H         LINE#         77
+  C:03ACH         LINE#         78
+  C:03BCH         LINE#         79
+  C:03BCH         LINE#         80
+  C:03D3H         LINE#         81
+  C:03DCH         LINE#         82
+  C:03E4H         LINE#         83
+  C:03E4H         LINE#         84
+  C:03E4H         LINE#         86
+  C:03E6H         LINE#         87
+  -------         ENDPROC       _SETMOTOR2
+  -------         PROC          _SETMOTOR3
+  D:0006H         SYMBOL        step
+  D:0004H         SYMBOL        Speed
+  -------         DO            
+  D:0011H         SYMBOL        Circle
+  D:0013H         SYMBOL        ret
+  -------         DO            
+  D:0010H         SYMBOL        i
+  -------         ENDDO         
+  -------         ENDDO         
+  C:03E7H         LINE#         92
+  C:03E7H         LINE#         93
+  C:03E7H         LINE#         95
+  C:03F1H         LINE#         96
+  C:03FAH         LINE#         97
+  C:040AH         LINE#         98
+  C:040AH         LINE#         99
+  C:0421H         LINE#         100
+  C:042AH         LINE#         101
+  C:0432H         LINE#         102
+  C:0432H         LINE#         103
+  C:0432H         LINE#         104
+  C:0434H         LINE#         105
+  -------         ENDPROC       _SETMOTOR3
+  -------         PROC          _SETMOTOR4
+  D:0006H         SYMBOL        step
+  D:0004H         SYMBOL        Speed
+  -------         DO            
+  D:0015H         SYMBOL        Circle
+  D:0017H         SYMBOL        ret
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 6
+
+
+  -------         DO            
+  D:0014H         SYMBOL        i
+  -------         ENDDO         
+  -------         ENDDO         
+  C:0435H         LINE#         110
+  C:0435H         LINE#         111
+  C:0435H         LINE#         113
+  C:043FH         LINE#         114
+  C:0448H         LINE#         115
+  C:0458H         LINE#         116
+  C:0458H         LINE#         117
+  C:046FH         LINE#         118
+  C:0478H         LINE#         119
+  C:0480H         LINE#         120
+  C:0480H         LINE#         121
+  C:0480H         LINE#         122
+  C:0482H         LINE#         123
+  -------         ENDPROC       _SETMOTOR4
+  -------         PROC          _SETMOTOR5
+  D:0006H         SYMBOL        step
+  D:0004H         SYMBOL        Speed
+  -------         DO            
+  D:0019H         SYMBOL        Circle
+  D:001BH         SYMBOL        ret
+  -------         DO            
+  D:0018H         SYMBOL        i
+  -------         ENDDO         
+  -------         ENDDO         
+  C:0483H         LINE#         128
+  C:0483H         LINE#         129
+  C:0483H         LINE#         131
+  C:048DH         LINE#         132
+  C:0496H         LINE#         133
+  C:04A6H         LINE#         134
+  C:04A6H         LINE#         135
+  C:04BDH         LINE#         136
+  C:04C6H         LINE#         137
+  C:04CEH         LINE#         138
+  C:04CEH         LINE#         140
+  C:04CEH         LINE#         141
+  C:04D0H         LINE#         142
+  -------         ENDPROC       _SETMOTOR5
+  -------         PROC          MAIN
+  -------         DO            
+  D:004FH         SYMBOL        ret1
+  D:0050H         SYMBOL        ret2
+  D:0051H         SYMBOL        ret3
+  D:0052H         SYMBOL        ret4
+  D:0053H         SYMBOL        ret5
+  -------         ENDDO         
+  C:000EH         LINE#         144
+  C:000EH         LINE#         145
+  C:000EH         LINE#         146
+  C:0011H         LINE#         148
+  C:0011H         LINE#         149
+  C:0011H         LINE#         152
+  C:001AH         LINE#         153
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 7
+
+
+  C:0025H         LINE#         154
+  C:0030H         LINE#         155
+  C:0036H         LINE#         156
+  C:0059H         LINE#         157
+  C:0067H         LINE#         160
+  C:0070H         LINE#         161
+  C:0076H         LINE#         162
+  C:0091H         LINE#         163
+  C:009FH         LINE#         164
+  C:00A5H         LINE#         167
+  C:00AFH         LINE#         168
+  C:00B5H         LINE#         169
+  C:00DDH         LINE#         172
+  C:00E7H         LINE#         173
+  C:00EDH         LINE#         174
+  C:0118H         LINE#         175
+  C:011EH         LINE#         178
+  C:0128H         LINE#         179
+  C:012EH         LINE#         180
+  C:0159H         LINE#         181
+  C:015CH         LINE#         183
+  -------         ENDPROC       MAIN
+  -------         PROC          _TICKOUT
+  D:0001H         SYMBOL        tick
+  D:0004H         SYMBOL        tickCnt
+  C:04D1H         LINE#         188
+  C:04D1H         LINE#         189
+  C:04D1H         LINE#         190
+  C:04E6H         LINE#         191
+  C:04E6H         LINE#         192
+  C:04EEH         LINE#         193
+  C:04F1H         LINE#         194
+  C:04F1H         LINE#         195
+  C:04F3H         LINE#         196
+  -------         ENDPROC       _TICKOUT
+  -------         PROC          L?0040
+  -------         ENDPROC       L?0040
+  -------         PROC          _ACCELERATION
+  D:0054H         SYMBOL        Base_Tim
+  D:0004H         SYMBOL        Delay_Tim
+  D:0059H         SYMBOL        Flag
+  D:005CH         SYMBOL        Speed
+  C:02F0H         LINE#         203
+  C:02F6H         LINE#         204
+  C:02F6H         LINE#         205
+  C:02FCH         LINE#         206
+  C:02FCH         LINE#         207
+  C:0319H         LINE#         208
+  C:031EH         LINE#         210
+  C:033BH         LINE#         211
+  C:0340H         LINE#         212
+  C:0340H         LINE#         214
+  C:034AH         LINE#         215
+  -------         ENDPROC       _ACCELERATION
+  -------         PROC          TZD
+  C:04F4H         LINE#         222
+  C:04F6H         LINE#         224
+BL51 BANKED LINKER/LOCATER V5.03                                                      07/25/2010  10:59:53  PAGE 8
+
+
+  C:04F9H         LINE#         225
+  C:04FCH         LINE#         227
+  C:0504H         LINE#         229
+  -------         ENDPROC       TZD
+  -------         ENDMOD        步絖马达
+
+  -------         MODULE        ?C?CLDPTR
+  C:01EBH         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?CILDPTR
+  C:0204H         PUBLIC        ?C?CILDPTR
+  -------         ENDMOD        ?C?CILDPTR
+
+  -------         MODULE        ?C?ILDPTR
+  C:0226H         PUBLIC        ?C?ILDPTR
+  -------         ENDMOD        ?C?ILDPTR
+
+  -------         MODULE        ?C?ISTPTR
+  C:0251H         PUBLIC        ?C?ISTPTR
+  -------         ENDMOD        ?C?ISTPTR
+
+Program Size: data=96.0 xdata=10 code=1310
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

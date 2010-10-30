@@ -1,0 +1,64 @@
+A51 MACRO ASSEMBLER  S6_4                                                                 10/28/2009 22:01:56 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN S6-4.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE S6-4.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+0000                   3             ORG 0000H        ;程序从000H地址开始运行
+0000 0130              4             AJMP MAIN        ;跳转到 MAIN程序
+                       5     
+0030                   6             ORG 030H          ;MAIN程序从030H开始运行
+0030                   7     MAIN:   
+0030 75A0FE            8         MOV P2,#0FEH
+0033 115D              9             ACALL DEL          ;调用延时子程序
+0035 75A0FC           10             MOV P2,#0FCH
+0038 115D             11             ACALL DEL          ;调用延时子程序
+003A 75A0F8           12             MOV P2,#0F8H
+003D 115D             13             ACALL DEL
+003F 75A0F0           14             MOV P2,#0F0H
+0042 115D             15             ACALL DEL
+0044 75A0E0           16             MOV P2,#0E0H
+0047 115D             17             ACALL DEL
+0049 75A0C0           18             MOV P2,#0C0H
+004C 115D             19             ACALL DEL
+004E 75A080           20             MOV P2,#080H
+0051 115D             21             ACALL DEL
+0053 75A000           22             MOV P2,#000H
+0056 115D             23             ACALL DEL
+0058 75A0FF           24             MOV P2,#0FFH
+005B 0130             25             AJMP MAIN
+                      26     
+                      27     ; 延时子程序
+005D 7D02             28     DEL:    MOV R5,#02H
+005F 7EF0             29     DEL1:   MOV R6,#0F0H
+0061 7FF0             30     DEL2:   MOV R7,#0F0H
+0063 DFFE             31     DEL3:   DJNZ R7, DEL3
+0065 DEFA             32             DJNZ R6, DEL2
+0067 DDF6             33             DJNZ R5, DEL1
+0069 22               34             RET
+                      35             END
+A51 MACRO ASSEMBLER  S6_4                                                                 10/28/2009 22:01:56 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DEL. . . . . . . .  C ADDR   005DH   A   
+DEL1 . . . . . . .  C ADDR   005FH   A   
+DEL2 . . . . . . .  C ADDR   0061H   A   
+DEL3 . . . . . . .  C ADDR   0063H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

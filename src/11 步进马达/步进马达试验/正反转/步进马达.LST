@@ -1,0 +1,101 @@
+C51 COMPILER V7.10   步絖马达                                                              08/15/2009 22:57:57 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 步絖马达
+OBJECT MODULE PLACED IN 步进马达.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 步进马达.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /***********************************************************************************
+   2          *  标题:  步进电机试验四（正转一圈 反转一圈）                                                                      *
+   3          *  接线:  5v-黑色   p10-红线   p11-白线   p12-黄色   p13-绿色(对照电路板字符标示) *
+   4          *                                                                                                                                                                  *
+   5          *    通过本例程了解步进马达使用及驱动程序编写                                                                      *
+   6          *;   单双八拍工作方式：                                                            *
+   7          *;   A-AB-B-BC-C-CD-D-DA (即一个脉冲,转 3.75 度)                                                           *
+   8          *                                                                                  *
+   9          *  请学员一定要消化掉本例程                                                            *
+  10                                                                                                                             *
+  11          **************************************************************************************/    
+  12           
+  13           #include "reg52.h"
+  14          
+  15           void delay(unsigned int t);
+  16          
+  17           //Motor
+  18          sbit F1 = P1^0;
+  19          sbit F2 = P1^1;
+  20          sbit F3 = P1^2;
+  21          sbit F4 = P1^3;
+  22          
+  23          unsigned char code FFW[8]={0xfe,0xfc,0xfd,0xf9,0xfb,0xf3,0xf7,0xf6}; //反转
+  24          unsigned char code FFZ[8]={0xf6,0xf7,0xf3,0xfb,0xf9,0xfd,0xfc,0xfe}; //正转
+  25          unsigned int  K;
+  26          
+  27          
+  28          /**********************************************************************
+  29          *                                                                                                                                         *
+  30          *                       步进电机驱动                                                              *
+  31          *                                                                                                                                         *
+  32          ***********************************************************************/
+  33          void  motor_ffw()
+  34           { 
+  35   1         unsigned char i;
+  36   1         unsigned int  j;
+  37   1              for (j=0; j<12; j++)         //转1*n圈 
+  38   1          { 
+  39   2      
+  40   2            for (i=0; i<8; i++)       //一个周期转30度
+  41   2              {
+  42   3                if(K==1) P1 = FFW[i]&0x1f;  //取数据
+  43   3                        if(K==2) P1 = FFZ[i]&0x1f;
+  44   3                delay(5);                   //调节转速
+  45   3              }
+  46   2           } 
+  47   1       }
+  48          
+  49          /******************************************************
+  50          *
+  51          *                    延时程序
+  52          *
+  53          ********************************************************/
+  54           void delay(unsigned int t)
+  55          {                           
+C51 COMPILER V7.10   步絖马达                                                              08/15/2009 22:57:57 PAGE 2   
+
+  56   1         unsigned int k;
+  57   1         while(t--)
+  58   1         {
+  59   2           for(k=0; k<80; k++)
+  60   2           { }
+  61   2         }
+  62   1      }
+  63          
+  64          
+  65          main() 
+  66           { 
+  67   1          while(1)
+  68   1              {
+  69   2               K=1;
+  70   2               motor_ffw();
+  71   2               K=2;
+  72   2               motor_ffw();
+  73   2      
+  74   2               }
+  75   1      }
+  76          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    128    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

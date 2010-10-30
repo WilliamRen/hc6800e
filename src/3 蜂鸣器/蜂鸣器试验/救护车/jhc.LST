@@ -1,0 +1,66 @@
+A51 MACRO ASSEMBLER  JHC                                                                  11/10/2009 23:24:45 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN jhc.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE jhc.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+0000                   2             org     0000h
+0000 0130              3             ajmp    main
+0030                   4             org     0030h
+0030                   5     main:
+                       6     
+0030 7A08              7             MOV     R2,#08H
+0032 7BFA              8     DLV1:   MOV     R3,#0FAH
+0034 B295              9     DLV2:   CPL     P1.5
+0036 12004C           10             LCALL   DELAY1          ;延时
+0039 DBF9             11             DJNZ    R3,DLV2
+003B DAF5             12             DJNZ    R2,DLV1
+003D 7A10             13             MOV     R2,#10H         ;改变循环初值
+                      14     
+003F 7BFA             15     DLV3:   MOV     R3,#0FAH
+0041 B295             16     DLV4:   CPL     P1.5
+0043 120051           17             LCALL   DELAY2
+0046 DBF9             18             DJNZ    R3,DLV4
+0048 DAF5             19             DJNZ    R2,DLV3
+004A 0130             20             ajmp    main
+004C                  21     delay1:
+004C 7F00             22             mov     r7,#00h
+                      23     
+004E DFFE             24     LLA:    DJNZ    R7,LLA
+0050 22               25             ret
+                      26     
+0051                  27     delay2:
+0051 7F80             28             mov     r7,#128
+                      29     
+0053 DFFE             30     LLB:    DJNZ    R7,LLB
+0055 22               31             ret
+                      32                     
+                      33             end
+A51 MACRO ASSEMBLER  JHC                                                                  11/10/2009 23:24:45 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DELAY1 . . . . . .  C ADDR   004CH   A   
+DELAY2 . . . . . .  C ADDR   0051H   A   
+DLV1 . . . . . . .  C ADDR   0032H   A   
+DLV2 . . . . . . .  C ADDR   0034H   A   
+DLV3 . . . . . . .  C ADDR   003FH   A   
+DLV4 . . . . . . .  C ADDR   0041H   A   
+LLA. . . . . . . .  C ADDR   004EH   A   
+LLB. . . . . . . .  C ADDR   0053H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,470 @@
+; TemMain.SRC generated from: TemMain.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE TemMain.c BROWSE DEBUG OBJECTEXTEND
+
+$NOMOD51
+
+NAME	TEMMAIN
+
+LS138B	BIT	0A0H.3
+LS138C	BIT	0A0H.4
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+T2	BIT	090H.0
+EA	BIT	0A8H.7
+IE	DATA	0A8H
+EXF2	BIT	0C8H.6
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+RCAP2H	DATA	0CBH
+PS	BIT	0B8H.4
+SP	DATA	081H
+T2EX	BIT	090H.1
+OV	BIT	0D0H.2
+RCAP2L	DATA	0CAH
+C_T2	BIT	0C8H.1
+WR	BIT	0B0H.6
+RCLK	BIT	0C8H.5
+TCLK	BIT	0C8H.4
+SBUF	DATA	099H
+PCON	DATA	087H
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+CP_RL2	BIT	0C8H.0
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+ET2	BIT	0A8H.5
+TF1	BIT	088H.7
+TF2	BIT	0C8H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+TH2	DATA	0CDH
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+TL2	DATA	0CCH
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+PT2	BIT	0B8H.5
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+TR2	BIT	0C8H.2
+PX0	BIT	0B8H.0
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+DPL	DATA	082H
+EXEN2	BIT	0C8H.3
+REN	BIT	098H.4
+T2CON	DATA	0C8H
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+LS138A	BIT	0A0H.2
+?PR?system_Ini?TEMMAIN                   SEGMENT CODE 
+?PR?main?TEMMAIN     SEGMENT CODE 
+?DT?main?TEMMAIN     SEGMENT DATA OVERLAYABLE 
+?CO?TEMMAIN          SEGMENT CODE 
+?DT?TEMMAIN          SEGMENT DATA 
+	EXTRN	IDATA (Temperature)
+	EXTRN	CODE (_HC595SendData)
+	EXTRN	CODE (GetTemp)
+	EXTRN	CODE (?C_STARTUP)
+	EXTRN	CODE (?C?ULDIV)
+	EXTRN	CODE (?C?LLDIDATA)
+	EXTRN	CODE (?C?LSHL)
+	PUBLIC	LedNumVal
+	PUBLIC	HC595SendVal
+	PUBLIC	LedOut
+	PUBLIC	Disp_Tab
+	PUBLIC	main
+	PUBLIC	system_Ini
+
+	RSEG  ?DT?main?TEMMAIN
+?main?BYTE:
+          i?140:   DS   1
+
+	RSEG  ?DT?TEMMAIN
+         LedOut:   DS   20
+   HC595SendVal:   DS   4
+      LedNumVal:   DS   4
+
+	RSEG  ?CO?TEMMAIN
+Disp_Tab:
+	DB	0C0H
+	DB	0F9H
+	DB	0A4H
+	DB	0B0H
+	DB	099H
+	DB	092H
+	DB	082H
+	DB	0F8H
+	DB	080H
+	DB	090H
+	DB	088H
+	DB	083H
+	DB	0C6H
+	DB	0A1H
+	DB	086H
+	DB	0BFH
+	DB	0C7H
+	DB	08CH
+	DB	0C1H
+	DB	0FFH
+	DB	0F7H
+
+;  /*******************************************************************************
+; *  标题:                  试验数码管上显示温度                                  *
+; *																			    *
+; *********************************************************************************
+; *  1.通过本例程了解 DLASS18b20的基本原理和使用 ,理解并掌握18B20驱动程序的编写	*
+; *  2.了解掌握I2C总线接口的工作原理及一般编程方法。 								*
+; *    插上18B20 观察数码管的实际温度显示											*
+; *                         	       *											*
+; * 请学员认真消化本例程，懂DLASS18b20在C语言中的操作                       	    *
+; ********************************************************************************/
+
+; #include <reg52.H>
+; 
+; extern GetTemp();									   //声明引用外部函数
+; extern unsigned int  idata Temperature;	              // 声明引用外部变量
+; extern void HC595SendData(unsigned int SendVal);	  //声明引用外部函数
+; 
+; //else IO
+; sbit    LS138A=P2^2;       //管脚定义
+; sbit    LS138B=P2^3;
+; sbit    LS138C=P2^4; 
+; 
+; 
+; // 此表为 LED 的字模            // 0    1    2    3    4    5    6   7    8    9    A    b    c    d    E    -    L   P    U    Hidden  _ (20)
+; unsigned char code  Disp_Tab[] = { 0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0xbf,0xc7,0x8c,0xc1, 0xff,  0xf7 }; 
+; unsigned long HC595SendVal, LedOut[5],LedNumVal;
+; 
+; 
+; void system_Ini()
+
+	RSEG  ?PR?system_Ini?TEMMAIN
+system_Ini:
+			; SOURCE LINE # 29
+; {
+			; SOURCE LINE # 30
+;     TMOD|= 0x11;
+			; SOURCE LINE # 31
+	ORL  	TMOD,#011H
+;     TH1=0xDC; //11.0592M
+			; SOURCE LINE # 32
+	MOV  	TH1,#0DCH
+;     TL1=0x00;	
+			; SOURCE LINE # 33
+	CLR  	A
+	MOV  	TL1,A
+; 	IE = 0x8A;	
+			; SOURCE LINE # 34
+	MOV  	IE,#08AH
+;     TR1  = 1;
+			; SOURCE LINE # 35
+	SETB 	TR1
+; 
+; 
+; }
+			; SOURCE LINE # 38
+	RET  	
+; END OF system_Ini
+
+; 
+; main()
+
+	RSEG  ?PR?main?TEMMAIN
+main:
+	USING	0
+			; SOURCE LINE # 40
+; { unsigned char i; 
+			; SOURCE LINE # 41
+;   system_Ini();
+			; SOURCE LINE # 42
+	LCALL	system_Ini
+?C0002:
+;     while(1)
+			; SOURCE LINE # 43
+;    {	
+			; SOURCE LINE # 44
+; 	  GetTemp();
+			; SOURCE LINE # 45
+	LCALL	GetTemp
+; 
+;    	  /********以下将读18b20的数据送到LED数码管显示*************/
+;        LedNumVal=Temperature;   
+			; SOURCE LINE # 48
+	MOV  	R0,#LOW (Temperature)
+	MOV  	A,@R0
+	MOV  	R6,A
+	INC  	R0
+	MOV  	A,@R0
+	MOV  	R7,A
+	CLR  	A
+	MOV  	LedNumVal+03H,R7
+	MOV  	LedNumVal+02H,R6
+	MOV  	LedNumVal+01H,A
+	MOV  	LedNumVal,A
+; 	  LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+			; SOURCE LINE # 49
+	MOV  	R3,#010H
+	MOV  	R2,#027H
+	MOV  	R1,A
+	MOV  	R0,A
+	MOV  	R5,LedNumVal+01H
+	MOV  	R4,LedNumVal
+	LCALL	?C?ULDIV
+	MOV  	R4,AR0
+	MOV  	R5,AR1
+	MOV  	R6,AR2
+	MOV  	R7,AR3
+	CLR  	A
+	MOV  	R3,#0E8H
+	MOV  	R2,#03H
+	MOV  	R1,A
+	MOV  	R0,A
+	LCALL	?C?ULDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	LedOut+03H,R7
+	MOV  	LedOut+02H,A
+	MOV  	LedOut+01H,A
+	MOV  	LedOut,A
+;       LedOut[1]=Disp_Tab[LedNumVal%1000/100];
+			; SOURCE LINE # 50
+	MOV  	R3,#0E8H
+	MOV  	R2,#03H
+	MOV  	R1,A
+	MOV  	R0,A
+	MOV  	R7,LedNumVal+03H
+	MOV  	R6,LedNumVal+02H
+	MOV  	R5,LedNumVal+01H
+	MOV  	R4,LedNumVal
+	LCALL	?C?ULDIV
+	MOV  	R4,AR0
+	MOV  	R5,AR1
+	MOV  	R6,AR2
+	MOV  	R7,AR3
+	CLR  	A
+	MOV  	R3,#064H
+	MOV  	R2,A
+	MOV  	R1,A
+	MOV  	R0,A
+	LCALL	?C?ULDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	LedOut+07H,R7
+	MOV  	LedOut+06H,A
+	MOV  	LedOut+05H,A
+	MOV  	LedOut+04H,A
+;       LedOut[2]=Disp_Tab[LedNumVal%100/10];
+			; SOURCE LINE # 51
+	MOV  	R3,#064H
+	MOV  	R2,A
+	MOV  	R1,A
+	MOV  	R0,A
+	MOV  	R7,LedNumVal+03H
+	MOV  	R6,LedNumVal+02H
+	MOV  	R5,LedNumVal+01H
+	MOV  	R4,LedNumVal
+	LCALL	?C?ULDIV
+	MOV  	R4,AR0
+	MOV  	R5,AR1
+	MOV  	R6,AR2
+	MOV  	R7,AR3
+	CLR  	A
+	MOV  	R3,#0AH
+	MOV  	R2,A
+	MOV  	R1,A
+	MOV  	R0,A
+	LCALL	?C?ULDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R7
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R6
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	LedOut+0BH,R7
+	MOV  	LedOut+0AH,A
+	MOV  	LedOut+09H,A
+	MOV  	LedOut+08H,A
+;       LedOut[3]=Disp_Tab[LedNumVal%10]; 
+			; SOURCE LINE # 52
+	MOV  	R3,#0AH
+	MOV  	R2,A
+	MOV  	R1,A
+	MOV  	R0,A
+	MOV  	R7,LedNumVal+03H
+	MOV  	R6,LedNumVal+02H
+	MOV  	R5,LedNumVal+01H
+	MOV  	R4,LedNumVal
+	LCALL	?C?ULDIV
+	MOV  	A,#LOW (Disp_Tab)
+	ADD  	A,R3
+	MOV  	DPL,A
+	MOV  	A,#HIGH (Disp_Tab)
+	ADDC 	A,R2
+	MOV  	DPH,A
+	CLR  	A
+	MOVC 	A,@A+DPTR
+	MOV  	R7,A
+	CLR  	A
+	MOV  	LedOut+0FH,R7
+	MOV  	LedOut+0EH,A
+	MOV  	LedOut+0DH,A
+	MOV  	LedOut+0CH,A
+;   	  
+;     for(i=0; i<5; i++) 
+			; SOURCE LINE # 54
+	MOV  	i?140,A
+?C0004:
+; 	  {		
+			; SOURCE LINE # 55
+; 		
+; 	    HC595SendVal=  LedOut[i];
+			; SOURCE LINE # 57
+	MOV  	A,i?140
+	ADD  	A,ACC
+	ADD  	A,ACC
+	ADD  	A,#LOW (LedOut)
+	MOV  	R0,A
+	LCALL	?C?LLDIDATA
+	MOV  	HC595SendVal+03H,R7
+	MOV  	HC595SendVal+02H,R6
+	MOV  	HC595SendVal+01H,R5
+	MOV  	HC595SendVal,R4
+; 	    HC595SendVal<<=8;
+			; SOURCE LINE # 58
+	MOV  	R0,#08H
+	LCALL	?C?LSHL
+	MOV  	HC595SendVal+03H,R7
+	MOV  	HC595SendVal+02H,R6
+	MOV  	HC595SendVal+01H,R5
+	MOV  	HC595SendVal,R4
+; 	    HC595SendData(HC595SendVal);	
+			; SOURCE LINE # 59
+	LCALL	_HC595SendData
+; 	
+; 		switch(i)					  
+			; SOURCE LINE # 61
+	MOV  	A,i?140
+	DEC  	A
+	JZ   	?C0009
+	DEC  	A
+	JZ   	?C0010
+	DEC  	A
+	JZ   	?C0011
+	DEC  	A
+	JZ   	?C0012
+	ADD  	A,#04H
+	JNZ  	?C0006
+;          {	    
+			; SOURCE LINE # 62
+; 			case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+			; SOURCE LINE # 63
+?C0008:
+	CLR  	LS138A
+	SJMP 	?C0014
+;             case 1:LS138A=1; LS138B=0; LS138C=0; break;             	
+			; SOURCE LINE # 64
+?C0009:
+	SETB 	LS138A
+?C0014:
+	CLR  	LS138B
+	CLR  	LS138C
+	SJMP 	?C0006
+;             case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+			; SOURCE LINE # 65
+?C0010:
+	CLR  	LS138A
+	SJMP 	?C0015
+;             case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+			; SOURCE LINE # 66
+?C0011:
+	SETB 	LS138A
+?C0015:
+	SETB 	LS138B
+	CLR  	LS138C
+	SJMP 	?C0006
+; 			case 4:LS138A=0; LS138B=0; LS138C=1; break;
+			; SOURCE LINE # 67
+?C0012:
+	CLR  	LS138A
+	CLR  	LS138B
+	SETB 	LS138C
+;          }
+			; SOURCE LINE # 68
+; 		 
+; 	//	delay(3);
+; 	  }
+			; SOURCE LINE # 71
+?C0006:
+	INC  	i?140
+	MOV  	A,i?140
+	CLR  	C
+	SUBB 	A,#05H
+	JC   	?C0004
+?C0005:
+; 
+; 	    LS138A=1; LS138B=1; LS138C=1;    
+			; SOURCE LINE # 73
+	SETB 	LS138A
+	SETB 	LS138B
+	SETB 	LS138C
+; 
+; 
+;     }
+			; SOURCE LINE # 76
+	LJMP 	?C0002
+; END OF main
+
+	END

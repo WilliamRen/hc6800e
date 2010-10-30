@@ -1,0 +1,84 @@
+A51 MACRO ASSEMBLER  LED_NUM                                                              11/02/2009 21:30:30 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN LED_Num.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE LED_Num.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;*******************************************************************************
+                       2     ;*  标题:                  试验数码管静态显示数字                              *
+                       3     ;*                                                                                         
+                                                                                             *
+                       4     ;*  连接方法：JP10 （P0）与JP3 用8PIN排线连接                                  *
+                       5     ;********************************************************************************
+                       6     ;*                                                                                         
+                                                         *
+                       7     ;* 请学员认真消化本例程，用单片机脚直接控制数码管                              *
+                       8     ;********************************************************************************/      
+0000                   9             ORG 0000H
+0000 020030           10             LJMP INTI
+0030                  11             ORG 030H
+0030 752000           12     INTI:   MOV 20H,#00H
+0033 E520             13                 MOV A,20H
+                      14     
+0035                  15     MAIN:   
+0035 540F             16             ANL A,#0FH          ;屏蔽累加器的高4位
+0037 900100           17             MOV DPTR,#TAB   ;将数据表格的首地址 0100H存入16位的数据地址指针DPTR中
+003A 93               18             MOVC A,@A+DPTR  ;查表
+003B F580             19             MOV P0,A            
+003D 1147             20             ACALL DEL           ;调用延时子程序
+003F E520             21             MOV A,20H               ;将20H单元的数据传送给累加器
+0041 04               22             INC A                   ;累加器+1
+0042 D4               23             DA A                    ;二-十进制调整
+0043 F520             24             MOV 20H, A               
+0045 0135             25             AJMP MAIN
+                      26     
+                      27     ;--------------------------------------------------------------
+                      28     ;延时子程序
+                      29     ;--------------------------------------------------------------
+0047 7F10             30     DEL:    MOV R7,#010H
+0049 7EFF             31     DEL1:   MOV R6,#0FFH
+004B 7D1F             32     DEL2:   MOV R5,#01FH
+004D DDFE             33     DEL3:   DJNZ R5,DEL3
+004F DEFA             34             DJNZ R6,DEL2
+0051 DFF6             35             DJNZ R7,DEL1
+0053 22               36             RET
+                      37     
+                      38     
+0100                  39             ORG 0100H
+0100 C0F9A4B0         40     TAB:    DB 0C0H,0F9H,0A4H,0B0H,99H,92H,82H,0F8H         ;LED字模表
+0104 999282F8                
+0108 80908883         41             DB 80H,90H,88H,83H,0C6H,0A1H,86H,08EH
+010C C6A1868E                
+                      42             END
+                             
+                             ;/此表为 LED 的字模            
+                             ; 0    1    2    3    4    5    6   7    8    9    A    b    c    d    E    -    L   P    U
+                                 Hidden  _ (20)
+                             ;{ 0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0xbf,0xc7,0x8
+                             c,0xc1, 0xff,  0xf7 }; 
+                             
+A51 MACRO ASSEMBLER  LED_NUM                                                              11/02/2009 21:30:30 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+DEL. . . . . . . .  C ADDR   0047H   A   
+DEL1 . . . . . . .  C ADDR   0049H   A   
+DEL2 . . . . . . .  C ADDR   004BH   A   
+DEL3 . . . . . . .  C ADDR   004DH   A   
+INTI . . . . . . .  C ADDR   0030H   A   
+MAIN . . . . . . .  C ADDR   0035H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+TAB. . . . . . . .  C ADDR   0100H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

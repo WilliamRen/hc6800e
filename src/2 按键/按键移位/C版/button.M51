@@ -1,0 +1,175 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        03/15/2010  15:49:51  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, yiwei.obj TO button RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  yiwei.obj (YIWEI)
+
+
+LINK MAP OF MODULE:  button (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0002H     UNIT         _DATA_GROUP_
+            IDATA   000AH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     002BH     UNIT         ?PR?MAIN?YIWEI
+            CODE    002EH     0024H     UNIT         ?PR?_PROC_KEY?YIWEI
+            CODE    0052H     0012H     UNIT         ?PR?_DELAYMS?YIWEI
+            CODE    0064H     000EH     UNIT         ?PR?SCAN_KEY?YIWEI
+            CODE    0072H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   button (?C_STARTUP)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?YIWEI
+
+?PR?MAIN?YIWEI                 0008H    0002H
+  +--> ?PR?SCAN_KEY?YIWEI
+  +--> ?PR?_DELAYMS?YIWEI
+  +--> ?PR?_PROC_KEY?YIWEI
+
+
+
+SYMBOL TABLE OF MODULE:  button (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0072H         SEGMENT       ?C_C51STARTUP
+  I:000AH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/15/2010  15:49:51  PAGE 2
+
+
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0075H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0072H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:0072H         LINE#         99
+  C:0074H         LINE#         100
+  C:0075H         LINE#         101
+  C:0076H         LINE#         102
+  C:0078H         LINE#         151
+  C:007BH         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        YIWEI
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:00A0H         PUBLIC        P2
+  C:0003H         PUBLIC        main
+  C:002EH         PUBLIC        _proc_key
+  C:0064H         PUBLIC        scan_key
+  C:0052H         PUBLIC        _delayms
+  B:0080H.0       PUBLIC        K1
+  B:0080H.1       PUBLIC        K2
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        key_s
+  D:0009H         SYMBOL        key_v
+  -------         ENDDO         
+  C:0003H         LINE#         17
+  C:0003H         LINE#         18
+  C:0003H         LINE#         20
+  C:0006H         LINE#         21
+  C:0009H         LINE#         22
+  C:0009H         LINE#         23
+  C:0009H         LINE#         24
+  C:000EH         LINE#         25
+  C:0014H         LINE#         26
+  C:0014H         LINE#         27
+  C:0019H         LINE#         28
+  C:001EH         LINE#         29
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/15/2010  15:49:51  PAGE 3
+
+
+  C:0024H         LINE#         30
+  C:0024H         LINE#         31
+  C:0027H         LINE#         32
+  C:002CH         LINE#         33
+  C:002CH         LINE#         34
+  C:002CH         LINE#         35
+  -------         ENDPROC       MAIN
+  -------         PROC          SCAN_KEY
+  -------         DO            
+  D:0007H         SYMBOL        key_s
+  -------         ENDDO         
+  C:0064H         LINE#         37
+  C:0064H         LINE#         38
+  C:0064H         LINE#         40
+  C:0065H         LINE#         41
+  C:0068H         LINE#         42
+  C:006BH         LINE#         43
+  C:0071H         LINE#         44
+  C:0071H         LINE#         45
+  -------         ENDPROC       SCAN_KEY
+  -------         PROC          _PROC_KEY
+  D:0007H         SYMBOL        key_v
+  C:002EH         LINE#         46
+  C:002EH         LINE#         47
+  C:002EH         LINE#         48
+  C:0032H         LINE#         49
+  C:0032H         LINE#         50
+  C:003FH         LINE#         51
+  C:0040H         LINE#         52
+  C:0044H         LINE#         53
+  C:0044H         LINE#         54
+  C:0051H         LINE#         55
+  C:0051H         LINE#         56
+  -------         ENDPROC       _PROC_KEY
+  -------         PROC          _DELAYMS
+  D:0007H         SYMBOL        ms
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0052H         LINE#         57
+  C:0052H         LINE#         58
+  C:0052H         LINE#         60
+  C:0058H         LINE#         61
+  C:0058H         LINE#         62
+  C:0063H         LINE#         63
+  C:0063H         LINE#         64
+  -------         ENDPROC       _DELAYMS
+  -------         ENDMOD        YIWEI
+
+Program Size: data=11.0 xdata=0 code=126
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

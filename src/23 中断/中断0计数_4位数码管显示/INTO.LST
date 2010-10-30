@@ -1,0 +1,124 @@
+C51 COMPILER V7.10   INTO                                                                  08/24/2010 16:43:24 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE INTO
+OBJECT MODULE PLACED IN INTO.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE INTO.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *  标题:                  试验4位数码管上显示外部中断计数                      *
+   3          *                                                                                                                                                          *
+   4          *  连接方法：P0与J12  P3与JP5  用8PIN排线连接      P3.2外部中断输入            *
+   5                       JP15和JP16用8个短路冒连上                                                 *
+   6          ********************************************************************************
+   7          *                                                                                                                      *
+   8          * 请学员认真消化本例程，用单片机通过译码器控制数码管和外部中断使用             *
+   9          ********************************************************************************/
+  10          
+  11          #include < reg51.h >
+  12          #include <intrins.h>
+  13          
+  14          sbit LS138A=P2^2;  
+  15          sbit LS138B=P2^3;
+  16          sbit LS138C=P2^4; 
+  17          
+  18          
+  19          unsigned int LedNumVal = 0 ,LedOut[8];
+  20          
+  21          // 此表为 LED 的字模            // 0    1    2    3    4    5    6   7    8    9    A    b    c    d    E 
+             -   -    L   P    U    Hidden  _ (20)
+  22          unsigned char code Disp_Tab[] = { ~0xC0,~0xF9,~0xA4,~0xB0,~0x99,~0x92,~0x82,~0xF8,~0x80,~0x90,~0x88,~0x83,
+             -~0xC6,~0xA1,~0x86,~0xbf,~0xc7,~0x8c,~0xc1, ~0xff,  ~0xf7 }; 
+  23          
+  24          
+  25          
+  26          void delay(unsigned int i)
+  27          {
+  28   1          char j;
+  29   1          for(i; i > 0; i--)
+  30   1              for(j = 200; j > 0; j--);
+  31   1      }
+  32          
+  33          
+  34          display()
+  35          {  unsigned char i;
+  36   1      
+  37   1           LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+  38   1           LedOut[1]=Disp_Tab[LedNumVal%1000/100]&0x7f;
+  39   1           LedOut[2]=Disp_Tab[LedNumVal%100/10];
+  40   1           LedOut[3]=Disp_Tab[LedNumVal%10];
+  41   1      
+  42   1      
+  43   1               for( i=0; i<8; i++) 
+  44   1               {       P0 = LedOut[i];
+  45   2                              
+  46   2                switch(i)                                       
+  47   2                   {      
+  48   3                              case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+  49   3                      case 1:LS138A=1; LS138B=0; LS138C=0; break;                     
+  50   3                      case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+  51   3                      case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+  52   3                              case 4:LS138A=0; LS138B=0; LS138C=1; break;
+  53   3                              case 5:LS138A=1; LS138B=0; LS138C=1; break;
+C51 COMPILER V7.10   INTO                                                                  08/24/2010 16:43:24 PAGE 2   
+
+  54   3                              case 6:LS138A=0; LS138B=1; LS138C=1; break;
+  55   3                              case 7:LS138A=1; LS138B=1; LS138C=1; break;
+  56   3                              
+  57   3                   }
+  58   2      
+  59   2                      delay(150);
+  60   2               }
+  61   1       }
+  62          
+  63          
+  64          
+  65          /********************************************************
+  66          * 主程序                                               *
+  67          ********************************************************/
+  68          void main(void)
+  69          {  
+  70   1         P0=0xff;
+  71   1         P1=0xff;
+  72   1         P2=0xff;   
+  73   1         
+  74   1      // IT0=0;       //低电平触发
+  75   1         IT0=1;       //下降沿触发
+  76   1         EA=1;
+  77   1         EX0=1;
+  78   1      
+  79   1         while(1)
+  80   1         {    
+  81   2           display();
+  82   2         }
+  83   1      }
+  84          /********************************************************
+  85          * INT0中断函数                                          *
+  86          ********************************************************/
+  87          void  counter(void) interrupt 0 
+  88          {
+  89   1      //   unsigned char  x;
+  90   1         EX0=0;
+  91   1         LedNumVal++;     //中断计数  
+  92   1         EX0=1;
+  93   1      }
+  94          /********************************************************/
+  95          
+  96          
+  97          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    329    ----
+   CONSTANT SIZE    =     21    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     18    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

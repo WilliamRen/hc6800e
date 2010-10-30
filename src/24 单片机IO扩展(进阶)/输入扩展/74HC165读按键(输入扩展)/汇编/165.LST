@@ -1,0 +1,190 @@
+A51 MACRO ASSEMBLER  165                                                                  11/15/2009 22:45:11 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN 165.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE 165.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;/******************************************************************************
+                       2     ;*  标题:  学习板的按钮输入　控制对应的继电器输出和LED灯                       *
+                       3     ;*                                                                                         
+                                                                                     *
+                       4     ;* 连接方法：用8PIN排线将JP5与JP6连接 和 JP11（P2）与JP1（LED灯）连接              *
+                       5     ;*                                                                                         
+                                                                                             *
+                       6     ;* 1. 通过本例程了解74HC165（并入串出） 的基本原理和使用                                   
+                                     *
+                       7     ;* 2.了解掌握SPI总线接口的工作原理及一般编程方法。                                         
+                                     *
+                       8     ;* 3. 懂的74HC165在汇编语言中是如何操作                                            *
+                       9     ;*                                                                                         
+                                                     *
+                      10     ;*******************************************************************************/
+                      11      ;================================================
+                      12     
+  0097                13          IN_Dat    EQU  P1.7   ;数据输出  数据通过P1.7脚移进单片机内处理
+  0096                14          IN_PL     EQU  P1.6   ;锁存器控制脉冲      74HC165  shift load    把数据加载到锁存器中
+  00B6                15          CLK       EQU  P3.6   ;移位时钟脉冲
+                      16     
+  0094                17              Relay     EQU  P1.4
+  0095                18              Beep      EQU  P1.5
+                      19          
+                      20     ;================================================
+0000                  21             ORG  0000H
+0000 020030           22             LJMP   MAIN
+0030                  23             ORG  0030H
+                      24     ;================================================
+0030                  25      MAIN:
+0030 1189             26                     CALL IN_165     ;    调用165子程序
+                      27     
+0032 75A0FF           28                     MOV P2,#0FFH 
+0035 D294             29                 SETB Relay
+                      30     
+0037 FB               31                     MOV R3 , A          ;累加器中值暂存R3
+                      32     
+0038 5401             33                     ANL A , #01H
+003A B40104           34                     CJNE A , #01H , K2
+003D C294             35                     CLR Relay           ;打开继电器
+003F C2A7             36                     CLR P2.7            ;打开LED灯
+0041                  37     K2:
+0041 EB               38                     MOV  A ,R3 
+0042 5402             39                 ANL A , #02H    ;屏蔽第二位
+0044 B40204           40                 CJNE A , #02H , K3
+0047 C2A6             41                     CLR P2.6
+0049 11A8             42                     CALL BEEP_B         ;调用蜂鸣器发声
+                      43     
+004B EB               44     K3:         MOV  A ,R3 
+004C 5404             45                 ANL A , #04H    ;屏蔽第三位
+004E B40404           46                 CJNE A , #04H , K4   ;相等则顺序执行
+0051 C2A5             47                     CLR P2.5
+0053 11A8             48                     CALL BEEP_B         ;调用蜂鸣器发声
+                      49                                        
+0055 EB               50     K4:         MOV  A ,R3 
+0056 5408             51                 ANL A , #08H    ;屏蔽第四位
+0058 B40804           52                 CJNE A , #08H , K5
+005B C2A4             53                     CLR P2.4
+A51 MACRO ASSEMBLER  165                                                                  11/15/2009 22:45:11 PAGE     2
+
+005D 11A8             54                     CALL BEEP_B         ;调用蜂鸣器发声
+                      55     
+005F EB               56     K5:     MOV  A ,R3 
+0060 5410             57                 ANL A , #10H
+0062 B41004           58                 CJNE A , #10H , K6
+0065 C2A3             59                     CLR P2.3
+0067 11A8             60                     CALL BEEP_B
+                      61     
+0069 EB               62     K6:         MOV  A ,R3 
+006A 5420             63                 ANL A , #20H
+006C B42004           64                 CJNE A , #20H , K7  ;相等则顺序执行
+006F C2A2             65                     CLR P2.2
+0071 11A8             66                     CALL BEEP_B
+                      67     
+0073 EB               68     K7:     MOV  A ,R3 
+0074 5440             69                 ANL A , #40H
+0076 B44004           70                 CJNE A , #40H , K8
+0079 C2A1             71                     CLR P2.1
+007B 11A8             72                     CALL BEEP_B
+                      73     
+007D EB               74     K8:         MOV  A ,R3 
+007E 5480             75                 ANL A , #80H
+0080 B48004           76                 CJNE A , #80H , LABLE1
+0083 C2A0             77                     CLR P2.0
+0085 11A8             78                     CALL BEEP_B             
+                      79                                                         
+0087                  80     LABLE1:       
+0087 80A7             81             JMP  MAIN
+                      82             
+                      83                 
+                      84     ;---------------------------------------------------------------
+                      85     ;输入锁存器子程序165  (SPI驱动程序)
+                      86     ;---------------------------------------------------------------
+0089                  87     IN_165:
+                      88            
+0089 C296             89             CLR  IN_PL
+008B 00               90             NOP                              ;用NOP指令产生方波
+008C 00               91             NOP
+008D D296             92             SETB IN_PL       ;下降沿将数据送到输出锁存器
+008F 00               93                     NOP
+0090 120095           94                     LCALL R_165
+0093 F4               95                     CPL A
+0094 22               96                 RET
+                      97     ;--------------------------------------------------------------
+                      98     ;移位寄存器移出数据子程序
+                      99     ;--------------------------------------------------------------
+0095                 100      R_165:         
+0095 7C08            101             MOV R4,#08H      ;总共移8次   
+0097 7400            102             MOV A,#00H
+0099                 103      R_LOOP:        
+0099 23              104             RL  A                    ;左移
+009A 309702          105                     JNB IN_Dat ,Lab 
+009D 2401            106                     ADD A , #01H
+                     107                                 
+009F D2B6            108     Lab:    SETB CLK         ;下降沿发生移位
+00A1 00              109                 NOP
+00A2 00              110             NOP
+00A3 C2B6            111             CLR CLK
+00A5 DCF2            112             DJNZ R4,R_LOOP
+00A7 22              113             RET
+                     114     
+                     115     
+                     116     ;--------------------------------------------------------
+                     117     ;蜂鸣器(让蜂鸣器发出动听声音)
+                     118     ;--------------------------------------------------------
+00A8                 119     BEEP_B:
+A51 MACRO ASSEMBLER  165                                                                  11/15/2009 22:45:11 PAGE     3
+
+00A8 7E02            120              MOV  R6,#2
+00AA 11B1            121       BL1:   CALL  DEX1
+00AC B295            122              CPL   Beep
+00AE DEFA            123              DJNZ  R6,BL1
+00B0 22              124              RET
+                     125     
+00B1 7FFF            126      DEX1:   MOV  R7,#255
+00B3 00              127      DEX2:   NOP
+00B4 DFFD            128              DJNZ  R7,DEX2
+00B6 22              129              RET
+                     130     
+                     131     ;-----------------------------------------------------
+                     132     
+                     133     END
+A51 MACRO ASSEMBLER  165                                                                  11/15/2009 22:45:11 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+BEEP . . . . . . .  B ADDR   0090H.5 A   
+BEEP_B . . . . . .  C ADDR   00A8H   A   
+BL1. . . . . . . .  C ADDR   00AAH   A   
+CLK. . . . . . . .  B ADDR   00B0H.6 A   
+DEX1 . . . . . . .  C ADDR   00B1H   A   
+DEX2 . . . . . . .  C ADDR   00B3H   A   
+IN_165 . . . . . .  C ADDR   0089H   A   
+IN_DAT . . . . . .  B ADDR   0090H.7 A   
+IN_PL. . . . . . .  B ADDR   0090H.6 A   
+K2 . . . . . . . .  C ADDR   0041H   A   
+K3 . . . . . . . .  C ADDR   004BH   A   
+K4 . . . . . . . .  C ADDR   0055H   A   
+K5 . . . . . . . .  C ADDR   005FH   A   
+K6 . . . . . . . .  C ADDR   0069H   A   
+K7 . . . . . . . .  C ADDR   0073H   A   
+K8 . . . . . . . .  C ADDR   007DH   A   
+LAB. . . . . . . .  C ADDR   009FH   A   
+LABLE1 . . . . . .  C ADDR   0087H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+RELAY. . . . . . .  B ADDR   0090H.4 A   
+R_165. . . . . . .  C ADDR   0095H   A   
+R_LOOP . . . . . .  C ADDR   0099H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

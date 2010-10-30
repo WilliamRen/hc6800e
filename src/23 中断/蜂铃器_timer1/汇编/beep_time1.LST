@@ -1,0 +1,72 @@
+A51 MACRO ASSEMBLER  BEEP_TIME1                                                           11/05/2009 16:18:00 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN beep_time1.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE beep_time1.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;/*******************************************************************************
+                       2     ;*  标题:                  试验定时中断1使 蜂铃器发声(汇编语言)                 *
+                       3     ;*                                                                                         
+                                                                                              *
+                       4     ;*  连接方法：P1.5       蜂铃器                                                 *
+                       5     ;********************************************************************************
+                       6     ;*                                                                                         
+                                                          *
+                       7     ;* 请学员认真消化本例程，熟练定时中断1的编程                                    *
+                       8     ;********************************************************************************/ 
+                       9     
+                      10      
+0000                  11      ORG   0000H
+0000 020030           12      LJMP  MAIN
+001B                  13      ORG   001BH
+001B 020200           14      LJMP  INSER
+0030                  15      ORG   0030H
+                      16     
+0030 758910           17      MAIN: MOV TMOD ,  #10H
+0033 758D4C           18            MOV TH1  ,  #04CH   ;装入定时器初值
+0036 758B00           19                MOV TL1  ,  #000H
+0039 D2AF             20                SETB EA                      ;打开总中断
+003B D2AB             21                SETB ET1                     ;允许定时器/计数器1 中断
+003D D28E             22                SETB TR1                     ;开启定时器/计数器1 中断
+003F 80FE             23     HERE:  SJMP  HERE                ;原地踏步
+                      24     
+0200                  25            ORG  0200H
+0200 758D4C           26     INSER: MOV TH1  ,  #04CH
+0203 758B00           27                MOV TL1  ,  #000H
+0206 04               28                INC A
+0207 B41404           29                CJNE A , #20 , LOOP  ;每隔一秒发声
+020A B295             30                CPL P1.5
+020C 7400             31                MOV  A , #00H
+020E 32               32     LOOP:  RETI
+                      33                END  
+                             
+                             
+                             
+A51 MACRO ASSEMBLER  BEEP_TIME1                                                           11/05/2009 16:18:00 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET1. . . . . . . .  B ADDR   00A8H.3 A   
+HERE . . . . . . .  C ADDR   003FH   A   
+INSER. . . . . . .  C ADDR   0200H   A   
+LOOP . . . . . . .  C ADDR   020EH   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+TH1. . . . . . . .  D ADDR   008DH   A   
+TL1. . . . . . . .  D ADDR   008BH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR1. . . . . . . .  B ADDR   0088H.6 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

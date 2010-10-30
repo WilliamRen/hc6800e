@@ -1,0 +1,107 @@
+C51 COMPILER V7.10   LED2                                                                  05/19/2010 17:12:10 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LED2
+OBJECT MODULE PLACED IN led2.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led2.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *  标题:                  试验数码管上显示数字( 单片机直接实现位选 共阴极)     *
+   3          *                                                                                                                                                          *
+   4          *  连接方法：P0与J12 用8PIN排线连接      P1与JP16 用排线连接  
+   5          ********************************************************************************
+   6          *                                                                                                                      *
+   7          * 请学员认真消化本例程，用573锁存器控制和单片机脚直接位选控制数码管            *
+   8          ********************************************************************************/
+   9          
+  10          
+  11          #include <reg51.h> 
+  12          #include <intrins.h>
+  13          
+  14          void delay(unsigned int i);      //函数声名
+  15          
+  16          char DelayCNT;
+  17           
+  18          //此表为 LED 的字模, 共阴数码管 0-9  - 
+  19          unsigned char code   Disp_Tab[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40}; 
+  20          unsigned char code   dispbit[8]={0xfe,0xfd,0xfb,0xf7,0xef,0xdF,0xbF,0x7F};    //位码   查表的方法控制
+  21          
+  22          /************主函数**********************/ 
+  23          main()
+  24          {  
+  25   1         unsigned int i,LedNumVal=1 ;
+  26   1         unsigned int LedOut[10];
+  27   1         
+  28   1         DelayCNT=0;
+  29   1      
+  30   1        while(1)
+  31   1        {      
+  32   2           if(++DelayCNT>=20)   //控制数字变化速度
+  33   2               {
+  34   3                      DelayCNT=0;               //20个扫描周期清零一次
+  35   3                  ++LedNumVal;          //每隔20个扫描周期加一次
+  36   3               }
+  37   2      
+  38   2               LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+  39   2           LedOut[1]=Disp_Tab[LedNumVal%1000/100]|0x80;
+  40   2           LedOut[2]=Disp_Tab[LedNumVal%100/10];
+  41   2           LedOut[3]=Disp_Tab[LedNumVal%10];
+  42   2               
+  43   2               LedOut[4]=Disp_Tab[LedNumVal%10000/1000];         //千位
+  44   2           LedOut[5]=Disp_Tab[LedNumVal%1000/100]|0x80;  //百位带小数点
+  45   2           LedOut[6]=Disp_Tab[LedNumVal%100/10];                 //十位
+  46   2           LedOut[7]=Disp_Tab[LedNumVal%10];             //个位        
+  47   2      
+  48   2         
+  49   2              
+  50   2               for( i=0; i<9; i++) 
+  51   2               {       
+  52   3                P0 = LedOut[i];
+  53   3                P1 = dispbit[i];   //使用查表法进行位选 
+  54   3                                      
+  55   3      /*        switch(i)                        //使用switch 语句控制位选      
+C51 COMPILER V7.10   LED2                                                                  05/19/2010 17:12:10 PAGE 2   
+
+  56   3                   {      
+  57   3                              case 0:P1 = 0x7F;  break;         
+  58   3                      case 1:P1 = 0xbF;  break;               
+  59   3                      case 2:P1 = 0xdF;  break; 
+  60   3                      case 3:P1 = 0xeF;  break; 
+  61   3                              case 4:P1 = 0xf7;  break;
+  62   3                              case 5:P1 = 0xfb;  break;
+  63   3                              case 6:P1 = 0xfd;  break;
+  64   3                              case 7:P1 = 0xfe;  break;
+  65   3                        
+  66   3                   }     */
+  67   3                       
+  68   3                      delay(150);              //扫描间隔时间   太长会数码管会有闪烁感
+  69   3                }
+  70   2               
+  71   2        }   
+  72   1      }       
+  73          
+  74          
+  75          void delay(unsigned int i)
+  76          {
+  77   1          char j;
+  78   1          for(i; i > 0; i--)
+  79   1              for(j = 200; j > 0; j--);
+  80   1      }
+  81          
+  82          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    385    ----
+   CONSTANT SIZE    =     19    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

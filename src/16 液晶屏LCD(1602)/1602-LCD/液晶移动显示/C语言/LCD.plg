@@ -1,0 +1,16 @@
+<html>
+<body>
+<pre>
+<h1>µVision3 Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\Administrator\×ÀÃæ\HC_6000Àý×Ó\Òº¾§ÆÁLCD\Òº¾§ÒÆ¶¯ÏÔÊ¾\CÓïÑÔ\LCD.uv2
+Project File Date:  03/24/2009
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling ydLCD.c...
+linking...
+Program Size: data=9.1 xdata=0 code=360
+creating hex file from "LCD"...
+"LCD" - 0 Error(s), 0 Warning(s).

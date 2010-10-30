@@ -1,0 +1,65 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        11/05/2009  16:18:00  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE beep_time1.obj TO beep_time1 RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  beep_time1.obj (BEEP_TIME1)
+
+
+LINK MAP OF MODULE:  beep_time1 (BEEP_TIME1)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     020FH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  beep_time1 (BEEP_TIME1)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        BEEP_TIME1
+  B:00A8H.7       SYMBOL        EA
+  B:00A8H.3       SYMBOL        ET1
+  C:003FH         SYMBOL        HERE
+  C:0200H         SYMBOL        INSER
+  C:020EH         SYMBOL        LOOP
+  C:0030H         SYMBOL        MAIN
+  D:0090H         SYMBOL        P1
+  D:008DH         SYMBOL        TH1
+  D:008BH         SYMBOL        TL1
+  D:0089H         SYMBOL        TMOD
+  B:0088H.6       SYMBOL        TR1
+  C:0000H         LINE#         12
+  C:001BH         LINE#         14
+  C:0030H         LINE#         17
+  C:0033H         LINE#         18
+  C:0036H         LINE#         19
+  C:0039H         LINE#         20
+  C:003BH         LINE#         21
+  C:003DH         LINE#         22
+  C:003FH         LINE#         23
+  C:0200H         LINE#         26
+  C:0203H         LINE#         27
+  C:0206H         LINE#         28
+  C:0207H         LINE#         29
+  C:020AH         LINE#         30
+  C:020CH         LINE#         31
+  C:020EH         LINE#         32
+  -------         ENDMOD        BEEP_TIME1
+
+Program Size: data=8.0 xdata=0 code=527
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/05/2009  16:18:00  PAGE 2
+
+
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

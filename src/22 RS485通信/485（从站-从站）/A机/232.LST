@@ -1,0 +1,84 @@
+C51 COMPILER V7.10   232                                                                   07/25/2010 15:53:37 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 232
+OBJECT MODULE PLACED IN 232.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 232.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           /*******************************************************************************************
+   2          *  标题:                  RS485通信试验(接收与发送)                                         *
+   3          *                                                                                                                                                                       *
+   4          *  1.通过本例程了解串口的基本原理及使用 ,理解并掌握对串口进行初始化                                     *
+   5          *                                                                                                                                                                           *
+   6          *  2.Baud 19200、数据位8、停止位1、效验位无 两台485设备  a机发 b机收                                    *
+   7          *                                                                                                                                                                           *
+   8          *  说明：                                                                                                                                                           *
+   9          *    使用两个带有485功能硬件设备(例如：两个带485的开发箱等) 每个设备都有信号端A和B,通过导线     *
+  10          *        分别连接两台设备 A 连 A  B 连 B                                                                                                                *
+  11          *  现象：按A机的独立按钮 在B机的LED等显示其状态 对应位的LED灯亮                                                     *
+  12          *                                                                                           *
+  13          * 请学员认真消化本例程，学会用C语言操作串口和485的实现简单收发功能                          *
+  14          *********************************************************************************************/
+  15          
+  16          #include <REG52.H>
+  17          #include <stdio.h>
+  18          
+  19          sbit RS485E=P3^7;   //定义485的使能脚
+  20          
+  21          /**************************************
+  22                      延时程序
+  23          **************************************/
+  24          void delay(unsigned char i)
+  25          {
+  26   1              unsigned char j;
+  27   1              for(i; i > 0; i--)
+  28   1                      for(j = 200; j > 0; j--);
+  29   1      }
+  30          
+  31          
+  32          void main (void) {
+  33   1      
+  34   1      
+  35   1              SCON = 0x50;      //REN=1允许串行接受状态，串口工作模式1                   
+  36   1                  TMOD|= 0x20;      //定时器工作方式2                    
+  37   1                      PCON|= 0x80;                                                          
+  38   1                      
+  39   1                      TH1  = 0xFD;     //baud*2  /* reload value 19200、数据位8、停止位1。效验位无          
+  40   1                      
+  41   1                      TR1  = 1;                                                             
+  42   1                      ES   = 1;        //开串口中断                  
+  43   1                      EA   = 1;        // 开总中断 
+  44   1              
+  45   1       
+  46   1              while(1)
+  47   1          { 
+  48   2              
+  49   2                if (P0 != 0XFF)    // max485(半双工通信) RE/DE定义 RE=0为接受状态  DE=1为发送状态(参考MAX485芯片管脚)
+  50   2                {   
+  51   3                    RS485E=1;           //                    RS5485E=0为接收状态  RS5485E=1为发送状态
+  52   3                    SBUF=P0;     //发送数据
+  53   3                        delay(40);
+  54   3             }
+  55   2      
+C51 COMPILER V7.10   232                                                                   07/25/2010 15:53:37 PAGE 2   
+
+  56   2       }
+  57   1       
+  58   1      }
+  59          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     49    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

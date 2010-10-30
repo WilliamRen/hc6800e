@@ -1,0 +1,149 @@
+C51 COMPILER V7.10   BUTTON                                                                03/14/2010 10:14:49 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE BUTTON
+OBJECT MODULE PLACED IN button.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE button.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************************
+   2          *  标题:  学习板的按钮输入　控制对应的继电器输出和LED灯                        *
+   3          *                                                                                                                                                          *
+   4          * 连接方法：用8PIN排线将JP5与JP6连接 和 JP11（P2）与JP1（LED灯）连接               *
+   5          *                                                                                                                                                          *
+   6          * 1. 通过本例程了解74HC165（并入串出） 的基本原理和使用                                            *
+   7          * 2.了解掌握SPI总线接口的工作原理及一般编程方法。                                                          *
+   8          * 3. 懂的74HC165在C语言中是如何操作                                                *
+   9          *                                                                                                                  *
+  10          ********************************************************************************/
+  11           #include <reg52.H>
+  12           #include <intrins.h> 
+  13          
+  14           #define  NOP() _nop_()     /* 定义空指令 */
+  15           #define  _Nop()  _nop_()   /*定义空指令*/
+  16          
+  17          //SPI 接口
+  18          sbit    CLK    = P3^6;
+  19          sbit    IN_PL  = P1^6;    //74HC165  shift load    把数据加载到锁存器中
+  20          sbit    IN_Dat = P1^7;    //74HC165  output        数据通过P1.7脚移进单片机内处理
+  21          
+  22          sbit    RELAY  = P1^4;
+  23          sbit    BEEP   = P1^5;
+  24          
+  25          unsigned char bdata Key;
+  26          unsigned int Output;
+  27          sbit    K0=Key^0;        //位定义
+  28          sbit    K1=Key^1;
+  29          sbit    K2=Key^2;
+  30          sbit    K3=Key^3;
+  31          sbit    K4=Key^4;
+  32          sbit    K5=Key^5;
+  33          sbit    K6=Key^6;
+  34          sbit    K7=Key^7;
+  35          
+  36          bit  M0 ,K0J;  //位定义
+  37           
+  38          unsigned long ReHC74165(void);   //函数声名 
+  39          void beep();    
+  40          
+  41          
+  42           /********************************************************
+  43           *      主函数                                                                                           *
+  44           *                                                                                                               *
+  45           ********************************************************/
+  46           main()
+  47            {       
+  48   1              //M0=M1=M2=M3=0;
+  49   1        while(1)
+  50   1        { 
+  51   2          unsigned long  Input=ReHC74165();
+  52   2               Key=Input&0xff;
+  53   2               RELAY = 1;
+  54   2           P2 = 0xff;
+  55   2      
+C51 COMPILER V7.10   BUTTON                                                                03/14/2010 10:14:49 PAGE 2   
+
+  56   2                //实现脉冲输入
+  57   2          if(K0&K0J)M0=~M0;      
+  58   2                 K0J=~K0;  
+  59   2        
+  60   2              if(M0) {RELAY = 0; P2 = 0x7f;   }       //实现脉冲输入
+  61   2              if(K1) {beep();    P2 = 0xbf;   }
+  62   2              if(K2) {beep();    P2 = 0xdf;   }
+  63   2          if(K3) {beep();    P2 = 0xef;   }
+  64   2              if(K4) {beep();    P2 = 0xf7;   }
+  65   2              if(K5) {beep();    P2 = 0xfb;   }
+  66   2              if(K6) {beep();    P2 = 0xfd;   }
+  67   2              if(K7) {beep();    P2 = 0xfe;   }
+  68   2        
+  69   2         }    
+  70   1         
+  71   1       }
+  72          
+  73          
+  74           /**********************************************************
+  75           *                                                                                                                 *
+  76           *      蜂鸣器 (让蜂鸣器发出动听声音)                                              *
+  77           ************************************************************/
+  78          void beep()
+  79          {
+  80   1        unsigned char i , j;
+  81   1        for (i=0;i<2;i++)
+  82   1         {
+  83   2        
+  84   2         for (j = 0; j<255; j++) {_nop_();}
+  85   2         BEEP=!BEEP;                 //BEEP取反
+  86   2         } 
+  87   1        BEEP=1;                      //关闭蜂鸣器
+  88   1      }
+  89           
+  90           /*************************此部分为74HC165的驱动程序使用SPI总线连接*************************************/
+  91          
+  92          
+  93          /*********************************************************************************************************
+  94          ** 函数名称:  74HC165
+  95          ** 功能描述: 
+  96          ** 管脚描述：请参考相关的芯片资料(学习光盘中以配)
+  97          *********************************************************************************************************/
+  98          unsigned long ReHC74165(void)
+  99          {  
+ 100   1        unsigned char i;
+ 101   1        unsigned long indata;
+ 102   1                      
+ 103   1         IN_PL=0;
+ 104   1         NOP();
+ 105   1         IN_PL=1;
+ 106   1         NOP(); 
+ 107   1                    
+ 108   1         indata=0;     
+ 109   1         for(i=0; i<8; i++)
+ 110   1          { 
+ 111   2                indata=indata<<1;
+ 112   2            if(IN_Dat==1)indata=indata+1;
+ 113   2                CLK=1;
+ 114   2            NOP();
+ 115   2            CLK=0;      
+ 116   2              } 
+ 117   1         
+C51 COMPILER V7.10   BUTTON                                                                03/14/2010 10:14:49 PAGE 3   
+
+ 118   1         return(~indata);      //
+ 119   1      }
+ 120          
+ 121          
+ 122          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    173    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

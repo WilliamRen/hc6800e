@@ -1,0 +1,273 @@
+; 2402.SRC generated from: 2402.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE 2402.c BROWSE DEBUG OBJECTEXTEND
+
+
+NAME	_2402
+
+?PR?_ISendStr?2402   SEGMENT CODE 
+?DT?_ISendStr?2402   SEGMENT DATA OVERLAYABLE 
+?PR?_IRcvStr?2402    SEGMENT CODE 
+?DT?_IRcvStr?2402    SEGMENT DATA OVERLAYABLE 
+	EXTRN	CODE (_SendByte)
+	EXTRN	BIT (ack)
+	EXTRN	CODE (RcvByte)
+	EXTRN	CODE (Ack_I2c)
+	EXTRN	BIT (?Ack_I2c?BIT)
+	EXTRN	CODE (Start_I2c)
+	EXTRN	CODE (Stop_I2c)
+	EXTRN	CODE (?C?CLDPTR)
+	EXTRN	CODE (?C?CSTPTR)
+	PUBLIC	?_IRcvStr?BYTE
+	PUBLIC	_IRcvStr
+	PUBLIC	?_ISendStr?BYTE
+	PUBLIC	_ISendStr
+
+	RSEG  ?DT?_IRcvStr?2402
+?_IRcvStr?BYTE:
+        sla?145:   DS   1
+       suba?146:   DS   1
+          s?147:   DS   3
+         no?148:   DS   1
+	ORG  6
+          i?149:   DS   1
+
+	RSEG  ?DT?_ISendStr?2402
+?_ISendStr?BYTE:
+        sla?040:   DS   1
+       suba?041:   DS   1
+          s?042:   DS   3
+         no?043:   DS   1
+	ORG  6
+          i?044:   DS   1
+;  
+;  /*************************此部分为AT2402的驱动程序使用I2C总线连接*************************************/
+
+; #include<Function.h>
+; 
+; //AT2402的功能函数
+; /*******************************************************************
+;                     向有子地址器件发送多字节数据函数               
+; 函数原型: bit  ISendStr(UCHAR sla,UCHAR suba,ucahr *s,UCHAR no);  
+; 功能:     从启动总线到发送地址，子地址,数据，结束总线的全过程,从器件
+;           地址sla，子地址suba，发送内容是s指向的内容，发送no个字节。
+;           如果返回1表示操作成功，否则操作有误。
+; 注意：    使用前必须已结束总线。
+; ********************************************************************/
+; bit ISendStr(unsigned char  sla,unsigned char  suba,unsigned char  *s,unsigned char  no)
+
+	RSEG  ?PR?_ISendStr?2402
+_ISendStr:
+	USING	0
+			; SOURCE LINE # 15
+	MOV  	sla?040,R7
+	MOV  	suba?041,R5
+	MOV  	s?042,R3
+	MOV  	s?042+01H,R2
+	MOV  	s?042+02H,R1
+; {
+			; SOURCE LINE # 16
+;    unsigned char i;
+; 
+;    Start_I2c();               /*启动总线*/
+			; SOURCE LINE # 19
+	LCALL	Start_I2c
+;    SendByte(sla);             /*发送器件地址*/
+			; SOURCE LINE # 20
+	MOV  	R7,sla?040
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 21
+	JB   	ack,?C0001
+	CLR  	C
+	RET  	
+?C0001:
+;    SendByte(suba);            /*发送器件子地址*/
+			; SOURCE LINE # 22
+	MOV  	R7,suba?041
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 23
+	JB   	ack,?C0003
+	CLR  	C
+	RET  	
+?C0003:
+; 
+;    for(i=0;i<no;i++)
+			; SOURCE LINE # 25
+	CLR  	A
+	MOV  	i?044,A
+?C0004:
+	MOV  	A,i?044
+	CLR  	C
+	SUBB 	A,no?043
+	JNC  	?C0005
+;    {   
+			; SOURCE LINE # 26
+;      SendByte(*s);            /*发送数据*/
+			; SOURCE LINE # 27
+	MOV  	R3,s?042
+	MOV  	R2,s?042+01H
+	MOV  	R1,s?042+02H
+	LCALL	?C?CLDPTR
+	MOV  	R7,A
+	LCALL	_SendByte
+;      if(ack==0)return(0);
+			; SOURCE LINE # 28
+	JB   	ack,?C0007
+	CLR  	C
+	RET  	
+?C0007:
+;      s++;
+			; SOURCE LINE # 29
+	MOV  	A,#01H
+	ADD  	A,s?042+02H
+	MOV  	s?042+02H,A
+	CLR  	A
+	ADDC 	A,s?042+01H
+	MOV  	s?042+01H,A
+;    } 
+			; SOURCE LINE # 30
+	INC  	i?044
+	SJMP 	?C0004
+?C0005:
+;    Stop_I2c();                /*结束总线*/ 
+			; SOURCE LINE # 31
+	LCALL	Stop_I2c
+; 
+;    return(1);
+			; SOURCE LINE # 33
+	SETB 	C
+; }
+			; SOURCE LINE # 34
+?C0002:
+	RET  	
+; END OF _ISendStr
+
+; 
+; /*******************************************************************
+;                     向有子地址器件读取多字节数据函数               
+; 函数原型: bit  RecndStr(UCHAR sla,UCHAR suba,ucahr *s,UCHAR no);  
+; 功能:     从启动总线到发送地址，子地址,读数据，结束总线的全过程,从器件
+;           地址sla，子地址suba，读出的内容放入s指向的存储区，读no个字节。
+;            如果返回1表示操作成功，否则操作有误。
+; 注意：    使用前必须已结束总线。
+; ********************************************************************/
+; bit IRcvStr(unsigned char  sla,unsigned char  suba,unsigned char  *s,unsigned char  no)
+
+	RSEG  ?PR?_IRcvStr?2402
+_IRcvStr:
+	USING	0
+			; SOURCE LINE # 44
+	MOV  	sla?145,R7
+	MOV  	suba?146,R5
+	MOV  	s?147,R3
+	MOV  	s?147+01H,R2
+	MOV  	s?147+02H,R1
+; {
+			; SOURCE LINE # 45
+;    unsigned char i;
+; 
+;    Start_I2c();                  /*启动总线*/
+			; SOURCE LINE # 48
+	LCALL	Start_I2c
+;    SendByte(sla);                /*发送器件地址*/
+			; SOURCE LINE # 49
+	MOV  	R7,sla?145
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 50
+	JB   	ack,?C0008
+	CLR  	C
+	RET  	
+?C0008:
+;    SendByte(suba);               /*发送器件子地址*/
+			; SOURCE LINE # 51
+	MOV  	R7,suba?146
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 52
+	JB   	ack,?C0010
+	CLR  	C
+	RET  	
+?C0010:
+; 
+;    Start_I2c();                 /*重新启动总线*/
+			; SOURCE LINE # 54
+	LCALL	Start_I2c
+;    SendByte(sla+1);
+			; SOURCE LINE # 55
+	MOV  	A,sla?145
+	INC  	A
+	MOV  	R7,A
+	LCALL	_SendByte
+;    if(ack==0)return(0);
+			; SOURCE LINE # 56
+	JB   	ack,?C0011
+	CLR  	C
+	RET  	
+?C0011:
+;    for(i=0;i<no-1;i++)
+			; SOURCE LINE # 57
+	CLR  	A
+	MOV  	i?149,A
+?C0012:
+	MOV  	A,no?148
+	DEC  	A
+	MOV  	R7,A
+	MOV  	A,i?149
+	CLR  	C
+	SUBB 	A,R7
+	JNC  	?C0013
+;    {   
+			; SOURCE LINE # 58
+;      *s=RcvByte();               /*发送数据*/
+			; SOURCE LINE # 59
+	LCALL	RcvByte
+	MOV  	R3,s?147
+	MOV  	R2,s?147+01H
+	MOV  	R1,s?147+02H
+	MOV  	A,R7
+	LCALL	?C?CSTPTR
+;       Ack_I2c(0);                /*发送就答位*/  
+			; SOURCE LINE # 60
+	CLR  	?Ack_I2c?BIT
+	LCALL	Ack_I2c
+;      s++;
+			; SOURCE LINE # 61
+	MOV  	A,#01H
+	ADD  	A,s?147+02H
+	MOV  	s?147+02H,A
+	CLR  	A
+	ADDC 	A,s?147+01H
+	MOV  	s?147+01H,A
+;    } 
+			; SOURCE LINE # 62
+	INC  	i?149
+	SJMP 	?C0012
+?C0013:
+;    *s=RcvByte();
+			; SOURCE LINE # 63
+	LCALL	RcvByte
+	MOV  	R3,s?147
+	MOV  	R2,s?147+01H
+	MOV  	R1,s?147+02H
+	MOV  	A,R7
+	LCALL	?C?CSTPTR
+;    Ack_I2c(1);                   /*发送非应位*/
+			; SOURCE LINE # 64
+	SETB 	?Ack_I2c?BIT
+	LCALL	Ack_I2c
+;    Stop_I2c();                   /*结束总线*/ 
+			; SOURCE LINE # 65
+	LCALL	Stop_I2c
+;    return(1);
+			; SOURCE LINE # 66
+	SETB 	C
+; }
+			; SOURCE LINE # 67
+?C0009:
+	RET  	
+; END OF _IRcvStr
+
+	END

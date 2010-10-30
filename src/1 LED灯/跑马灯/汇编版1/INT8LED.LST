@@ -1,0 +1,67 @@
+A51 MACRO ASSEMBLER  INT8LED                                                              03/23/2009 22:01:50 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN INT8LED.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE INT8LED.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;                       跑马灯试验                                                         
+                                                          *
+                       3     ;                                                                                          
+                                                                                                  *
+                       4     ;       开机8个灯循环点亮。                                                     *
+                       5     ;       硬件连接：p2口8路指示灯，                                                          
+                                                                  *
+                       6     ;********************************************************************************
+                       7     
+                       8      
+0000                   9             org 00h                         ;开始
+0000 8000             10             jmp init                       ;跳到主程序
+0002 75A881           11     init:  mov ie,#10000001b        ;中断使能
+0005 75B801           12             mov ip,#00000001b           ;中断优先
+0008 758800           13             mov tcon,#0000000b         ;中断为电平触发
+                      14     
+000B                  15     main:                                  ;主程序循环点亮
+000B 75A000           16             mov     p2,#00h                 ;全亮
+000E 12001B           17             lcall   delay           ;延时一段时间
+0011 74FE             18             mov     a,#0feh         ;每次只亮一个灯。
+0013 F5A0             19     loop:   mov     p2,a            ;输出到p1
+0015 12001B           20             lcall   delay           ;       延时
+0018 23               21             rl      a               ;循环左移。
+0019 0113             22             ajmp    loop            ; 跳转main继续循环
+                      23     
+001B 7D14             24     delay: mov r5,#20               ;延时子程序1闪烁灯调用
+001D 7E14             25             d1:mov r6,#20
+001F 7FFA             26             d2: mov r7,#250
+0021 DFFE             27             djnz r7,$
+0023 DEFA             28             djnz r6,d2
+0025 DDF6             29             djnz r5,d1
+0027 22               30             ret
+                      31             end
+A51 MACRO ASSEMBLER  INT8LED                                                              03/23/2009 22:01:50 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+D1 . . . . . . . .  C ADDR   001DH   A   
+D2 . . . . . . . .  C ADDR   001FH   A   
+DELAY. . . . . . .  C ADDR   001BH   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+INIT . . . . . . .  C ADDR   0002H   A   
+IP . . . . . . . .  D ADDR   00B8H   A   
+LOOP . . . . . . .  C ADDR   0013H   A   
+MAIN . . . . . . .  C ADDR   000BH   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+TCON . . . . . . .  D ADDR   0088H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

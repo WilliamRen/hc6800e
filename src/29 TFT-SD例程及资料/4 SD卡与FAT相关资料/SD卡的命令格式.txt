@@ -1,0 +1,72 @@
+1.SD卡的命令格式：
+
+SD卡的指令由6字节(Byte)组成，如下：
+
+Byte1：0 1 x x x x x x(命令号，由指令标志定义，如CMD39为100111即16进制0x27，那么完整的CMD39第一字节为01100111，即0x27+0x40)
+Byte2-5:Command Arguments,命令参数，有些命令没有参数
+Byte6:前7位为CRC(Cyclic Redundacy Check，循环冗余校验)校验位，最后一位为停止位0
+
+2.SD卡的命令
+
+
+SD卡命令共分为12类，分别为class0到class11，
+
+不同的SDd卡，主控根据其功能，支持不同的命令集 如下:
+
+Class0 :(卡的识别、初始化等基本命令集)
+
+ CMD0:复位SD 卡.
+
+ CMD1:读OCR寄存器.
+
+ CMD9:读CSD寄存器.
+
+ CMD10:读CID寄存器.
+
+ CMD12:停止读多块时的数据传输
+
+ CMD13:读 Card_Status 寄存器
+
+Class2 (读卡命令集):
+
+CMD16:设置块的长度
+
+CMD17:读单块.
+
+CMD18:读多块,直至主机发送CMD12为止 .
+
+ 
+
+Class4(写卡命令集) :
+
+CMD24:写单块.
+
+CMD25:写多块.
+
+CMD27:写CSD寄存器 .
+
+Class5 (擦除卡命令集):
+
+CMD32:设置擦除块的起始地址.
+
+CMD33:设置擦除块的终止地址.
+
+CMD38: 擦除所选择的块.
+
+Class6(写保护命令集):
+
+CMD28:设置写保护块的地址.
+
+CMD29:擦除写保护块的地址.
+
+CMD30: Ask the card for the status of the write protection bits
+
+ 
+
+class7：卡的锁定，解锁功能命令集  
+
+class8：申请特定命令集 。 
+
+class10 －11 ：保留
+
+其中　class1,    class3,class9：SPI模式不支持   

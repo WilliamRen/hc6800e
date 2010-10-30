@@ -1,0 +1,232 @@
+C51 COMPILER V7.10   IR_LED                                                                03/28/2009 21:47:15 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE IR_LED
+OBJECT MODULE PLACED IN IR_LED.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE IR_LED.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2          /********************************************************************************
+   3          *  标题:  xl系列单片机实验仪演示程序 遥控键值解码-LED显示                      *
+   4          *  文件:   xlirled.c                                                           *
+   5          *  日期:  2006-1-5                                                             *
+   6          *  版本:  3.0 （试验通过版）可用xl600-xl1000单片机综合试验仪试验               *
+   7          *  邮箱:  sxj1974@163.com                                                      *
+   8          *  网站： http://www.51c51.com    www.8951.com                                 *
+   9          ********************************************************************************
+  10          *  描述:                                                                       *
+  11          *          遥控键值读取器                                                      *
+  12          *         数码管显示, P0口为数码管的数据口 ，p2为数码管的控制位 遥控器接p3.2   *
+  13          *          喇叭接p3.7  继电器接p1.0  每次按键喇叭提示                          *
+  14          *         17(40h)键按下，继电器吸合。19(04h)键按下，继电器关闭。               *
+  15          *                                                                              *
+  16          ********************************************************************************
+  17          * 【版权】 Copyright(C)深圳市学林电子有限公司 www.51c51.com                     *
+  18          * 【声明】 此程序仅用于学习与参考，引用请注明版权和作者信息！                   *
+  19          *  【技术支持】请访问http://www.51c51.com/bbs/index.asp  官方论坛               *
+  20          ********************************************************************************/
+  21          #include <reg51.h>
+  22          #include <intrins.h>
+  23          #define  NOP() _nop_()  /* 定义空指令 */
+  24          
+  25          //SPI IO
+  26          sbit MOSIO =P3^4;
+  27          sbit S_CLK =P3^5;
+  28          sbit R_CLK =P3^6;
+  29          
+  30          void IR_SHOW();
+  31          void delay(unsigned char x);//x*0.14MS
+  32          void delay1(unsigned char ms);
+  33          void beep();
+  34          void delay(unsigned int i);      //函数声名
+*** WARNING C235 IN LINE 34 OF IR_LED.C: parameter 1: different types
+  35          void HC595SendData(unsigned int SendVal);
+  36          
+  37          sbit IRIN = P3^2;
+  38          sbit BEEP = P3^7;
+  39          sbit RELAY= P1^3;
+  40          sbit GEWEI= P2^7;
+  41          sbit SHIWEI= P2^6;
+  42          
+  43          unsigned char IRCOM[8];
+  44          unsigned char code table[16] = 
+  45                                  {0x28,0x7e,0xa2,0x62,0x74,0x61,0x21,0x7a,0x20,0x60,0x30,0x25,0xa9,0x26,0xa1,0xb1};
+             -//;数码管1-9,0,a,b,c,d,e,f代码表
+  46          main()
+  47          {
+  48   1       IE = 0x81;    //允许总中断中断,使能 INT0 外部中断
+  49   1       TCON = 0x1;   //触发方式为脉冲负边沿触发
+  50   1       delay(1);
+  51   1      
+  52   1               IRIN=1;
+  53   1               BEEP=1;
+C51 COMPILER V7.10   IR_LED                                                                03/28/2009 21:47:15 PAGE 2   
+
+  54   1                       RELAY=1;
+  55   1                       for(;;)
+  56   1                       {
+  57   2                        IR_SHOW();
+  58   2                       }
+  59   1      
+  60   1      } //end main
+  61          
+  62          void IR_IN() interrupt 0 using 0
+  63          {
+  64   1       unsigned char i,j,k,N=0;
+  65   1        EA = 0;
+  66   1      I1:
+  67   1        for (i=0;i<4;i++)
+  68   1         {
+  69   2          if (IRIN==0) break;
+  70   2              if (i==3) {EA =1;return;}
+  71   2         }
+  72   1        delay(20);
+  73   1          if (IRIN==1) goto I1;  //确认IR信号出现
+  74   1        while (!IRIN)            //等 IR 变为高电平
+  75   1          {delay(1);}
+  76   1      
+  77   1       for (j=0;j<4;j++)
+  78   1       { 
+  79   2        for (k=0;k<8;k++)
+  80   2        {
+  81   3               while (IRIN)            //等 IR 变为低电平
+  82   3               {delay(1);}
+  83   3               while (!IRIN)          //等 IR 变为高电平
+  84   3               {delay(1);}
+  85   3           while (IRIN)           //计算IR高电平时长
+  86   3            {
+  87   4                 delay(1);
+  88   4                 N++;           
+  89   4                 if (N>=30) {EA=1;return;}
+  90   4                }
+  91   3           IRCOM[j]=IRCOM[j] >> 1;
+  92   3           if (N>=8) {IRCOM[j] = IRCOM[j] | 0x80;}
+  93   3           N=0;
+  94   3        }//end for k
+  95   2       }//end for j
+  96   1         
+  97   1         if (IRCOM[2]!=~IRCOM[3]) {EA=1;return;}
+  98   1         IRCOM[5]=IRCOM[2] & 0x0F;
+  99   1         IRCOM[6]=IRCOM[2] & 0xF0;
+ 100   1         IRCOM[6]=IRCOM[6] >> 4;
+ 101   1         beep();
+ 102   1         EA = 1;
+ 103   1        
+ 104   1      }
+ 105          
+ 106          void IR_SHOW()
+ 107           {
+ 108   1        P0 = table[IRCOM[5]];      
+ 109   1        GEWEI = 0;
+ 110   1        SHIWEI = 1;
+ 111   1        delay1(4);
+ 112   1        P0 = table[IRCOM[6]];      
+ 113   1        SHIWEI = 0;
+ 114   1        GEWEI = 1;
+ 115   1        delay1(4);
+C51 COMPILER V7.10   IR_LED                                                                03/28/2009 21:47:15 PAGE 3   
+
+ 116   1       }
+ 117          
+ 118          void beep()
+ 119          {
+ 120   1        unsigned char i;
+ 121   1        for (i=0;i<100;i++)
+ 122   1         {
+ 123   2         delay(5);
+ 124   2         BEEP=!BEEP;
+ 125   2         }    
+ 126   1        BEEP=1;
+ 127   1      }
+ 128          
+ 129          void delay(unsigned char x)//x*0.14MS
+ 130          {
+ 131   1       unsigned char i;
+ 132   1              while(x--)
+ 133   1              {
+ 134   2                      for (i = 0; i<13; i++) {}
+ 135   2              }
+ 136   1      }
+ 137          
+ 138          
+ 139          void delay1(unsigned char ms)
+ 140          {
+ 141   1       unsigned char i;
+ 142   1              while(ms--)
+ 143   1              {
+ 144   2                      for(i = 0; i<120; i++)
+ 145   2                      {
+ 146   3                              _nop_();
+ 147   3                              _nop_();
+ 148   3                              _nop_();
+ 149   3                              _nop_();
+ 150   3                      }
+ 151   2              }
+ 152   1      }
+ 153          
+ 154          
+ 155          
+ 156          /*********************************************************************************************************
+ 157          ** 函数名称: HC595SendData
+ 158          ** 功能描述: 向SPI总线发送数据
+ 159          *********************************************************************************************************/
+ 160          void HC595SendData(unsigned int SendVal)
+ 161          {  
+ 162   1        unsigned char i;
+ 163   1                      
+ 164   1        for(i=0;i<16;i++) 
+ 165   1         {
+ 166   2              if((SendVal<<i)&0x8000) MOSIO=1; //set dataline high
+ 167   2              else MOSIO=0;
+ 168   2       
+ 169   2              S_CLK=0;
+ 170   2              NOP();
+ 171   2              NOP();
+ 172   2              S_CLK=1;        
+ 173   2         }
+ 174   1         
+ 175   1              
+ 176   1        R_CLK=0; //set dataline low
+ 177   1        NOP();
+C51 COMPILER V7.10   IR_LED                                                                03/28/2009 21:47:15 PAGE 4   
+
+ 178   1        NOP();
+ 179   1        R_CLK=1; //片选
+ 180   1      
+ 181   1      }
+ 182          
+ 183          
+ 184          /*
+ 185          ;================================
+ 186          ;DT9122D 遥控器
+ 187          
+ 188          ;******  红外遥控器键值表  ******
+ 189          
+ 190          ;  10     03      01      06
+ 191          ;  09     1D      1F      0D
+ 192          ;  19     1B      11      15
+ 193          ;  17     12      16      4C
+ 194          ;  40     48      04      00
+ 195          ;  02     05      54      4D
+ 196          ;  0A     1E      0E      1A
+ 197          ;  1C     14      0F      0C
+ 198          ;================================
+ 199          */
+ 200          
+ 201          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    361    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

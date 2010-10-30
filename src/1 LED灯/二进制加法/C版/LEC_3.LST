@@ -1,0 +1,59 @@
+C51 COMPILER V7.10   LEC_3                                                                 10/28/2009 23:16:20 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LEC_3
+OBJECT MODULE PLACED IN LEC_3.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE LEC_3.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /********************************************************************************
+   2          ;                  二进制加法试验                                                                                               *
+   3          ; p2口八个灯作二进制加法。理解二进值的计算                                      *
+   4          ; 硬件连接：p2口8路指示灯                                                                                                               *
+   5          ;                                                                                                                                                               *
+   6          ;*  描述:                                                                       *
+   7          ;   p2口八个灯作二进制加法。理解二进值的计算                                    *
+   8          ;*  连接方法： JP11（P2）和JP1(LED灯) 用8PIN排线连接起来                        *
+   9          *********************************************************************************/
+  10          #include <reg52.h>
+  11          void delay(unsigned int i);  //声明延时函数
+  12          
+  13          
+  14          main()
+  15          { 
+  16   1        unsigned char Num = 0xff;
+  17   1        while (1) 
+  18   1        {P2  = Num;
+  19   2         delay(1000);
+  20   2         Num--;
+  21   2         }
+  22   1       
+  23   1      }
+  24          
+  25          
+  26          /*******延时函数*************/
+  27          void delay(unsigned int i)
+  28          {
+  29   1          unsigned char j;
+  30   1          for(i; i > 0; i--)
+  31   1              for(j = 255; j > 0; j--);
+  32   1      
+  33   1      }
+  34          
+  35          
+  36          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     38    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

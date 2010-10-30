@@ -1,0 +1,89 @@
+C51 COMPILER V7.10   74HC138                                                               09/21/2010 17:45:17 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 74HC138
+OBJECT MODULE PLACED IN 74HC138.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 74HC138.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /****************************************************************************
+   2          *                 138译码器实验                                             * 
+   3          *                                                                           *
+   4          * 实验目的：  1. 了解138译码器工作原理                                      *
+   5          *             2.  学会用C语言对138译码器编程控制                            *
+   6          *                                                                           *
+   7          * 实验现象：  LED灯每隔一段时间循环点亮                                     *
+   8          * 接线方法：  J15连JP1(参考图片连接)                                        *
+   9          *****************************************************************************/
+  10          #include <reg51.h>
+  11          
+  12          sbit HC138A = P2^2;   //定义HC138A 在 P2.2 管脚上
+  13          sbit HC138B = P2^3;   //定义HC138A 在 P2.3 管脚上
+  14          sbit HC138C = P2^4;   //定义HC138A 在 P2.4 管脚上
+  15          
+  16          /*************************************************
+  17          *
+  18          *                  延时函数
+  19          *
+  20          **************************************************/
+  21          void delay(unsigned int i)
+  22          {
+  23   1        unsigned char j;
+  24   1          for(i; i > 0; i--)   
+  25   1              for(j = 255; j > 0; j--);
+  26   1      
+  27   1      
+  28   1      }
+  29          
+  30          main()
+  31          {
+  32   1      // 点亮第一个LED灯
+  33   1      HC138C = 0; HC138B = 0; HC138A = 0; 
+  34   1      delay(1500); //延时
+  35   1      
+  36   1      // 点亮第二个LED灯
+  37   1      HC138C = 0; HC138B = 0; HC138A = 1;
+  38   1      delay(1500); //延时
+  39   1      
+  40   1      // 点亮第三个LED灯
+  41   1      HC138C = 0; HC138B = 1; HC138A = 0;
+  42   1      delay(1500);
+  43   1      
+  44   1      // 点亮第四个LED灯
+  45   1      HC138C = 0; HC138B = 1; HC138A = 1;
+  46   1      delay(2000);
+  47   1      
+  48   1      // 点亮第五个LED灯
+  49   1      HC138C = 1; HC138B = 0; HC138A = 0;
+  50   1      delay(1500);
+  51   1      
+  52   1      // 点亮第六个LED灯
+  53   1      HC138C = 1; HC138B = 0; HC138A = 1;
+  54   1      delay(1500);
+  55   1      
+C51 COMPILER V7.10   74HC138                                                               09/21/2010 17:45:17 PAGE 2   
+
+  56   1      HC138C = 1; HC138B = 1; HC138A = 0;
+  57   1      delay(1500);
+  58   1      
+  59   1      HC138C = 1; HC138B = 1; HC138A = 1;
+  60   1      delay(1500);
+  61   1      
+  62   1      
+  63   1      }
+  64          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     97    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

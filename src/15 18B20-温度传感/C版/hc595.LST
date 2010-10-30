@@ -1,0 +1,73 @@
+C51 COMPILER V7.10   HC595                                                                 05/01/2009 21:32:33 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE HC595
+OBJECT MODULE PLACED IN hc595.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE hc595.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2           /*************************此部分为74HC595的驱动程序使用SPI总线连接*************************************/
+   3          
+   4          #include<reg52.h>
+   5          #include <intrins.h>
+   6          
+   7          #define  NOP()   _nop_()   /* 定义空指令 */
+   8          #define  _Nop()  _nop_()   /*定义空指令*/
+   9          void HC595SendData(unsigned int SendVal);
+  10          
+  11          //SPI IO
+  12          sbit    MOSIO =P1^5;
+  13          sbit    R_CLK =P1^6;
+  14          sbit    S_CLK =P1^7;
+  15          sbit    IN_PL =P3^4;    //74HC165  shift load   把数据加载到锁存器中
+  16          sbit    IN_Dat=P3^5;    //74HC165  output       数据移出
+  17          sbit    OE    =P3^6;
+  18          
+  19          
+  20          
+  21          /*********************************************************************************************************
+  22          ** 函数名称: HC595SendData
+  23          ** 功能描述: 向SPI总线发送数据
+  24          *********************************************************************************************************/
+  25          void HC595SendData(unsigned int SendVal)
+  26          {  
+  27   1        unsigned char i;
+  28   1                      
+  29   1        for(i=0;i<16;i++) 
+  30   1         {
+  31   2              if((SendVal<<i)&0x8000) MOSIO=1; // set dataline high
+  32   2              else MOSIO=0;
+  33   2       
+  34   2              S_CLK=0;
+  35   2              NOP();
+  36   2              NOP();
+  37   2              S_CLK=1;        
+  38   2         }
+  39   1         
+  40   1              
+  41   1        R_CLK=0; //set dataline low
+  42   1        NOP();
+  43   1        NOP();
+  44   1        R_CLK=1; //片选
+  45   1        OE=0;
+  46   1      
+  47   1      }
+  48          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     50    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V7.10   HC595                                                                 05/01/2009 21:32:33 PAGE 2   
+
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

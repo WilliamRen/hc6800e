@@ -1,0 +1,440 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        06/15/2010  16:10:37  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, DA-AD.obj, I2C.obj TO AD转换 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  DA-AD.obj (DA_AD)
+  I2C.obj (I2C)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?UIDIV)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?LSTXDATA)
+
+
+LINK MAP OF MODULE:  AD转换 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0003H     UNIT         _DATA_GROUP_
+                    000BH     0015H                  *** GAP ***
+            BIT     0020H.0   0000H.1   UNIT         ?BI?I2C
+            BIT     0020H.1   0000H.1   UNIT         _BIT_GROUP_
+                    0020H.2   0000H.6                *** GAP ***
+            DATA    0021H     0041H     UNIT         ?DT?DA_AD
+            IDATA   0062H     0001H     UNIT         ?STACK
+
+            * * * * * * *  X D A T A   M E M O R Y  * * * * * * *
+            XDATA   0000H     0020H     UNIT         ?XD?DA_AD
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0281H     UNIT         ?PR?MAIN?DA_AD
+            CODE    0A81H     0061H     UNIT         ?C?LIB_CODE
+            CODE    0AE2H     003CH     UNIT         ?PR?_SENDBYTE?I2C
+            CODE    0B1EH     002CH     UNIT         ?PR?_DACCONVERSION?DA_AD
+            CODE    0B4AH     0024H     UNIT         ?PR?RCVBYTE?I2C
+            CODE    0B6EH     0022H     UNIT         ?PR?_IRCVBYTE?DA_AD
+            CODE    0B90H     0020H     UNIT         ?PR?_ISENDBYTE?DA_AD
+            CODE    0BB0H     0018H     UNIT         ?PR?ACK_I2C?I2C
+            CODE    0BC8H     0016H     UNIT         ?PR?START_I2C?I2C
+            CODE    0BDEH     0011H     UNIT         ?PR?STOP_I2C?I2C
+            CODE    0BEFH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0BFBH     000AH     UNIT         ?CO?DA_AD
+
+
+
+OVERLAY MAP OF MODULE:   AD转换 (?C_STARTUP)
+
+
+SEGMENT                             BIT_GROUP          DATA_GROUP 
+  +--> CALLED SEGMENT            START    LENGTH     START    LENGTH
+--------------------------------------------------------------------
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 2
+
+
+?C_C51STARTUP                    -----    -----      -----    -----
+  +--> ?PR?MAIN?DA_AD
+
+?PR?MAIN?DA_AD                   -----    -----      -----    -----
+  +--> ?PR?_ISENDBYTE?DA_AD
+  +--> ?PR?_IRCVBYTE?DA_AD
+  +--> ?PR?_DACCONVERSION?DA_AD
+  +--> ?CO?DA_AD
+
+?PR?_ISENDBYTE?DA_AD             -----    -----      0008H    0002H
+  +--> ?PR?START_I2C?I2C
+  +--> ?PR?_SENDBYTE?I2C
+  +--> ?PR?STOP_I2C?I2C
+
+?PR?_IRCVBYTE?DA_AD              -----    -----      0008H    0002H
+  +--> ?PR?START_I2C?I2C
+  +--> ?PR?_SENDBYTE?I2C
+  +--> ?PR?RCVBYTE?I2C
+  +--> ?PR?ACK_I2C?I2C
+  +--> ?PR?STOP_I2C?I2C
+
+?PR?ACK_I2C?I2C                  0020H.1  0000H.1    -----    -----
+
+?PR?_DACCONVERSION?DA_AD         -----    -----      0008H    0003H
+  +--> ?PR?START_I2C?I2C
+  +--> ?PR?_SENDBYTE?I2C
+  +--> ?PR?STOP_I2C?I2C
+
+
+
+SYMBOL TABLE OF MODULE:  AD转换 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0BEFH         SEGMENT       ?C_C51STARTUP
+  I:0062H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0BF2H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0BEFH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 3
+
+
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:0BEFH         LINE#         99
+  C:0BF1H         LINE#         100
+  C:0BF2H         LINE#         101
+  C:0BF3H         LINE#         102
+  C:0BF5H         LINE#         151
+  C:0BF8H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        DA_AD
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  B:00A0H.3       PUBLIC        LS138B
+  B:00A0H.4       PUBLIC        LS138C
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:0BFBH         PUBLIC        Disp_Tab
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0800H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:0021H         PUBLIC        D
+  C:0B90H         PUBLIC        _ISendByte
+  X:0000H         PUBLIC        LedOut
+  D:0061H         PUBLIC        AD_CHANNEL
+  D:00C8H         PUBLIC        T2CON
+  C:0B6EH         PUBLIC        _IRcvByte
+  C:0B1EH         PUBLIC        _DACconversion
+  D:00D0H         PUBLIC        PSW
+  B:00A0H.2       PUBLIC        LS138A
+  -------         PROC          _DACCONVERSION
+  D:0008H         SYMBOL        sla
+  D:0009H         SYMBOL        c
+  D:000AH         SYMBOL        Val
+  C:0B1EH         LINE#         38
+  C:0B24H         LINE#         39
+  C:0B24H         LINE#         40
+  C:0B27H         LINE#         41
+  C:0B2CH         LINE#         42
+  C:0B31H         LINE#         43
+  C:0B36H         LINE#         44
+  C:0B3BH         LINE#         45
+  C:0B40H         LINE#         46
+  C:0B45H         LINE#         47
+  C:0B48H         LINE#         48
+  C:0B49H         LINE#         49
+  -------         ENDPROC       _DACCONVERSION
+  -------         PROC          _ISENDBYTE
+  D:0008H         SYMBOL        sla
+  D:0009H         SYMBOL        c
+  C:0B90H         LINE#         54
+  C:0B94H         LINE#         55
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 4
+
+
+  C:0B94H         LINE#         56
+  C:0B97H         LINE#         57
+  C:0B9CH         LINE#         58
+  C:0BA1H         LINE#         59
+  C:0BA6H         LINE#         60
+  C:0BABH         LINE#         61
+  C:0BAEH         LINE#         62
+  C:0BAFH         LINE#         63
+  -------         ENDPROC       _ISENDBYTE
+  -------         PROC          _IRCVBYTE
+  D:0008H         SYMBOL        sla
+  -------         DO            
+  D:0009H         SYMBOL        c
+  -------         ENDDO         
+  C:0B6EH         LINE#         68
+  C:0B70H         LINE#         69
+  C:0B70H         LINE#         71
+  C:0B73H         LINE#         72
+  C:0B7AH         LINE#         73
+  C:0B80H         LINE#         74
+  C:0B85H         LINE#         76
+  C:0B8AH         LINE#         77
+  C:0B8DH         LINE#         78
+  C:0B8FH         LINE#         79
+  -------         ENDPROC       _IRCVBYTE
+  -------         PROC          MAIN
+  -------         DO            
+  D:0003H         SYMBOL        i
+  D:0007H         SYMBOL        j
+  -------         ENDDO         
+  C:0800H         LINE#         82
+  C:0800H         LINE#         83
+  C:0800H         LINE#         85
+  C:0800H         LINE#         86
+  C:0800H         LINE#         87
+  C:0812H         LINE#         88
+  C:0812H         LINE#         89
+  C:0819H         LINE#         90
+  C:0828H         LINE#         91
+  C:082AH         LINE#         93
+  C:0831H         LINE#         94
+  C:0840H         LINE#         95
+  C:0842H         LINE#         97
+  C:0849H         LINE#         98
+  C:0858H         LINE#         99
+  C:085AH         LINE#         101
+  C:0861H         LINE#         102
+  C:0870H         LINE#         103
+  C:0872H         LINE#         105
+  C:0887H         LINE#         106
+  C:0887H         LINE#         107
+  C:0887H         LINE#         110
+  C:088DH         LINE#         111
+  C:0899H         LINE#         115
+  C:08C8H         LINE#         116
+  C:08F7H         LINE#         117
+  C:0928H         LINE#         118
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 5
+
+
+  C:094AH         LINE#         120
+  C:0979H         LINE#         121
+  C:09A8H         LINE#         122
+  C:09D9H         LINE#         123
+  C:09FBH         LINE#         126
+  C:09FDH         LINE#         127
+  C:0A1CH         LINE#         129
+  C:0A41H         LINE#         130
+  C:0A41H         LINE#         131
+  C:0A45H         LINE#         132
+  C:0A4DH         LINE#         133
+  C:0A51H         LINE#         134
+  C:0A59H         LINE#         135
+  C:0A5DH         LINE#         136
+  C:0A65H         LINE#         137
+  C:0A69H         LINE#         138
+  C:0A6FH         LINE#         140
+  C:0A6FH         LINE#         142
+  C:0A75H         LINE#         143
+  C:0A7BH         LINE#         145
+  C:0A7EH         LINE#         147
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        DA_AD
+
+  -------         MODULE        I2C
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  C:0AE2H         PUBLIC        _SendByte
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  B:0020H.0       PUBLIC        ack
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:0B4AH         PUBLIC        RcvByte
+  C:0BB0H         PUBLIC        Ack_I2c
+  C:0BC8H         PUBLIC        Start_I2c
+  B:00A0H.1       PUBLIC        SDA
+  B:00A0H.0       PUBLIC        SCL
+  C:0BDEH         PUBLIC        Stop_I2c
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          START_I2C
+  C:0BC8H         LINE#         22
+  C:0BC8H         LINE#         23
+  C:0BC8H         LINE#         24
+  C:0BCAH         LINE#         25
+  C:0BCBH         LINE#         26
+  C:0BCDH         LINE#         27
+  C:0BCEH         LINE#         28
+  C:0BCFH         LINE#         29
+  C:0BD0H         LINE#         30
+  C:0BD1H         LINE#         31
+  C:0BD2H         LINE#         32
+  C:0BD4H         LINE#         33
+  C:0BD5H         LINE#         34
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 6
+
+
+  C:0BD6H         LINE#         35
+  C:0BD7H         LINE#         36
+  C:0BD8H         LINE#         37
+  C:0BD9H         LINE#         38
+  C:0BDBH         LINE#         39
+  C:0BDCH         LINE#         40
+  C:0BDDH         LINE#         41
+  -------         ENDPROC       START_I2C
+  -------         PROC          STOP_I2C
+  C:0BDEH         LINE#         48
+  C:0BDEH         LINE#         49
+  C:0BDEH         LINE#         50
+  C:0BE0H         LINE#         51
+  C:0BE1H         LINE#         52
+  C:0BE3H         LINE#         53
+  C:0BE4H         LINE#         54
+  C:0BE5H         LINE#         55
+  C:0BE6H         LINE#         56
+  C:0BE7H         LINE#         57
+  C:0BE8H         LINE#         58
+  C:0BEAH         LINE#         59
+  C:0BEBH         LINE#         60
+  C:0BECH         LINE#         61
+  C:0BEDH         LINE#         62
+  C:0BEEH         LINE#         63
+  -------         ENDPROC       STOP_I2C
+  -------         PROC          _SENDBYTE
+  D:0007H         SYMBOL        c
+  -------         DO            
+  D:0006H         SYMBOL        BitCnt
+  -------         ENDDO         
+  C:0AE2H         LINE#         72
+  C:0AE2H         LINE#         73
+  C:0AE2H         LINE#         76
+  C:0AE4H         LINE#         77
+  C:0AE4H         LINE#         78
+  C:0AF5H         LINE#         79
+  C:0AF7H         LINE#         80
+  C:0AF8H         LINE#         81
+  C:0AFAH         LINE#         82
+  C:0AFBH         LINE#         83
+  C:0AFCH         LINE#         84
+  C:0AFDH         LINE#         85
+  C:0AFEH         LINE#         86
+  C:0AFFH         LINE#         87
+  C:0B01H         LINE#         88
+  C:0B05H         LINE#         90
+  C:0B06H         LINE#         91
+  C:0B07H         LINE#         92
+  C:0B09H         LINE#         93
+  C:0B0AH         LINE#         94
+  C:0B0BH         LINE#         95
+  C:0B0DH         LINE#         96
+  C:0B0EH         LINE#         97
+  C:0B0FH         LINE#         98
+  C:0B10H         LINE#         99
+  C:0B17H         LINE#         100
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 7
+
+
+  C:0B19H         LINE#         101
+  C:0B1BH         LINE#         102
+  C:0B1CH         LINE#         103
+  C:0B1DH         LINE#         104
+  -------         ENDPROC       _SENDBYTE
+  -------         PROC          RCVBYTE
+  -------         DO            
+  D:0007H         SYMBOL        retc
+  D:0006H         SYMBOL        BitCnt
+  -------         ENDDO         
+  C:0B4AH         LINE#         112
+  C:0B4AH         LINE#         113
+  C:0B4AH         LINE#         117
+  C:0B4CH         LINE#         118
+  C:0B4EH         LINE#         119
+  C:0B4FH         LINE#         120
+  C:0B4FH         LINE#         121
+  C:0B50H         LINE#         122
+  C:0B52H         LINE#         123
+  C:0B53H         LINE#         124
+  C:0B54H         LINE#         125
+  C:0B55H         LINE#         126
+  C:0B56H         LINE#         127
+  C:0B57H         LINE#         128
+  C:0B59H         LINE#         129
+  C:0B5AH         LINE#         130
+  C:0B5BH         LINE#         131
+  C:0B5FH         LINE#         132
+  C:0B63H         LINE#         133
+  C:0B64H         LINE#         134
+  C:0B65H         LINE#         135
+  C:0B69H         LINE#         136
+  C:0B6BH         LINE#         137
+  C:0B6CH         LINE#         138
+  C:0B6DH         LINE#         139
+  C:0B6DH         LINE#         140
+  -------         ENDPROC       RCVBYTE
+  -------         PROC          ACK_I2C
+  B:0020H.1       SYMBOL        a
+  C:0BB0H         LINE#         147
+  C:0BB0H         LINE#         148
+  C:0BB0H         LINE#         150
+  C:0BB7H         LINE#         151
+  C:0BB9H         LINE#         152
+  C:0BBAH         LINE#         153
+  C:0BBBH         LINE#         154
+  C:0BBCH         LINE#         155
+  C:0BBEH         LINE#         156
+  C:0BBFH         LINE#         157
+  C:0BC0H         LINE#         158
+  C:0BC1H         LINE#         159
+  C:0BC2H         LINE#         160
+  C:0BC3H         LINE#         161
+  C:0BC5H         LINE#         162
+  C:0BC6H         LINE#         163
+  C:0BC7H         LINE#         164
+  -------         ENDPROC       ACK_I2C
+BL51 BANKED LINKER/LOCATER V5.03                                                      06/15/2010  16:10:37  PAGE 8
+
+
+  -------         ENDMOD        I2C
+
+  -------         MODULE        ?C?UIDIV
+  C:0A81H         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+  -------         MODULE        ?C?LSTXDATA
+  C:0AD6H         PUBLIC        ?C?LSTXDATA
+  -------         ENDMOD        ?C?LSTXDATA
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 03B7H BYTE (46%) *
+******************************************************************************
+
+Program Size: data=77.2 xdata=32 code=1032
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

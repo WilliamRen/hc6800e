@@ -1,0 +1,6 @@
+"STARTUP.obj",
+"main.obj",
+"DS1302.obj",
+"LCD1602.obj" 
+TO "DS1302+LCD1602" 
+RAMSIZE(256) 

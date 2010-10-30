@@ -1,0 +1,48 @@
+C51 COMPILER V7.10   BUZZ                                                                  03/19/2005 00:03:53 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE BUZZ
+OBJECT MODULE PLACED IN buzz.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE buzz.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          
+   3          sbit buzz = P3^5;
+   4          
+   5          void T0_irq(void) interrupt 1 using 1
+   6          {
+   7   1              TH0 = -(300/256);
+   8   1              TL0 =- (300%256);
+   9   1      
+  10   1              buzz = ~buzz;
+  11   1      }
+  12          
+  13          main()
+  14          {
+  15   1              TMOD = 0x01;
+  16   1              TH0 = -(1000/256);
+  17   1              TL0 =- (1000%256);
+  18   1              EA = 1;
+  19   1              ET0 = 1;
+  20   1              TR0 = 1;
+  21   1      
+  22   1              for(;;){
+  23   2      
+  24   2              }
+  25   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     26    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

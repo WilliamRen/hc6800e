@@ -1,0 +1,82 @@
+A51 MACRO ASSEMBLER  BUTTON                                                               03/15/2010 16:02:47 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN button.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE button.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;P0.0小键盘按下P2.0亮再按0.5秒灭。
+                       3     ;连接方法：连接方法：JP10（P2） 与 JP1 （LED灯）连接，                                     
+                                      *
+                       4     ;                    JP11（P0） 与 JP5（按键接口）连接                          *
+                       5     ;********************************************************************************
+                       6     ;********************************************************************************
+                       7     
+                       8     
+                       9     ; FLAG 20H EXPRESS THE 0.5S TIME ARRIVED.
+                      10     ; FLAG 21H EXPRESS THE LED LIGHTED.
+0000                  11             ORG     0000h
+0000 0130             12             AJMP    main0
+0030                  13             ORG     0030h
+0030                  14     MAIN0:
+0030 C221             15             CLR     21H             ;清标志
+0032                  16     main:
+0032 A280             17             MOV     C,P0.0          ;检测按键
+0034 40FC             18             JC      main
+0036 7EC8             19             MOV     R6,#200         ;设定延时
+0038 7FC8             20             MOV     R7,#200
+003A                  21     TT0:
+003A 30210B           22             JNB     21H,TT2         ;检测灯状态
+003D                  23     tt:
+003D A280             24             MOV     C,P0.0          ;检测按键
+003F 5011             25             JNC     tt1
+                      26     
+0041 3020EE           27             JNB     20H,MAIN        ;检测时间标志
+0044 C220             28             CLR     20H     
+0046 014C             29             AJMP    TT3     
+0048                  30     TT2:
+0048 A280             31             MOV     c,P0.0          ;检测按键
+004A 50FC             32             JNC     tt2
+004C                  33     TT3:
+004C B221             34             CPL     21H             ;改变灯状态
+004E B2A0             35             CPL     p2.0
+0050 0132             36             AJMP    main
+0052 00               37     TT1:    NOP                     ;延时但不是子程序
+0053 00               38             NOP
+0054 00               39             NOP
+0055 00               40             NOP
+0056 00               41             NOP
+0057 00               42             NOP
+0058 DEE3             43             DJNZ    R6,TT
+005A 7EC8             44             MOV     R6,#200
+005C DFDF             45             DJNZ    R7,TT
+005E 7FC8             46             MOV     R7,#200
+0060 D220             47             SETB    20H
+0062 013D             48             AJMP    TT      
+                      49             END
+A51 MACRO ASSEMBLER  BUTTON                                                               03/15/2010 16:02:47 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+MAIN . . . . . . .  C ADDR   0032H   A   
+MAIN0. . . . . . .  C ADDR   0030H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+TT . . . . . . . .  C ADDR   003DH   A   
+TT0. . . . . . . .  C ADDR   003AH   A   
+TT1. . . . . . . .  C ADDR   0052H   A   
+TT2. . . . . . . .  C ADDR   0048H   A   
+TT3. . . . . . . .  C ADDR   004CH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

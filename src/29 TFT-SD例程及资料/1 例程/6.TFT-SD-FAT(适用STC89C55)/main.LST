@@ -1,0 +1,299 @@
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:25 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************
+   2          *                                                                  *
+   3          *                  SD卡配置文件系统                                *
+   4          *                                                                  *
+   5          * 实验目的：1.掌握SD卡的驱动程序                                   *
+   6                      2. 组成简单的文件系统                                  *
+   7          *实验现象： SD卡的属性参数                                         *
+   8          *******************************************************************/
+   9          
+  10          #include <reg52.h>
+  11          
+  12          #include "fat.h"
+  13          #include "lcd.h"
+  14          
+  15          unsigned char  data_temp[16];
+  16          
+  17          char code reserve[3]_at_ 0x3b; //保留0x3b开始的3个字节
+  18          
+  19          /**********************************************************
+  20          
+  21           卡信息显示子函数
+  22          
+  23          **********************************************************/
+  24          void   card_info(void)
+  25          {
+  26   1         unsigned char  by;
+  27   1         unsigned int   c_size, c_size_mult, read_bl_len;
+  28   1         unsigned long  drive_size;
+  29   1         unsigned long  size_mb;
+  30   1      
+  31   1         LCD_ShowString(12,40,colors[0],colors[7],"INIT SUCCESS");
+  32   1         LCD_ShowString(2,60,colors[0],colors[7],"TYPE:");
+  33   1         if(card_type)
+  34   1         {LCD_ShowString(52,60,colors[2],colors[7],"SD");
+  35   2          ChineseChar(68,60,1,colors[2],colors[7],1); //卡
+  36   2         }
+  37   1         else
+  38   1         { LCD_ShowString(52,60,colors[2],colors[7],"MMC");
+  39   2           ChineseChar(76,60,1,colors[2],colors[7],1);        //卡
+  40   2         }
+  41   1         
+  42   1         Read_CID_MMC(data_temp);
+  43   1      
+  44   1         LCD_ShowString(2,76,colors[0],colors[7],"NAME:");
+  45   1         LCD_ShowChar(50,76,colors[2],colors[7],data_temp[3]);
+  46   1         LCD_ShowChar(58,76,colors[2],colors[7],data_temp[4]);
+  47   1         LCD_ShowChar(66,76,colors[2],colors[7],data_temp[5]);
+  48   1         LCD_ShowChar(74,76,colors[2],colors[7],data_temp[6]);
+  49   1         LCD_ShowChar(82,76,colors[2],colors[7],data_temp[7]);
+  50   1           
+  51   1         Read_CSD_MMC(data_temp);
+  52   1      
+  53   1         c_size=data_temp[6] & 0x03; //bits 1..0
+  54   1         c_size<<=10;
+  55   1         c_size+=(unsigned int)data_temp[7]<<2;
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:25 PAGE 2   
+
+  56   1         c_size+=data_temp[8]>>6;
+  57   1      
+  58   1         by= data_temp[5] & 0x0F;
+  59   1         read_bl_len=1;
+  60   1         read_bl_len<<=by;            //2^by
+  61   1         by=data_temp[9] & 0x03;      //获取multiply
+  62   1         by<<=1;
+  63   1         by+=data_temp[10] >> 7;
+  64   1      
+  65   1         c_size_mult=1;
+  66   1         c_size_mult<<=(2+by);          //2^(c_size_mult+2)
+  67   1      
+  68   1         drive_size=(ulong)(c_size+1) * (ulong)c_size_mult * (ulong)read_bl_len;
+  69   1      
+  70   1         size_mb= drive_size>>20;    //1024*1024=1048576=2^20; 
+  71   1         LCD_ShowString(2,92,colors[0],colors[7],"SIZE:");
+  72   1         LCD_ShowChar(52,92,colors[2],colors[7],size_mb/1000|0x30); 
+  73   1         LCD_ShowChar(60,92,colors[2],colors[7],size_mb%1000/100|0x30);
+  74   1         LCD_ShowChar(68,92,colors[2],colors[7],size_mb%100/10|0x30); 
+  75   1         LCD_ShowChar(76,92,colors[2],colors[7],size_mb%10|0x30); 
+  76   1         LCD_ShowChar(84,92,colors[2],colors[7],'M');
+  77   1         LCD_ShowChar(92,92,colors[2],colors[7],'B');
+  78   1      }
+  79          
+  80          /**********************************************************
+  81          
+  82           数据转换子函数1
+  83          
+  84          **********************************************************/
+  85          void  data_change1(uint number)
+  86          {
+  87   1         data_temp[0] = (number/10000)|0x30;
+  88   1         data_temp[1] = (number%10000/1000)|0x30;
+  89   1         data_temp[2] = (number%1000/100)|0x30;
+  90   1         data_temp[3] = (number%100/10)|0x30;
+  91   1         data_temp[4] = (number%10)|0x30;
+  92   1         
+  93   1         if(data_temp[0] == 0x30)
+  94   1         {
+  95   2           data_temp[0] = 0x20;
+  96   2           if(data_temp[1] == 0x30)
+  97   2           data_temp[1] = 0x20;
+  98   2           if(data_temp[2] == 0x30)
+  99   2           data_temp[2] = 0x20;
+ 100   2         }
+ 101   1      }
+ 102          
+ 103          /**********************************************************
+ 104          
+ 105           数据转换子函数2
+ 106          
+ 107          **********************************************************/
+ 108          void  data_change2(uint number)
+ 109          {
+ 110   1         data_temp[0] = (number/100)|0x30;
+ 111   1         data_temp[1] = (number%100/10)|0x30;
+ 112   1         data_temp[2] = (number%10)|0x30;
+ 113   1         
+ 114   1         if(data_temp[0] == 0x30)
+ 115   1         {
+ 116   2           data_temp[0] = 0x20;
+ 117   2           if(data_temp[1] == 0x30)
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:25 PAGE 3   
+
+ 118   2           data_temp[1] = 0x20;
+ 119   2         }
+ 120   1      }
+ 121          /**********************************************************
+ 122          
+ 123           首FAT起始扇区显示子函数
+ 124          
+ 125          **********************************************************/
+ 126          /*
+ 127          void  F_FATSector(void)
+ 128          {
+ 129             data_change1(FirstFATSector);
+ 130          
+ 131             LCD_ShowString(2,124,colors[0],"FirstFATSector:");
+ 132          
+ 133             LCD_ShowChar( 2,140,colors[2],data_temp[0]);
+ 134             LCD_ShowChar(10,140,colors[2],data_temp[1]);
+ 135             LCD_ShowChar(18,140,colors[2],data_temp[2]);
+ 136             LCD_ShowChar(26,140,colors[2],data_temp[3]);
+ 137             LCD_ShowChar(34,140,colors[2],data_temp[4]);
+ 138          }
+ 139          */
+ 140          /**********************************************************
+ 141          
+ 142           根目录起始扇区显示子函数
+ 143          
+ 144          **********************************************************/
+ 145          /*
+ 146          void  F_DirSector(void)
+ 147          {
+ 148             data_change1(FirstDirSector);
+ 149             
+ 150             LCD_ShowString(2,124,colors[0],"FirstDirSector:");
+ 151          
+ 152             LCD_ShowChar( 2,140,colors[2],data_temp[0]);
+ 153             LCD_ShowChar(10,140,colors[2],data_temp[1]);
+ 154             LCD_ShowChar(18,140,colors[2],data_temp[2]);
+ 155             LCD_ShowChar(26,140,colors[2],data_temp[3]);
+ 156             LCD_ShowChar(34,140,colors[2],data_temp[4]);
+ 157          }
+ 158          */
+ 159          /**********************************************************
+ 160          
+ 161           数据区起始扇区显示子函数
+ 162          
+ 163          **********************************************************/
+ 164          /*
+ 165          void  F_DataSector(void)
+ 166          {
+ 167             data_change1(FirstDataSector);
+ 168             
+ 169             LCD_ShowString(2,124,colors[0],"FirstDataSector");
+ 170          
+ 171             LCD_ShowChar( 2,140,colors[2],data_temp[0]);
+ 172             LCD_ShowChar(10,140,colors[2],data_temp[1]);
+ 173             LCD_ShowChar(18,140,colors[2],data_temp[2]);
+ 174             LCD_ShowChar(26,140,colors[2],data_temp[3]);
+ 175             LCD_ShowChar(34,140,colors[2],data_temp[4]);
+ 176          }
+ 177          */
+ 178          /**********************************************************
+ 179          
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:25 PAGE 4   
+
+ 180            BPB信息显示子函数
+ 181          
+ 182          **********************************************************/
+ 183          void  BPB_INFO(void)
+ 184          {
+ 185   1         data_change2(BPBbytesPerSec);  //每个扇区的字节数
+ 186   1         LCD_ShowString(2,24,colors[0],colors[7],"BPBbytesPerSec");
+ 187   1         LCD_ShowChar( 2,40,colors[2],colors[7],data_temp[0]);
+ 188   1         LCD_ShowChar(10,40,colors[2],colors[7],data_temp[1]);
+ 189   1         LCD_ShowChar(18,40,colors[2],colors[7],data_temp[2]);
+ 190   1      
+ 191   1         data_change2(BPBSecPerClust);  //每个簇的扇区数
+ 192   1         LCD_ShowString(2,56,colors[0],colors[7],"BPBSecPerClust");
+ 193   1         LCD_ShowChar( 2,72,colors[2],colors[7],data_temp[0]);
+ 194   1         LCD_ShowChar(10,72,colors[2],colors[7],data_temp[1]);
+ 195   1         LCD_ShowChar(18,72,colors[2],colors[7],data_temp[2]);
+ 196   1      
+ 197   1         data_change2(BPBRevdFATSec);   //保留扇区数
+ 198   1         LCD_ShowString(2,88,colors[0],colors[7],"BPBRevdFATSec");
+ 199   1         LCD_ShowChar( 2,104,colors[2],colors[7],data_temp[0]);
+ 200   1         LCD_ShowChar(10,104,colors[2],colors[7],data_temp[1]);
+ 201   1         LCD_ShowChar(18,104,colors[2],colors[7],data_temp[2]);
+ 202   1      
+ 203   1      /* data_change2(BPBhiddsector);   //隐藏扇区数
+ 204   1         LCD_ShowString(2,120,colors[0],"BPBhiddsector");
+ 205   1         LCD_ShowChar( 2,136,colors[2],data_temp[0]);
+ 206   1         LCD_ShowChar(10,136,colors[2],data_temp[1]);
+ 207   1         LCD_ShowChar(18,136,colors[2],data_temp[2]); */
+ 208   1      
+ 209   1         data_change1(BPBFATPerSec16);  //每个FAT的扇区数
+ 210   1         LCD_ShowString(2,120,colors[0],colors[7],"BPBFATPerSec");
+ 211   1         LCD_ShowChar( 2,136,colors[2],colors[7],data_temp[0]);
+ 212   1         LCD_ShowChar(10,136,colors[2],colors[7],data_temp[1]);
+ 213   1         LCD_ShowChar(18,136,colors[2],colors[7],data_temp[2]);
+ 214   1         LCD_ShowChar(26,136,colors[2],colors[7],data_temp[3]);
+ 215   1         LCD_ShowChar(34,136,colors[2],colors[7],data_temp[4]);
+ 216   1      }
+ 217          
+ 218          /**********************************************************
+ 219          
+ 220            主函数
+ 221          
+ 222          **********************************************************/
+ 223          void main(void)
+ 224          {  
+ 225   1         P2 = 0xff;
+ 226   1         P0 = 0xff;
+ 227   1      
+ 228   1         LCD_init();                 //液晶初始化
+ 229   1       //  LCD_color_H();              //水平彩条显示
+ 230   1      //   delay_ms(2000);
+ 231   1         LCD_clear(7);
+ 232   1         LCD_ShowString(16,4,colors[4],colors[7],"SD&MMC Card");
+ 233   1         LCD_ShowString(12,20,colors[4],colors[7],"Test Process");
+ 234   1      
+ 235   1         MMC_Init();                 //卡初始化
+ 236   1         FAT_init();                  //FAT初始化
+ 237   1      
+ 238   1         if(Init_Flag == 0)          //卡初始化成功
+ 239   1         {
+ 240   2           card_info();              //卡信息显示
+ 241   2         }
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:15:25 PAGE 5   
+
+ 242   1        
+ 243   1         ChineseChar(14,120,1,colors[2],colors[7],2); //文
+ 244   1         ChineseChar(38,120,1,colors[2],colors[7],3); //件
+ 245   1         ChineseChar(62,120,1,colors[2],colors[7],4); //系
+ 246   1         ChineseChar(86,120,1,colors[2],colors[7],5); //统
+ 247   1       
+ 248   1         delay_ms(3000);
+ 249   1         LCD_clear(7);
+ 250   1         
+ 251   1         if(DirSecitemCunt == 8)
+ 252   1         {
+ 253   2           LCD_ShowString(2,4,colors[0],colors[7],"FORMAT:");
+ 254   2           LCD_ShowString(66,4,colors[2],colors[7],"FAT16");
+ 255   2         }
+ 256   1         else
+ 257   1         if(DirSecitemCunt == 7)
+ 258   1         {
+ 259   2           LCD_ShowString(2,4,colors[0],colors[7],"FORMAT:");
+ 260   2           LCD_ShowString(66,4,colors[2],colors[7],"FAT32");
+ 261   2         }
+ 262   1         
+ 263   1         BPB_INFO();                 //BPB信息显示
+ 264   1      
+ 265   1         while(1);
+ 266   1      }
+ 267          
+ 268          /*********************************************************/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2069    ----
+   CONSTANT SIZE    =    140    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

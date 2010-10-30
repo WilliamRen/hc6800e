@@ -1,0 +1,89 @@
+C51 COMPILER V7.10   232                                                                   06/03/2009 22:57:41 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE 232
+OBJECT MODULE PLACED IN 232.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 232.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           /*******************************************************************************
+   2          *  标题:                  RS232串口通信试验(发送)                                      *
+   3          
+   4          *  1.通过本例程了解串口的基本原理及使用 ,理解并掌握对串口进行初始化
+   5          
+   6             2.请使用串口调试助手（Baud 19200、数据位8、停止位1、效验位无）做为上位机来接收单片机串口所发的信息。
+   7               观察串口调试助手接收窗口 
+   8                                                                                                *
+   9          * 请学员认真消化本例程，学会用C语言操作串口                                               *
+  10          ********************************************************************************/
+  11          
+  12          #include <REG52.H>
+  13          #include <stdio.h>
+  14          
+  15          void delay(unsigned int i);    //函数声明
+  16          
+  17          char  code  MESSAGE[]= "普中科技助您学习RS232 ，请使用串口调试助手:  ";
+  18          unsigned char a;
+  19          
+  20          
+  21          void main (void) {
+  22   1      
+  23   1      
+  24   1              SCON = 0x50;       //REN=1允许串行接受状态，串口工作模式2          
+  25   1                  TMOD|= 0x20;      //定时器工作方式2                       
+  26   1                      PCON|= 0x80;      //波特率提高一倍                                                    
+  27   1              //      TH1  = 0xFD;     //baud*2  /* reload value 19200、数据位8、停止位1。效验位无     
+  28   1                  TH1 = 0xF3;                                 // 波特率2400
+  29   1              TL1 = 0xF3; 
+  30   1                      TR1  = 1;        //开启定时器1                                                      
+  31   1                      ES   = 1;        //开串口中断                  
+  32   1                      EA   = 1;        // 开总中断 
+  33   1                 // IE = 0x0;
+  34   1         
+  35   1              while(1)
+  36   1          {  a=0;
+  37   2              
+  38   2                 while(MESSAGE[a] != '\0')
+  39   2                 {
+  40   3                      SBUF = MESSAGE[a];              //SUBF接受/发送缓冲器(又叫串行通信特殊功能寄存器)
+  41   3               while(!TI);                            // 等特数据传送 (TI发送中断标志)
+  42   3                       TI = 0;                                        // 清除数据传送标志
+  43   3                      
+  44   3                      a++;                                        // 下一个字符
+  45   3      
+  46   3         } 
+  47   2        delay(1000);  
+  48   2       }
+  49   1       
+  50   1      }
+  51          
+  52           /**************************************************
+  53                                                                                                    
+  54                            延时处理程序                                                                                           
+  55                                                                                                            
+C51 COMPILER V7.10   232                                                                   06/03/2009 22:57:41 PAGE 2   
+
+  56          **************************************************/
+  57          
+  58           void delay(unsigned int i)
+  59          {
+  60   1              unsigned char j;
+  61   1              for(i; i > 0; i--)
+  62   1                      for(j = 200; j > 0; j--) ;
+  63   1      
+  64   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     73    ----
+   CONSTANT SIZE    =     46    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

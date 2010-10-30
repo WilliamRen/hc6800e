@@ -1,0 +1,266 @@
+C51 COMPILER V7.10   ²½½_Âí´ï                                                              07/25/2010 10:59:53 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE ²½½_Âí´ï
+OBJECT MODULE PLACED IN ²½½øÂí´ï.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ²½½øÂí´ï.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************************************************************************
+   2          *  ±êÌâ:                   ÎåÖá¿ØÖÆ²½½øµç»úÊÔÑé                                                                          *
+   3          *                                                                                                                                                                        *
+   4          *    Í¨¹ý±¾Àý³ÌÁË½â²½½øÂí´ïÊ¹ÓÃ¼°Çý¶¯³ÌÐò±àÐ´                                                                            *
+   5          *;   µ¥Ë«°ËÅÄ¹¤×÷·½Ê½£º                                                                  *
+   6          *;   A-AB-B-BC-C-CD-D-DA-A (¼´Ò»¸öÂö³å,×ª 3.75 ¶È)                                                               *
+   7          *    J14¶ÌÂ·Ã°Ðè¶Ï¿ª ,Í¨¹ýÅÅÏßÁ¬½Ó²½½øÂí´ïÊý¾Ý½Ó¿Ú                                       *
+   8          *    ÇëÑ§Ô±Ò»¶¨ÒªÏû»¯µô±¾Àý³Ì£¬Áì»áÖ¸ÕëµÄ¾­µäÓ¦ÓÃ£¬                                      *
+   9          * ÏÖÏó£º5¸ö²½½øÂí´ïÒÔ²»Í¬¼ÓËÙ¶ÈÔËÐÐ£¬ÔËÐÐµ½²»Í¬È¦ÊýºóÍ£Ö¹                            *                      
+             -                                                                           *
+  10          **************************************************************************************/  
+  11          #include "reg52.h"
+  12          
+  13          unsigned char TickOut(unsigned int * tick, unsigned int tickCnt);
+  14          unsigned char  Acceleration( unsigned int *Base_Tim,  unsigned int Delay_Tim,unsigned int * Flag , unsigne
+             -d char* Speed) ;
+  15          
+  16          unsigned int Tick_10ms=0;    //Ê±¼äÆ¬¼ÆÊýÆ÷
+  17          
+  18          unsigned char code FFW_L[8]={~0xfe,~0xfc,~0xfd,~0xf9,~0xfb,~0xf3,~0xf7,~0xf6};   //µÍËÄÎ» Âí´ïÏàÐò±ä»¯±í
+  19          unsigned char code FFW_H[8]={~0xef,~0xcf,~0xdf,~0x9f,~0xbf,~0x3f,~0x7f,~0x6f};   //¸ßËÄÎ» Âí´ïÏàÐò±ä»¯±í
+  20          
+  21          unsigned int  MotorTimer1 = 0 , MotorTimer2 = 0, MotorTimer3 = 0, MotorTimer4 = 0, MotorTimer5 = 0;           
+             -//Âí´ï×ªËÙ»ùÊ±
+  22          unsigned int  MotorDelay1 = 0 , MotorDelay2 = 0, MotorDelay3 = 0, MotorDelay4 = 0, MotorDelay5 = 0; TIM,CT
+             -;        //Âí´ï×ªËÙ
+  23          
+  24          unsigned  int xdata Delay_Tim1 =0,      Delay_Tim2 =0,   Delay_Tim3 =0,   Delay_Tim4 =0,   Delay_Tim5 =0;  //Âí´
+             -ï¼ÓËÙ¶È
+  25          unsigned  int Base_T1 = 0,      Base_T2 = 0,     Base_T3 = 0,     Base_T4 = 0,   Base_T5 = 0;    //Âí´ï¼ÓËÙ¶È»ùÊ±
+  26          unsigned char  speed1 = 8,      speed2 = 8,       speed3 = 8,      speed4 = 8,    speed5 = 8;  //Âí´ï×ªËÙ
+  27          unsigned int  Acc_Flg1 =0,      Acc_Flg2 =0,  Acc_Flg3 =0,      Acc_Flg4 =0,  Acc_Flg5 =0;         //¼Ó¼õËÙ±êÖ¾
+  28          
+  29          
+  30          /***********************************************************
+  31          purpose: ÏµÍ³³õÊ¼»¯
+  32          /**********************************************************/
+  33          void system_Ini()
+  34          {
+  35   1          TMOD|= 0x11;
+  36   1              //TH0=0xC4; //18.432M
+  37   1          //TL0=0x00;
+  38   1          TH0=0xDC; //11.0592M
+  39   1          TL0=0x00;   
+  40   1              IE    = 0x8A;   
+  41   1          TR0  = 1;
+  42   1      
+  43   1      //      TH1 = 0xfe; //11.0592
+  44   1      //      TL1 = 0x33;
+  45   1      //      TR1  = 1; 
+  46   1      }
+  47          
+  48          /*****************************************************
+  49          *           ²½½øÂí´ï1                                                            *
+  50          ******************************************************/
+C51 COMPILER V7.10   ²½½_Âí´ï                                                              07/25/2010 10:59:53 PAGE 2   
+
+  51           
+  52          unsigned char SetMotor1(unsigned int step,unsigned int Speed ) //step Âí´ïµÄ²½Êý  SpeedÂí´ïËÙ¶È
+  53          {
+  54   1         static unsigned int Circle;    //Âí´ï²½Êý
+  55   1         static unsigned char ret ;
+  56   1         MotorDelay1 = 70-Speed;
+  57   1          if (Circle <= step)
+  58   1         {  
+  59   2             if (TickOut(&MotorTimer1 , MotorDelay1))
+  60   2                 { static char i;
+  61   3                       ret = (FFW_L[i]&0x0f);   //²é±íÈ¡Âí´ïÏàÐò
+  62   3                       if (i++ == 7) i = 0;
+  63   3                       ++Circle;
+  64   3                 }
+  65   2          }
+  66   1      
+  67   1         return ret;
+  68   1      }
+  69          
+  70          /*****************************************************
+  71          *           ²½½øÂí´ï2                                                            *
+  72          ******************************************************/
+  73          unsigned char SetMotor2(unsigned int step,unsigned int Speed )   //step Âí´ïµÄ²½Êý  SpeedÂí´ïËÙ¶È
+  74          {  static unsigned int Circle ;  //Âí´ï²½Êý
+  75   1         static unsigned char ret ;
+  76   1         MotorDelay2 = 70-Speed;
+  77   1        if (Circle <= step)
+  78   1        {   if(TickOut(&MotorTimer2 , MotorDelay2))
+  79   2           { static char i;
+  80   3                  ret = (FFW_H[i]&0xF0);       //²é±íÈ¡Âí´ïÏàÐò
+  81   3                      if (i++ == 7) i = 0;
+  82   3                  ++Circle;
+  83   3               }
+  84   2        }
+  85   1      
+  86   1        return  ret;
+  87   1      }
+  88          
+  89           /*****************************************************
+  90          *           ²½½øÂí´ï3                                                            *
+  91          ******************************************************/
+  92          unsigned char SetMotor3(unsigned int step,unsigned int Speed)    //step Âí´ïµÄ²½Êý  SpeedÂí´ïËÙ¶È
+  93          {  static unsigned int Circle ;   //Âí´ï²½Êý
+  94   1         static unsigned char ret ;
+  95   1         MotorDelay3 = 70-Speed;
+  96   1         if(Circle <= step)
+  97   1         { if (TickOut(&MotorTimer3 , MotorDelay3))
+  98   2           { static char i;
+  99   3                 ret = FFW_L[i]&0x1f;    //²é±íÈ¡Âí´ïÏàÐò
+ 100   3                 if (i++ == 7) i = 0;
+ 101   3                  ++Circle;
+ 102   3           }
+ 103   2         }
+ 104   1         return ret;
+ 105   1      }
+ 106          
+ 107          /*****************************************************
+ 108          *           ²½½øÂí´ï4                                                            *
+ 109          ******************************************************/
+ 110          unsigned char SetMotor4(unsigned int step,unsigned int Speed)   //step Âí´ïµÄ²½Êý  SpeedÂí´ïËÙ¶È
+ 111          {  static unsigned int Circle ;   //Âí´ï²½Êý
+ 112   1         static unsigned char ret ;
+C51 COMPILER V7.10   ²½½_Âí´ï                                                              07/25/2010 10:59:53 PAGE 3   
+
+ 113   1         MotorDelay4 = 70-Speed;
+ 114   1          if(Circle <= step)
+ 115   1              {   if (TickOut(&MotorTimer4 , MotorDelay4))
+ 116   2                 { static char i;
+ 117   3                       ret = FFW_H[i]&0xf0;   //²é±íÈ¡Âí´ïÏàÐò
+ 118   3                       if (i++ == 7) i = 0;
+ 119   3                        ++Circle;
+ 120   3                 }
+ 121   2              }
+ 122   1         return ret;
+ 123   1      }
+ 124          
+ 125          /*****************************************************
+ 126          *           ²½½øÂí´ï5                                                            *
+ 127          ******************************************************/
+ 128          unsigned char SetMotor5(unsigned int step,unsigned int Speed)    //step Âí´ïµÄ²½Êý  SpeedÂí´ïËÙ¶È
+ 129          {  static unsigned int Circle ;  //Âí´ï²½Êý
+ 130   1         static unsigned char ret ;    
+ 131   1         MotorDelay5 = 70-Speed;
+ 132   1         if(Circle <= step)
+ 133   1         {    if (TickOut(&MotorTimer5 , MotorDelay5))
+ 134   2                 { static char i;
+ 135   3                       ret = FFW_L[i]&0x0f;    //²é±íÈ¡Âí´ïÏàÐò
+ 136   3                      if (i++ == 7) i = 0;
+ 137   3                      ++Circle;
+ 138   3                }
+ 139   2                
+ 140   2              }
+ 141   1         return ret;
+ 142   1      }
+ 143          
+ 144          main()
+ 145          { 
+ 146   1        system_Ini();
+ 147   1        
+ 148   1        while (1) 
+ 149   1        { unsigned char ret1 , ret2 , ret3 , ret4 , ret5;
+ 150   2         
+ 151   2          //**************************²½½øÂí´ï1´¦Àí**************************
+ 152   2              Delay_Tim1 = 50;
+ 153   2              if(speed1 == 61)  Acc_Flg1 = 2;
+ 154   2              if(speed1 == 8)   Acc_Flg1 = 1 ;
+ 155   2              Acc_Flg1 = 1;
+ 156   2              Acceleration(&Base_T1 , Delay_Tim1, &Acc_Flg1  , &speed1);
+ 157   2          ret1 = SetMotor1(8*5000 , speed1 ) ;         //²ÎÊýÉèÖÃ²½Êý  8¸öÂö³å30¶È*100=3000¶È
+ 158   2      
+ 159   2              //**************************²½½øÂí´ï2´¦Àí**************************
+ 160   2              Delay_Tim2 = 250;
+ 161   2              Acc_Flg2 = 1;
+ 162   2              Acceleration(&Base_T2 , Delay_Tim2, &Acc_Flg2  , &speed2);
+ 163   2              ret2 = SetMotor2(8*1000 , speed2) ;      //Âí´ï2
+ 164   2              P1 = ret1 | ret2 ;
+ 165   2      
+ 166   2              //**************************²½½øÂí´ï3´¦Àí**************************
+ 167   2              Delay_Tim3 = 500;
+ 168   2              Acc_Flg3 = 1;
+ 169   2              ret3 = SetMotor3(8*1500 , Acceleration(&Base_T3 , Delay_Tim3, &Acc_Flg3  , &speed3)) ;   //Âí´ï3
+ 170   2              
+ 171   2              //**************************²½½øÂí´ï4´¦Àí**************************
+ 172   2              Delay_Tim4 = 750;
+ 173   2              Acc_Flg4 = 1;
+ 174   2              ret4 = SetMotor4(8*2000 , Acceleration(&Base_T4 ,  Delay_Tim4 ,&Acc_Flg4  , &speed4)) ;  //Âí´ï4
+C51 COMPILER V7.10   ²½½_Âí´ï                                                              07/25/2010 10:59:53 PAGE 4   
+
+ 175   2              P0 =  ret3 | ret4 ;
+ 176   2              
+ 177   2              //**************************²½½øÂí´ï5´¦Àí**************************
+ 178   2              Delay_Tim5 = 1000;
+ 179   2              Acc_Flg5 = 1;
+ 180   2              ret5 = SetMotor5(8*2500 , Acceleration(&Base_T5 , Delay_Tim5, &Acc_Flg5  , &speed5));    //Âí´ï5
+ 181   2              P2 = ret5; 
+ 182   2      
+ 183   2              }
+ 184   1       
+ 185   1      }
+ 186          
+ 187          
+ 188          unsigned char TickOut(unsigned int * tick, unsigned int tickCnt)
+ 189          {
+ 190   1           if(Tick_10ms - *tick >= tickCnt)  
+ 191   1           {
+ 192   2              *tick = Tick_10ms;
+ 193   2              return 1;
+ 194   2           }
+ 195   1           return 0;
+ 196   1      }
+ 197          
+ 198          
+ 199          /*************************************************************************
+ 200          *                                                                                                                                                *
+ 201          *                        µ÷Õû¼ÓËÙ¶È                                                                              *
+ 202          **************************************************************************/
+ 203          unsigned char  Acceleration(unsigned int *Base_Tim, unsigned int Delay_Tim,  unsigned int * Flag , unsigne
+             -d char* Speed)
+ 204          {
+ 205   1              if (TickOut(*&Base_Tim , Delay_Tim))     
+ 206   1              {  
+ 207   2                if((*Flag == 1) && (*Speed <= 61)) 
+ 208   2                (*Speed)++ ;
+ 209   2      
+ 210   2                if((*Flag == 2) && (*Speed >= 8)) 
+ 211   2                (*Speed)--;
+ 212   2               }
+ 213   1                
+ 214   1              return  *Speed;
+ 215   1      }
+ 216          
+ 217          
+ 218          /************************************************
+ 219          *                                                                                               *
+ 220          *             ¶¨Ê±ÖÐ¶ÏÑÓÊ±                                                  *
+ 221          ************************************************/
+ 222            void Tzd(void) interrupt 1
+ 223          {
+ 224   1         TH0 = 0xfe;    //11.0592
+ 225   1         TL0 = 0x33;
+ 226   1      
+ 227   1         Tick_10ms++;    //10MSÊ±ÖÓ
+ 228   1      
+ 229   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    890    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =     10    ----
+C51 COMPILER V7.10   ²½½_Âí´ï                                                              07/25/2010 10:59:53 PAGE 5   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     71      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

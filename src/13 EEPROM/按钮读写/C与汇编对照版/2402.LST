@@ -1,0 +1,345 @@
+A51 MACRO ASSEMBLER  2402                                                                 09/16/2009 23:41:27 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN 2402.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE 2402.SRC SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; 2402.SRC generated from: 2402.c
+                       2     ; COMPILER INVOKED BY:
+                       3     ;        C:\Keil\C51\BIN\C51.EXE 2402.c BROWSE DEBUG OBJECTEXTEND
+                       4     
+                       5     
+                       6     NAME    _2402
+                       7     
+                       8     ?PR?_ISendStr?2402   SEGMENT CODE 
+                       9     ?DT?_ISendStr?2402   SEGMENT DATA OVERLAYABLE 
+                      10     ?PR?_IRcvStr?2402    SEGMENT CODE 
+                      11     ?DT?_IRcvStr?2402    SEGMENT DATA OVERLAYABLE 
+                      12             EXTRN   CODE (_SendByte)
+                      13             EXTRN   BIT (ack)
+                      14             EXTRN   CODE (RcvByte)
+                      15             EXTRN   CODE (Ack_I2c)
+                      16             EXTRN   BIT (?Ack_I2c?BIT)
+                      17             EXTRN   CODE (Start_I2c)
+                      18             EXTRN   CODE (Stop_I2c)
+                      19             EXTRN   CODE (?C?CLDPTR)
+                      20             EXTRN   CODE (?C?CSTPTR)
+                      21             PUBLIC  ?_IRcvStr?BYTE
+                      22             PUBLIC  _IRcvStr
+                      23             PUBLIC  ?_ISendStr?BYTE
+                      24             PUBLIC  _ISendStr
+                      25     
+----                  26             RSEG  ?DT?_IRcvStr?2402
+0000                  27     ?_IRcvStr?BYTE:
+0000                  28             sla?145:   DS   1
+0001                  29            suba?146:   DS   1
+0002                  30               s?147:   DS   3
+0005                  31              no?148:   DS   1
+0006                  32             ORG  6
+0006                  33               i?149:   DS   1
+                      34     
+----                  35             RSEG  ?DT?_ISendStr?2402
+0000                  36     ?_ISendStr?BYTE:
+0000                  37             sla?040:   DS   1
+0001                  38            suba?041:   DS   1
+0002                  39               s?042:   DS   3
+0005                  40              no?043:   DS   1
+0006                  41             ORG  6
+0006                  42               i?044:   DS   1
+                      43     ;  
+                      44     ;  /*************************此部分为AT2402的驱动程序使用I2C总线连接***********************
+                             **************/
+                      45     
+                      46     ; #include<Function.h>
+                      47     ; 
+                      48     ; //AT2402的功能函数
+                      49     ; /*******************************************************************
+                      50     ;                     向有子地址器件发送多字节数据函数               
+                      51     ; 函数原型: bit  ISendStr(UCHAR sla,UCHAR suba,ucahr *s,UCHAR no);  
+                      52     ; 功能:     从启动总线到发送地址，子地址,数据，结束总线的全过程,从器件
+                      53     ;           地址sla，子地址suba，发送内容是s指向的内容，发送no个字节。
+                      54     ;           如果返回1表示操作成功，否则操作有误。
+                      55     ; 注意：    使用前必须已结束总线。
+                      56     ; ********************************************************************/
+                      57     ; bit ISendStr(unsigned char  sla,unsigned char  suba,unsigned char  *s,unsigned char  no)
+A51 MACRO ASSEMBLER  2402                                                                 09/16/2009 23:41:27 PAGE     2
+
+                      58     
+----                  59             RSEG  ?PR?_ISendStr?2402
+0000                  60     _ISendStr:
+                      61             USING   0
+                      62                             ; SOURCE LINE # 15
+0000 8F00     F       63             MOV     sla?040,R7
+0002 8D00     F       64             MOV     suba?041,R5
+0004 8B00     F       65             MOV     s?042,R3
+0006 8A00     F       66             MOV     s?042+01H,R2
+0008 8900     F       67             MOV     s?042+02H,R1
+                      68     ; {
+                      69                             ; SOURCE LINE # 16
+                      70     ;    unsigned char i;
+                      71     ; 
+                      72     ;    Start_I2c();               /*启动总线*/
+                      73                             ; SOURCE LINE # 19
+000A 120000   F       74             LCALL   Start_I2c
+                      75     ;    SendByte(sla);             /*发送器件地址*/
+                      76                             ; SOURCE LINE # 20
+000D AF00     F       77             MOV     R7,sla?040
+000F 120000   F       78             LCALL   _SendByte
+                      79     ;    if(ack==0)return(0);
+                      80                             ; SOURCE LINE # 21
+0012 200002   F       81             JB      ack,?C0001
+0015 C3               82             CLR     C
+0016 22               83             RET     
+0017                  84     ?C0001:
+                      85     ;    SendByte(suba);            /*发送器件子地址*/
+                      86                             ; SOURCE LINE # 22
+0017 AF00     F       87             MOV     R7,suba?041
+0019 120000   F       88             LCALL   _SendByte
+                      89     ;    if(ack==0)return(0);
+                      90                             ; SOURCE LINE # 23
+001C 200002   F       91             JB      ack,?C0003
+001F C3               92             CLR     C
+0020 22               93             RET     
+0021                  94     ?C0003:
+                      95     ; 
+                      96     ;    for(i=0;i<no;i++)
+                      97                             ; SOURCE LINE # 25
+0021 E4               98             CLR     A
+0022 F500     F       99             MOV     i?044,A
+0024                 100     ?C0004:
+0024 E500     F      101             MOV     A,i?044
+0026 C3              102             CLR     C
+0027 9500     F      103             SUBB    A,no?043
+0029 5021            104             JNC     ?C0005
+                     105     ;    {   
+                     106                             ; SOURCE LINE # 26
+                     107     ;      SendByte(*s);            /*发送数据*/
+                     108                             ; SOURCE LINE # 27
+002B AB00     F      109             MOV     R3,s?042
+002D AA00     F      110             MOV     R2,s?042+01H
+002F A900     F      111             MOV     R1,s?042+02H
+0031 120000   F      112             LCALL   ?C?CLDPTR
+0034 FF              113             MOV     R7,A
+0035 120000   F      114             LCALL   _SendByte
+                     115     ;      if(ack==0)return(0);
+                     116                             ; SOURCE LINE # 28
+0038 200002   F      117             JB      ack,?C0007
+003B C3              118             CLR     C
+003C 22              119             RET     
+003D                 120     ?C0007:
+                     121     ;      s++;
+                     122                             ; SOURCE LINE # 29
+003D 7401            123             MOV     A,#01H
+A51 MACRO ASSEMBLER  2402                                                                 09/16/2009 23:41:27 PAGE     3
+
+003F 2500     F      124             ADD     A,s?042+02H
+0041 F500     F      125             MOV     s?042+02H,A
+0043 E4              126             CLR     A
+0044 3500     F      127             ADDC    A,s?042+01H
+0046 F500     F      128             MOV     s?042+01H,A
+                     129     ;    } 
+                     130                             ; SOURCE LINE # 30
+0048 0500     F      131             INC     i?044
+004A 80D8            132             SJMP    ?C0004
+004C                 133     ?C0005:
+                     134     ;    Stop_I2c();                /*结束总线*/ 
+                     135                             ; SOURCE LINE # 31
+004C 120000   F      136             LCALL   Stop_I2c
+                     137     ; 
+                     138     ;    return(1);
+                     139                             ; SOURCE LINE # 33
+004F D3              140             SETB    C
+                     141     ; }
+                     142                             ; SOURCE LINE # 34
+0050                 143     ?C0002:
+0050 22              144             RET     
+                     145     ; END OF _ISendStr
+                     146     
+                     147     ; 
+                     148     ; /*******************************************************************
+                     149     ;                     向有子地址器件读取多字节数据函数               
+                     150     ; 函数原型: bit  RecndStr(UCHAR sla,UCHAR suba,ucahr *s,UCHAR no);  
+                     151     ; 功能:     从启动总线到发送地址，子地址,读数据，结束总线的全过程,从器件
+                     152     ;           地址sla，子地址suba，读出的内容放入s指向的存储区，读no个字节。
+                     153     ;            如果返回1表示操作成功，否则操作有误。
+                     154     ; 注意：    使用前必须已结束总线。
+                     155     ; ********************************************************************/
+                     156     ; bit IRcvStr(unsigned char  sla,unsigned char  suba,unsigned char  *s,unsigned char  no)
+                     157     
+----                 158             RSEG  ?PR?_IRcvStr?2402
+0000                 159     _IRcvStr:
+                     160             USING   0
+                     161                             ; SOURCE LINE # 44
+0000 8F00     F      162             MOV     sla?145,R7
+0002 8D00     F      163             MOV     suba?146,R5
+0004 8B00     F      164             MOV     s?147,R3
+0006 8A00     F      165             MOV     s?147+01H,R2
+0008 8900     F      166             MOV     s?147+02H,R1
+                     167     ; {
+                     168                             ; SOURCE LINE # 45
+                     169     ;    unsigned char i;
+                     170     ; 
+                     171     ;    Start_I2c();                  /*启动总线*/
+                     172                             ; SOURCE LINE # 48
+000A 120000   F      173             LCALL   Start_I2c
+                     174     ;    SendByte(sla);                /*发送器件地址*/
+                     175                             ; SOURCE LINE # 49
+000D AF00     F      176             MOV     R7,sla?145
+000F 120000   F      177             LCALL   _SendByte
+                     178     ;    if(ack==0)return(0);
+                     179                             ; SOURCE LINE # 50
+0012 200002   F      180             JB      ack,?C0008
+0015 C3              181             CLR     C
+0016 22              182             RET     
+0017                 183     ?C0008:
+                     184     ;    SendByte(suba);               /*发送器件子地址*/
+                     185                             ; SOURCE LINE # 51
+0017 AF00     F      186             MOV     R7,suba?146
+0019 120000   F      187             LCALL   _SendByte
+                     188     ;    if(ack==0)return(0);
+                     189                             ; SOURCE LINE # 52
+A51 MACRO ASSEMBLER  2402                                                                 09/16/2009 23:41:27 PAGE     4
+
+001C 200002   F      190             JB      ack,?C0010
+001F C3              191             CLR     C
+0020 22              192             RET     
+0021                 193     ?C0010:
+                     194     ; 
+                     195     ;    Start_I2c();                 /*重新启动总线*/
+                     196                             ; SOURCE LINE # 54
+0021 120000   F      197             LCALL   Start_I2c
+                     198     ;    SendByte(sla+1);
+                     199                             ; SOURCE LINE # 55
+0024 E500     F      200             MOV     A,sla?145
+0026 04              201             INC     A
+0027 FF              202             MOV     R7,A
+0028 120000   F      203             LCALL   _SendByte
+                     204     ;    if(ack==0)return(0);
+                     205                             ; SOURCE LINE # 56
+002B 200002   F      206             JB      ack,?C0011
+002E C3              207             CLR     C
+002F 22              208             RET     
+0030                 209     ?C0011:
+                     210     ;    for(i=0;i<no-1;i++)
+                     211                             ; SOURCE LINE # 57
+0030 E4              212             CLR     A
+0031 F500     F      213             MOV     i?149,A
+0033                 214     ?C0012:
+0033 E500     F      215             MOV     A,no?148
+0035 14              216             DEC     A
+0036 FF              217             MOV     R7,A
+0037 E500     F      218             MOV     A,i?149
+0039 C3              219             CLR     C
+003A 9F              220             SUBB    A,R7
+003B 5021            221             JNC     ?C0013
+                     222     ;    {   
+                     223                             ; SOURCE LINE # 58
+                     224     ;      *s=RcvByte();               /*发送数据*/
+                     225                             ; SOURCE LINE # 59
+003D 120000   F      226             LCALL   RcvByte
+0040 AB00     F      227             MOV     R3,s?147
+0042 AA00     F      228             MOV     R2,s?147+01H
+0044 A900     F      229             MOV     R1,s?147+02H
+0046 EF              230             MOV     A,R7
+0047 120000   F      231             LCALL   ?C?CSTPTR
+                     232     ;       Ack_I2c(0);                /*发送就答位*/  
+                     233                             ; SOURCE LINE # 60
+004A C200     F      234             CLR     ?Ack_I2c?BIT
+004C 120000   F      235             LCALL   Ack_I2c
+                     236     ;      s++;
+                     237                             ; SOURCE LINE # 61
+004F 7401            238             MOV     A,#01H
+0051 2500     F      239             ADD     A,s?147+02H
+0053 F500     F      240             MOV     s?147+02H,A
+0055 E4              241             CLR     A
+0056 3500     F      242             ADDC    A,s?147+01H
+0058 F500     F      243             MOV     s?147+01H,A
+                     244     ;    } 
+                     245                             ; SOURCE LINE # 62
+005A 0500     F      246             INC     i?149
+005C 80D5            247             SJMP    ?C0012
+005E                 248     ?C0013:
+                     249     ;    *s=RcvByte();
+                     250                             ; SOURCE LINE # 63
+005E 120000   F      251             LCALL   RcvByte
+0061 AB00     F      252             MOV     R3,s?147
+0063 AA00     F      253             MOV     R2,s?147+01H
+0065 A900     F      254             MOV     R1,s?147+02H
+0067 EF              255             MOV     A,R7
+A51 MACRO ASSEMBLER  2402                                                                 09/16/2009 23:41:27 PAGE     5
+
+0068 120000   F      256             LCALL   ?C?CSTPTR
+                     257     ;    Ack_I2c(1);                   /*发送非应位*/
+                     258                             ; SOURCE LINE # 64
+006B D200     F      259             SETB    ?Ack_I2c?BIT
+006D 120000   F      260             LCALL   Ack_I2c
+                     261     ;    Stop_I2c();                   /*结束总线*/ 
+                     262                             ; SOURCE LINE # 65
+0070 120000   F      263             LCALL   Stop_I2c
+                     264     ;    return(1);
+                     265                             ; SOURCE LINE # 66
+0073 D3              266             SETB    C
+                     267     ; }
+                     268                             ; SOURCE LINE # 67
+0074                 269     ?C0009:
+0074 22              270             RET     
+                     271     ; END OF _IRcvStr
+                     272     
+                     273             END
+A51 MACRO ASSEMBLER  2402                                                                 09/16/2009 23:41:27 PAGE     6
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+?ACK_I2C?BIT . . .  B ADDR   -----       EXT
+?C0001 . . . . . .  C ADDR   0017H   R   SEG=?PR?_ISENDSTR?2402
+?C0002 . . . . . .  C ADDR   0050H   R   SEG=?PR?_ISENDSTR?2402
+?C0003 . . . . . .  C ADDR   0021H   R   SEG=?PR?_ISENDSTR?2402
+?C0004 . . . . . .  C ADDR   0024H   R   SEG=?PR?_ISENDSTR?2402
+?C0005 . . . . . .  C ADDR   004CH   R   SEG=?PR?_ISENDSTR?2402
+?C0007 . . . . . .  C ADDR   003DH   R   SEG=?PR?_ISENDSTR?2402
+?C0008 . . . . . .  C ADDR   0017H   R   SEG=?PR?_IRCVSTR?2402
+?C0009 . . . . . .  C ADDR   0074H   R   SEG=?PR?_IRCVSTR?2402
+?C0010 . . . . . .  C ADDR   0021H   R   SEG=?PR?_IRCVSTR?2402
+?C0011 . . . . . .  C ADDR   0030H   R   SEG=?PR?_IRCVSTR?2402
+?C0012 . . . . . .  C ADDR   0033H   R   SEG=?PR?_IRCVSTR?2402
+?C0013 . . . . . .  C ADDR   005EH   R   SEG=?PR?_IRCVSTR?2402
+?C?CLDPTR. . . . .  C ADDR   -----       EXT
+?C?CSTPTR. . . . .  C ADDR   -----       EXT
+?DT?_IRCVSTR?2402.  D SEG    0007H       REL=UNIT
+?DT?_ISENDSTR?2402  D SEG    0007H       REL=UNIT
+?PR?_IRCVSTR?2402.  C SEG    0075H       REL=UNIT
+?PR?_ISENDSTR?2402  C SEG    0051H       REL=UNIT
+?_IRCVSTR?BYTE . .  D ADDR   0000H   R   SEG=?DT?_IRCVSTR?2402
+?_ISENDSTR?BYTE. .  D ADDR   0000H   R   SEG=?DT?_ISENDSTR?2402
+ACK. . . . . . . .  B ADDR   -----       EXT
+ACK_I2C. . . . . .  C ADDR   -----       EXT
+I?044. . . . . . .  D ADDR   0006H   R   SEG=?DT?_ISENDSTR?2402
+I?149. . . . . . .  D ADDR   0006H   R   SEG=?DT?_IRCVSTR?2402
+NO?043 . . . . . .  D ADDR   0005H   R   SEG=?DT?_ISENDSTR?2402
+NO?148 . . . . . .  D ADDR   0005H   R   SEG=?DT?_IRCVSTR?2402
+RCVBYTE. . . . . .  C ADDR   -----       EXT
+S?042. . . . . . .  D ADDR   0002H   R   SEG=?DT?_ISENDSTR?2402
+S?147. . . . . . .  D ADDR   0002H   R   SEG=?DT?_IRCVSTR?2402
+SLA?040. . . . . .  D ADDR   0000H   R   SEG=?DT?_ISENDSTR?2402
+SLA?145. . . . . .  D ADDR   0000H   R   SEG=?DT?_IRCVSTR?2402
+START_I2C. . . . .  C ADDR   -----       EXT
+STOP_I2C . . . . .  C ADDR   -----       EXT
+SUBA?041 . . . . .  D ADDR   0001H   R   SEG=?DT?_ISENDSTR?2402
+SUBA?146 . . . . .  D ADDR   0001H   R   SEG=?DT?_IRCVSTR?2402
+_2402. . . . . . .  N NUMB   -----       
+_IRCVSTR . . . . .  C ADDR   0000H   R   SEG=?PR?_IRCVSTR?2402
+_ISENDSTR. . . . .  C ADDR   0000H   R   SEG=?PR?_ISENDSTR?2402
+_SENDBYTE. . . . .  C ADDR   -----       EXT
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

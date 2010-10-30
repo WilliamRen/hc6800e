@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"步进马达.obj" 
+TO "步进马达" 
+RAMSIZE(256) 

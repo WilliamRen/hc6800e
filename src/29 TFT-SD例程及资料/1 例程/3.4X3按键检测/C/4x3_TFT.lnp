@@ -1,0 +1,6 @@
+"STARTUP.obj",
+"main.obj",
+"Lcd.obj",
+"4x3.obj" 
+TO "4x3_TFT" 
+RAMSIZE(256) 

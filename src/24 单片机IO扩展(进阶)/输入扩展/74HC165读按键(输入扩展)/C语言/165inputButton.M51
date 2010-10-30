@@ -1,0 +1,211 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        03/14/2010  10:14:49  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, button.obj TO 165inputButton RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  button.obj (BUTTON)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?LNOT)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?LSHL)
+
+
+LINK MAP OF MODULE:  165inputButton (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0004H     UNIT         _DATA_GROUP_
+            DATA    000CH     0002H     UNIT         ?DT?BUTTON
+                    000EH     0012H                  *** GAP ***
+            DATA    0020H     0001H     BIT_ADDR     ?BA?BUTTON
+            BIT     0021H.0   0000H.2   UNIT         ?BI?BUTTON
+                    0021H.2   0000H.6                *** GAP ***
+            IDATA   0022H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0069H     UNIT         ?PR?MAIN?BUTTON
+            CODE    006CH     0032H     UNIT         ?PR?REHC74165?BUTTON
+            CODE    009EH     0020H     UNIT         ?C?LIB_CODE
+            CODE    00BEH     0012H     UNIT         ?PR?BEEP?BUTTON
+            CODE    00D0H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   165inputButton (?C_STARTUP)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?BUTTON
+
+?PR?MAIN?BUTTON                0008H    0004H
+  +--> ?PR?REHC74165?BUTTON
+  +--> ?PR?BEEP?BUTTON
+
+
+
+SYMBOL TABLE OF MODULE:  165inputButton (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/14/2010  10:14:49  PAGE 2
+
+
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:00D0H         SEGMENT       ?C_C51STARTUP
+  I:0022H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:00D3H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:00D0H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         92
+  C:00D0H         LINE#         99
+  C:00D2H         LINE#         100
+  C:00D3H         LINE#         101
+  C:00D4H         LINE#         102
+  C:00D6H         LINE#         151
+  C:00D9H         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        BUTTON
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  B:0020H.4       PUBLIC        K4
+  B:0090H.4       PUBLIC        RELAY
+  B:0020H.5       PUBLIC        K5
+  B:0020H.6       PUBLIC        K6
+  D:0090H         PUBLIC        P1
+  B:0020H.7       PUBLIC        K7
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  B:0090H.7       PUBLIC        IN_Dat
+  B:0090H.6       PUBLIC        IN_PL
+  D:000CH         PUBLIC        Output
+  D:00B8H         PUBLIC        IP
+  B:0090H.5       PUBLIC        BEEP
+  C:00BEH         PUBLIC        beep
+  C:0003H         PUBLIC        main
+  D:0020H         PUBLIC        Key
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/14/2010  10:14:49  PAGE 3
+
+
+  B:0021H.0       PUBLIC        K0J
+  C:006CH         PUBLIC        ReHC74165
+  B:00B0H.6       PUBLIC        CLK
+  D:00C8H         PUBLIC        T2CON
+  B:0020H.0       PUBLIC        K0
+  D:00D0H         PUBLIC        PSW
+  B:0020H.1       PUBLIC        K1
+  B:0021H.1       PUBLIC        M0
+  B:0020H.2       PUBLIC        K2
+  B:0020H.3       PUBLIC        K3
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        Input
+  -------         ENDDO         
+  C:0003H         LINE#         46
+  C:0003H         LINE#         47
+  C:0003H         LINE#         49
+  C:0003H         LINE#         50
+  C:0003H         LINE#         51
+  C:000EH         LINE#         52
+  C:0011H         LINE#         53
+  C:0013H         LINE#         54
+  C:0016H         LINE#         57
+  C:001EH         LINE#         58
+  C:0023H         LINE#         60
+  C:002BH         LINE#         61
+  C:0034H         LINE#         62
+  C:003DH         LINE#         63
+  C:0046H         LINE#         64
+  C:004FH         LINE#         65
+  C:0058H         LINE#         66
+  C:0061H         LINE#         67
+  C:006AH         LINE#         69
+  -------         ENDPROC       MAIN
+  -------         PROC          BEEP
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:0006H         SYMBOL        j
+  -------         ENDDO         
+  C:00BEH         LINE#         78
+  C:00BEH         LINE#         79
+  C:00BEH         LINE#         81
+  C:00C0H         LINE#         82
+  C:00C0H         LINE#         84
+  C:00C7H         LINE#         85
+  C:00C9H         LINE#         86
+  C:00CDH         LINE#         87
+  C:00CFH         LINE#         88
+  -------         ENDPROC       BEEP
+  -------         PROC          REHC74165
+  -------         DO            
+  D:0003H         SYMBOL        i
+  D:0004H         SYMBOL        indata
+  -------         ENDDO         
+  C:006CH         LINE#         98
+  C:006CH         LINE#         99
+  C:006CH         LINE#         103
+BL51 BANKED LINKER/LOCATER V5.03                                                      03/14/2010  10:14:49  PAGE 4
+
+
+  C:006EH         LINE#         104
+  C:006FH         LINE#         105
+  C:0071H         LINE#         106
+  C:0072H         LINE#         108
+  C:007AH         LINE#         109
+  C:007CH         LINE#         110
+  C:007CH         LINE#         111
+  C:0081H         LINE#         112
+  C:0091H         LINE#         113
+  C:0093H         LINE#         114
+  C:0094H         LINE#         115
+  C:0096H         LINE#         116
+  C:009AH         LINE#         118
+  C:009DH         LINE#         119
+  -------         ENDPROC       REHC74165
+  -------         ENDMOD        BUTTON
+
+  -------         MODULE        ?C?LNOT
+  C:009EH         PUBLIC        ?C?LNOT
+  -------         ENDMOD        ?C?LNOT
+
+  -------         MODULE        ?C?LSHL
+  C:00ABH         PUBLIC        ?C?LSHL
+  -------         ENDMOD        ?C?LSHL
+
+Program Size: data=16.2 xdata=0 code=220
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

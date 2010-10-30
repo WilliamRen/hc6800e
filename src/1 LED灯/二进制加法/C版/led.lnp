@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"LEC_3.obj" 
+TO "led" 
+RAMSIZE(256) 

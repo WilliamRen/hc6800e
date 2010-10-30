@@ -1,0 +1,108 @@
+C51 COMPILER V7.10   MAIN                                                                  07/29/2010 12:50:13 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /********************************************************************************
+   2          *  描述:                                                                       *
+   3          *         数码管显示 遥控键值读取器                                            *
+   4          *         遥控器接p3.2                                                         *
+   5          *                                                                              *
+   6          *                                                                              *
+   7          *                                                                              *
+   8          *******************************************************************************/
+   9          #include <reg51.h>
+  10          #include <intrins.h>
+  11          #define  NOP() _nop_()  /* 定义空指令 */
+  12          
+  13          //译码器管脚定义
+  14          sbit    LS138A=P2^2;       //管脚定义
+  15          sbit    LS138B=P2^3;
+  16          sbit    LS138C=P2^4; 
+  17          
+  18          //此表为 LED 的字模, 共阴数码管 0-9  - 
+  19          unsigned char code Disp_Tab[] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F,0x77,0x7C,0x39,0x5E,0x7
+             -9,0x71};
+  20           
+  21          unsigned long  LedOut[5],LedNumVal;
+  22          extern  unsigned char  IRCOM[7];
+  23          
+  24          void delay(unsigned int i);      //函数声名
+  25          void display(unsigned char Key_Val);
+  26          extern void IRInit();    //extern 是引用IR.C中的函数
+  27          
+  28          
+  29          main()
+  30          { 
+  31   1              IRInit();
+  32   1              while(1)
+  33   1              { 
+  34   2          //显示红外键码
+  35   2              display(IRCOM[2]);
+  36   2         }
+  37   1              
+  38   1      }
+  39          
+  40          void delay(unsigned int i)
+  41          {
+  42   1          char j;
+  43   1          for(i; i > 0; i--)
+  44   1              for(j = 200; j > 0; j--);
+  45   1      }
+  46          
+  47          
+  48          void display(unsigned char Key_Val)
+  49          {  
+  50   1         unsigned char i; 
+  51   1         /********以下将键值送到LED数码管显示*************/
+  52   1            LedNumVal=Key_Val;      //把键值送到LedNumVal变量中
+  53   1                LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+  54   1            LedOut[1]=Disp_Tab[LedNumVal%1000/100];
+C51 COMPILER V7.10   MAIN                                                                  07/29/2010 12:50:13 PAGE 2   
+
+  55   1            LedOut[2]=Disp_Tab[LedNumVal%100/10];      //十位
+  56   1            LedOut[3]=Disp_Tab[LedNumVal%10];    //个位
+  57   1                
+  58   1          for(i=0; i<4; i++) 
+  59   1                {             
+  60   2                       P0 = LedOut[i] ;
+  61   2                                                              
+  62   2                      switch(i)                                         
+  63   2               {                //138译码
+  64   3                              case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+  65   3                  case 1:LS138A=1; LS138B=0; LS138C=0; break;                 
+  66   3                  case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+  67   3                  case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+  68   3               }
+  69   2                       
+  70   2                      delay(100);
+  71   2                }
+  72   1      
+  73   1                P0 = 0;  
+  74   1        
+  75   1       }
+  76          
+  77          
+  78          
+  79          
+  80          
+  81          
+  82          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    318    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

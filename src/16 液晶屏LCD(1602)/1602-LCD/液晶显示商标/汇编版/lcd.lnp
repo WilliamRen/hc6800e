@@ -1,0 +1,3 @@
+"1602LOGO.obj" 
+TO "lcd" 
+RAMSIZE(256) 

@@ -1,0 +1,96 @@
+A51 MACRO ASSEMBLER  BLED                                                                 11/03/2009 18:13:33 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN BLED.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE BLED.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+                       2     
+                       3     
+                       4     
+                       5     
+                       6     
+                       7     
+                       8     
+  0080                 9             K1  BIT  P0.0     ;LED µ∆
+  0081                10             K2  BIT  P0.1
+  0082                11             K3  BIT  P0.2
+  0083                12             K4  BIT  P0.3
+  0084                13                     K5  BIT  P0.4    ;¿Æ∞»ø™πÿ
+  0085                14                     K6  BIT  P0.5    ;ºÃµÁ∆˜      
+                      15     ;*********************************************************
+0000                  16             ORG  0000H
+0000 802E             17             JMP  MAIN
+0030                  18             ORG  0030H        
+                      19     ;*********************************************************
+0030                  20     MAIN:
+0030 758160           21             MOV  SP,#60H
+                      22                     
+0033                  23     LOOP:
+0033 308018           24                     JNB  K1,K1_Prog
+0036 30811A           25             JNB  K2,K2_Prog
+0039 30821C           26             JNB  K3,K3_Prog
+003C 30831E           27             JNB  K4,K4_Prog
+003F 75A0FF           28                     MOV  P2,#0FFH       ;πÿ±’À˘”–LED
+0042 30841D           29                     JNB  K5,K5_Prog
+0045 D295             30                     SETB P1.5                       ;πÿ±’∑Á¡Â∆˜
+0047 30851C           31                     JNB  K6,K6_Prog
+004A D294             32                     SETB P1.4                        ;πÿ±’ºÃµÁ∆˜
+                      33     
+004C 80E5             34             JMP  LOOP
+004E                  35     K1_Prog:
+004E 75A0FE           36             MOV  P2,#0FEH       ;D00µ∆¡¡
+0051 80E0             37             JMP  LOOP
+0053                  38     K2_Prog:
+0053 75A0FD           39             MOV  P2,#0FDH       ;D01µ∆¡¡
+0056 80DB             40             JMP  LOOP
+0058                  41     K3_Prog:
+0058 75A0FB           42             MOV  P2,#0FBH       ;D02µ∆¡¡
+005B 80D6             43             JMP  LOOP
+005D                  44     K4_Prog:
+005D 75A0F7           45             MOV  P2,#0F7H       ;D03µ∆¡¡
+0060 80D1             46             JMP  LOOP
+                      47     
+0062 C295             48     K5_Prog:CLR  P1.5           ;¿Æ∞»
+0064 80CD             49             JMP  LOOP
+                      50     
+0066 C294             51     K6_Prog:CLR  P1.4           ;ºÃµÁ∆˜
+0068 80C9             52             JMP  LOOP
+                      53     
+                      54     ;*********************************************************
+                      55             END
+A51 MACRO ASSEMBLER  BLED                                                                 11/03/2009 18:13:33 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+K1 . . . . . . . .  B ADDR   0080H.0 A   
+K1_PROG. . . . . .  C ADDR   004EH   A   
+K2 . . . . . . . .  B ADDR   0080H.1 A   
+K2_PROG. . . . . .  C ADDR   0053H   A   
+K3 . . . . . . . .  B ADDR   0080H.2 A   
+K3_PROG. . . . . .  C ADDR   0058H   A   
+K4 . . . . . . . .  B ADDR   0080H.3 A   
+K4_PROG. . . . . .  C ADDR   005DH   A   
+K5 . . . . . . . .  B ADDR   0080H.4 A   
+K5_PROG. . . . . .  C ADDR   0062H   A   
+K6 . . . . . . . .  B ADDR   0080H.5 A   
+K6_PROG. . . . . .  C ADDR   0066H   A   
+LOOP . . . . . . .  C ADDR   0033H   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

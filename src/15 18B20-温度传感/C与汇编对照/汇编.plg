@@ -1,0 +1,20 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\HC6800\单片机例程\14温度传感\C与汇编对照\汇编.uv2
+Project File Date:  09/13/2009
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling hc595.SRC...
+assembling TemMain.SRC...
+assembling Temp.SRC...
+Temp.SRC(147): error A8: ATTEMPT TO DEFINE AN ALREADY DEFINED LABEL
+Temp.SRC(771): error A48: DATA-ADDRESS EXPECTED
+Temp.SRC(775): error A48: DATA-ADDRESS EXPECTED
+Temp.SRC(1019): error A48: DATA-ADDRESS EXPECTED
+Temp.SRC(1047): error A48: DATA-ADDRESS EXPECTED
+assembling STARTUP.A51...
+Target not created

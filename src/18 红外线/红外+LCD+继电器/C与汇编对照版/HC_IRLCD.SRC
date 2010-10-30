@@ -1,0 +1,1045 @@
+; HC_IRLCD.SRC generated from: HC_IRLCD.C
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE HC_IRLCD.C BROWSE DEBUG OBJECTEXTEND
+
+$NOMOD51
+
+NAME	HC_IRLCD
+
+RELAY	BIT	090H.4
+P0	DATA	080H
+P1	DATA	090H
+P2	DATA	0A0H
+P3	DATA	0B0H
+T0	BIT	0B0H.4
+AC	BIT	0D0H.6
+T1	BIT	0B0H.5
+EA	BIT	0A8H.7
+IE	DATA	0A8H
+RD	BIT	0B0H.7
+ES	BIT	0A8H.4
+IP	DATA	0B8H
+RI	BIT	098H.0
+INT0	BIT	0B0H.2
+CY	BIT	0D0H.7
+BEEP	BIT	090H.5
+TI	BIT	098H.1
+INT1	BIT	0B0H.3
+PS	BIT	0B8H.4
+SP	DATA	081H
+OV	BIT	0D0H.2
+WR	BIT	0B0H.6
+SBUF	DATA	099H
+PCON	DATA	087H
+IRIN	BIT	0B0H.2
+SCON	DATA	098H
+TMOD	DATA	089H
+TCON	DATA	088H
+IE0	BIT	088H.1
+IE1	BIT	088H.3
+B	DATA	0F0H
+LCD_EN	BIT	0A0H.7
+ACC	DATA	0E0H
+ET0	BIT	0A8H.1
+ET1	BIT	0A8H.3
+TF0	BIT	088H.5
+TF1	BIT	088H.7
+RB8	BIT	098H.2
+TH0	DATA	08CH
+EX0	BIT	0A8H.0
+IT0	BIT	088H.0
+TH1	DATA	08DH
+TB8	BIT	098H.3
+EX1	BIT	0A8H.2
+IT1	BIT	088H.2
+P	BIT	0D0H.0
+SM0	BIT	098H.7
+TL0	DATA	08AH
+SM1	BIT	098H.6
+TL1	DATA	08BH
+SM2	BIT	098H.5
+PT0	BIT	0B8H.1
+PT1	BIT	0B8H.3
+RS0	BIT	0D0H.3
+TR0	BIT	088H.4
+RS1	BIT	0D0H.4
+TR1	BIT	088H.6
+PX0	BIT	0B8H.0
+LCD_RS	BIT	0A0H.6
+PX1	BIT	0B8H.2
+DPH	DATA	083H
+LCD_RW	BIT	0A0H.5
+DPL	DATA	082H
+REN	BIT	098H.4
+RXD	BIT	0B0H.0
+TXD	BIT	0B0H.1
+F0	BIT	0D0H.5
+PSW	DATA	0D0H
+?PR?lcd_busy?HC_IRLCD                    SEGMENT CODE 
+?BI?lcd_busy?HC_IRLCD                    SEGMENT BIT OVERLAYABLE 
+?PR?_lcd_wcmd?HC_IRLCD                   SEGMENT CODE 
+?PR?_lcd_wdat?HC_IRLCD                   SEGMENT CODE 
+?PR?lcd_init?HC_IRLCD                    SEGMENT CODE 
+?PR?_lcd_pos?HC_IRLCD                    SEGMENT CODE 
+?PR?main?HC_IRLCD    SEGMENT CODE 
+?PR?IR_IN?HC_IRLCD   SEGMENT CODE 
+?DT?IR_IN?HC_IRLCD   SEGMENT DATA OVERLAYABLE 
+?PR?beep?HC_IRLCD    SEGMENT CODE 
+?DT?beep?HC_IRLCD    SEGMENT DATA OVERLAYABLE 
+?PR?_delay?HC_IRLCD  SEGMENT CODE 
+?PR?_delay1?HC_IRLCD SEGMENT CODE 
+?C_INITSEG           SEGMENT CODE 
+?DT?HC_IRLCD         SEGMENT DATA 
+	EXTRN	CODE (?C_STARTUP)
+	PUBLIC	IRCOM
+	PUBLIC	cdis2
+	PUBLIC	cdis1
+	PUBLIC	Y0
+	PUBLIC	_delay1
+	PUBLIC	_delay
+	PUBLIC	beep
+	PUBLIC	IR_IN
+	PUBLIC	main
+	PUBLIC	_lcd_pos
+	PUBLIC	lcd_init
+	PUBLIC	_lcd_wdat
+	PUBLIC	_lcd_wcmd
+	PUBLIC	lcd_busy
+
+	RSEG  ?DT?IR_IN?HC_IRLCD
+?IR_IN?BYTE:
+          j?645:   DS   1
+          k?646:   DS   1
+          N?647:   DS   1
+
+	RSEG  ?DT?beep?HC_IRLCD
+?beep?BYTE:
+          i?748:   DS   1
+
+	RSEG  ?BI?lcd_busy?HC_IRLCD
+?lcd_busy?BIT:
+     result?040:   DBIT   1
+
+	RSEG  ?DT?HC_IRLCD
+             Y0:   DS   1
+          cdis1:   DS   17
+          cdis2:   DS   17
+          IRCOM:   DS   7
+
+	RSEG  ?C_INITSEG
+	DB	011H
+	DB	cdis1
+	DB  ' ' ,'R' ,'E' ,'M' ,'O' ,'T' ,'E' ,' ' ,'C' ,'O' 
+	DB  'N' ,'T' ,'R' ,'O' ,'L' ,' ' ,000H
+
+
+	DB	011H
+	DB	cdis2
+	DB  ' ' ,' ' ,'I' ,'R' ,'-' ,'C' ,'O' ,'D' ,'E' ,':' 
+	DB  ' ' ,'-' ,'-' ,'-' ,'-' ,'H' ,000H
+
+
+; /********************************************************************************
+; *  描述:                                                                       *
+; *         lcd1602显示 遥控键值读取器                                           *
+; *         lcd1602显示 遥控器接p3.2                                             *
+; *         喇叭接p1.5  继电器接p1.4                                             *
+; *         17(40h)键按下，继电器吸合。19(04h)键按下，继电器关闭。               *
+; *                                                                              *
+; *******************************************************************************/
+
+; #include <reg51.h>
+; #include <intrins.h>
+; #define  NOP()   _nop_()   /* 定义空指令 */
+; 
+; #define uchar unsigned char
+; #define uint  unsigned int
+; 
+; #define delayNOP(); {_nop_();_nop_();_nop_();_nop_();};
+; 
+; void delay(uchar x);  //x*0.14MS
+; void delay1(int ms);
+; void beep(void);
+; 
+; sbit IRIN = P3^2;         //红外接收器数据线
+; sbit RELAY= P1^4;         //继电器驱动线
+; sbit BEEP = P1^5;         //蜂鸣器驱动线
+; 
+; uchar IRCOM[7];
+; 
+; uchar cdis1[] = {" REMOTE CONTROL "};
+; uchar cdis2[] = {"  IR-CODE: ----H"};
+; 
+; //LCD IO
+; sbit LCD_RW = P2^5;
+; sbit LCD_RS = P2^6;             
+; sbit LCD_EN = P2^7;
+; 
+; 
+; unsigned char Y0;
+; 
+; /*******************************************************************/
+; /*                                                                 */
+; /*检查LCD忙状态                                                    */
+; /*lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。      */
+; /*                                                                 */
+; /*******************************************************************/ 
+; 
+; bit lcd_busy()
+
+	RSEG  ?PR?lcd_busy?HC_IRLCD
+lcd_busy:
+			; SOURCE LINE # 47
+;  {                          
+			; SOURCE LINE # 48
+;     bit result;
+;     LCD_RS = 0;
+			; SOURCE LINE # 50
+	CLR  	LCD_RS
+;     LCD_RW = 1;
+			; SOURCE LINE # 51
+	SETB 	LCD_RW
+;     LCD_EN = 1;
+			; SOURCE LINE # 52
+	SETB 	LCD_EN
+;     delayNOP();
+			; SOURCE LINE # 53
+	NOP  	
+	NOP  	
+	NOP  	
+	NOP  	
+;     result = (bit)(P0&0x80);
+			; SOURCE LINE # 54
+	MOV  	A,P0
+	RLC  	A
+	MOV  	result?040,C
+;     LCD_EN = 0;
+			; SOURCE LINE # 55
+	CLR  	LCD_EN
+;     return(result); 
+			; SOURCE LINE # 56
+	MOV  	C,result?040
+;  }
+			; SOURCE LINE # 57
+?C0001:
+	RET  	
+; END OF lcd_busy
+
+; 
+; /*******************************************************************/
+; /*                                                                 */
+; /*写指令数据到LCD                                                  */
+; /*RS=L，RW=L，E=高脉冲，D0-D7=指令码。                             */
+; /*                                                                 */
+; /*******************************************************************/
+; 
+; void lcd_wcmd(uchar cmd)
+
+	RSEG  ?PR?_lcd_wcmd?HC_IRLCD
+_lcd_wcmd:
+			; SOURCE LINE # 66
+;---- Variable 'cmd?141' assigned to Register 'R7' ----
+; 
+; {                          
+			; SOURCE LINE # 68
+?C0002:
+;    while(lcd_busy());
+			; SOURCE LINE # 69
+	LCALL	lcd_busy
+	JC   	?C0002
+?C0003:
+;     LCD_RS = 0;
+			; SOURCE LINE # 70
+	CLR  	LCD_RS
+;     LCD_RW = 0;
+			; SOURCE LINE # 71
+	CLR  	LCD_RW
+;     LCD_EN = 0;
+			; SOURCE LINE # 72
+	CLR  	LCD_EN
+;     _nop_();
+			; SOURCE LINE # 73
+	NOP  	
+;     _nop_(); 
+			; SOURCE LINE # 74
+	NOP  	
+;     P0 = cmd;
+			; SOURCE LINE # 75
+	MOV  	P0,R7
+;     delayNOP();
+			; SOURCE LINE # 76
+	NOP  	
+	NOP  	
+	NOP  	
+	NOP  	
+;     LCD_EN = 1;
+			; SOURCE LINE # 77
+	SETB 	LCD_EN
+;     delayNOP();
+			; SOURCE LINE # 78
+	NOP  	
+	NOP  	
+	NOP  	
+	NOP  	
+;     LCD_EN = 0;  
+			; SOURCE LINE # 79
+	CLR  	LCD_EN
+; }
+			; SOURCE LINE # 80
+	RET  	
+; END OF _lcd_wcmd
+
+; 
+; /*******************************************************************/
+; /*                                                                 */
+; /*写显示数据到LCD                                                  */
+; /*RS=H，RW=L，E=高脉冲，D0-D7=数据。                               */
+; /*                                                                 */
+; /*******************************************************************/
+; 
+; void lcd_wdat(uchar dat)
+
+	RSEG  ?PR?_lcd_wdat?HC_IRLCD
+_lcd_wdat:
+			; SOURCE LINE # 89
+;---- Variable 'dat?242' assigned to Register 'R7' ----
+; {                          
+			; SOURCE LINE # 90
+?C0005:
+;    while(lcd_busy());
+			; SOURCE LINE # 91
+	LCALL	lcd_busy
+	JC   	?C0005
+?C0006:
+;     LCD_RS = 1;
+			; SOURCE LINE # 92
+	SETB 	LCD_RS
+;     LCD_RW = 0;
+			; SOURCE LINE # 93
+	CLR  	LCD_RW
+;     LCD_EN = 0;
+			; SOURCE LINE # 94
+	CLR  	LCD_EN
+;     P0 = dat;
+			; SOURCE LINE # 95
+	MOV  	P0,R7
+;     delayNOP();
+			; SOURCE LINE # 96
+	NOP  	
+	NOP  	
+	NOP  	
+	NOP  	
+;     LCD_EN = 1;
+			; SOURCE LINE # 97
+	SETB 	LCD_EN
+;     delayNOP();
+			; SOURCE LINE # 98
+	NOP  	
+	NOP  	
+	NOP  	
+	NOP  	
+;     LCD_EN = 0; 
+			; SOURCE LINE # 99
+	CLR  	LCD_EN
+; }
+			; SOURCE LINE # 100
+	RET  	
+; END OF _lcd_wdat
+
+; 
+; /*******************************************************************/
+; /*                                                                 */
+; /*  LCD初始化设定                                                  */
+; /*                                                                 */
+; /*******************************************************************/
+; 
+; void lcd_init()
+
+	RSEG  ?PR?lcd_init?HC_IRLCD
+lcd_init:
+	USING	0
+			; SOURCE LINE # 108
+; { 
+			; SOURCE LINE # 109
+;     delay1(15);                   
+			; SOURCE LINE # 110
+	MOV  	R7,#0FH
+	MOV  	R6,#00H
+	LCALL	_delay1
+;     lcd_wcmd(0x38);      //16*2显示，5*7点阵，8位数据
+			; SOURCE LINE # 111
+	MOV  	R7,#038H
+	LCALL	_lcd_wcmd
+;     delay1(5);
+			; SOURCE LINE # 112
+	LCALL	L?0070
+;     lcd_wcmd(0x38);         
+			; SOURCE LINE # 113
+	MOV  	R7,#038H
+	LCALL	_lcd_wcmd
+;     delay1(5);
+			; SOURCE LINE # 114
+	LCALL	L?0070
+;     lcd_wcmd(0x38);         
+			; SOURCE LINE # 115
+	MOV  	R7,#038H
+	LCALL	_lcd_wcmd
+;     delay1(5);
+			; SOURCE LINE # 116
+	LCALL	L?0071
+; 
+;     lcd_wcmd(0x0c);      //显示开，关光标
+			; SOURCE LINE # 118
+	MOV  	R7,#0CH
+	LCALL	_lcd_wcmd
+;     delay1(5);
+			; SOURCE LINE # 119
+	LCALL	L?0071
+;     lcd_wcmd(0x06);      //移动光标
+			; SOURCE LINE # 120
+	MOV  	R7,#06H
+	LCALL	_lcd_wcmd
+;     delay1(5);
+			; SOURCE LINE # 121
+	DEC  	R7
+	MOV  	R6,#00H
+	LCALL	_delay1
+;     lcd_wcmd(0x01);      //清除LCD的显示内容
+			; SOURCE LINE # 122
+	MOV  	R7,#01H
+	LCALL	_lcd_wcmd
+;     delay1(5);
+			; SOURCE LINE # 123
+	MOV  	R7,#05H
+	MOV  	R6,#00H
+	LJMP 	_delay1
+; END OF lcd_init
+
+; }
+; 
+; /*******************************************************************/
+; /*                                                                 */
+; /*  设定显示位置                                                   */
+; /*                                                                 */
+; /*******************************************************************/
+; 
+; void lcd_pos(uchar pos)
+
+	RSEG  ?PR?_lcd_pos?HC_IRLCD
+_lcd_pos:
+	USING	0
+			; SOURCE LINE # 132
+;---- Variable 'pos?443' assigned to Register 'R7' ----
+; {                          
+			; SOURCE LINE # 133
+;   lcd_wcmd(pos | 0x80);  //数据指针=80+地址变量
+			; SOURCE LINE # 134
+	MOV  	A,R7
+	ORL  	A,#080H
+	MOV  	R7,A
+	LJMP 	_lcd_wcmd
+; END OF _lcd_pos
+
+; }
+; 
+; /*******************************************************************/
+; main()
+
+	RSEG  ?PR?main?HC_IRLCD
+main:
+	USING	0
+			; SOURCE LINE # 138
+; {
+			; SOURCE LINE # 139
+;    uchar m;
+;   
+;     IE = 0x81;                 //允许总中断中断,使能 INT0 外部中断
+			; SOURCE LINE # 142
+	MOV  	IE,#081H
+;     TCON = 0x01;               //触发方式为脉冲负边沿触发
+			; SOURCE LINE # 143
+	MOV  	TCON,#01H
+;     
+;     IRIN=1;                    //I/O口初始化
+			; SOURCE LINE # 145
+	SETB 	IRIN
+;     BEEP=1;
+			; SOURCE LINE # 146
+	SETB 	BEEP
+;     RELAY=1; 
+			; SOURCE LINE # 147
+	SETB 	RELAY
+; 	
+;     delay1(10);                 //延时
+			; SOURCE LINE # 149
+	MOV  	R7,#0AH
+	MOV  	R6,#00H
+	LCALL	_delay1
+;     lcd_init();                //初始化LCD             
+			; SOURCE LINE # 150
+	LCALL	lcd_init
+;         
+;     lcd_pos(0);                //设置显示位置为第一行的第1个字符
+			; SOURCE LINE # 152
+	CLR  	A
+	MOV  	R7,A
+	LCALL	_lcd_pos
+;      m = 0;
+			; SOURCE LINE # 153
+;---- Variable 'm?544' assigned to Register 'R6' ----
+	CLR  	A
+	MOV  	R6,A
+?C0010:
+;     while(cdis1[m] != '\0')
+			; SOURCE LINE # 154
+	MOV  	A,#LOW (cdis1)
+	ADD  	A,R6
+	MOV  	R0,A
+	MOV  	A,@R0
+	MOV  	R7,A
+	JZ   	?C0011
+;      {                         //显示字符
+			; SOURCE LINE # 155
+;        lcd_wdat(cdis1[m]);
+			; SOURCE LINE # 156
+	LCALL	_lcd_wdat
+;        m++;
+			; SOURCE LINE # 157
+	INC  	R6
+;      }
+			; SOURCE LINE # 158
+	SJMP 	?C0010
+?C0011:
+; 
+;     lcd_pos(0x40);             //设置显示位置为第二行第1个字符
+			; SOURCE LINE # 160
+	MOV  	R7,#040H
+	LCALL	_lcd_pos
+;      m = 0;
+			; SOURCE LINE # 161
+	CLR  	A
+	MOV  	R6,A
+?C0012:
+;     while(cdis2[m] != '\0')
+			; SOURCE LINE # 162
+	MOV  	A,#LOW (cdis2)
+	ADD  	A,R6
+	MOV  	R0,A
+	MOV  	A,@R0
+	MOV  	R7,A
+	JZ   	?C0014
+;      {
+			; SOURCE LINE # 163
+;        lcd_wdat(cdis2[m]);      //显示字符
+			; SOURCE LINE # 164
+	LCALL	_lcd_wdat
+;        m++;
+			; SOURCE LINE # 165
+	INC  	R6
+;      }
+			; SOURCE LINE # 166
+	SJMP 	?C0012
+?C0014:
+; 
+;    while(1);
+			; SOURCE LINE # 168
+	SJMP 	?C0014
+; END OF main
+
+CSEG	AT	00003H
+	LJMP	IR_IN
+
+; 
+; } //end main
+; /**********************************************************/
+; void IR_IN(void) interrupt 0 
+
+	RSEG  ?PR?IR_IN?HC_IRLCD
+	USING	0
+IR_IN:
+	PUSH 	ACC
+	PUSH 	B
+	PUSH 	DPH
+	PUSH 	DPL
+	PUSH 	PSW
+	MOV  	PSW,#00H
+	PUSH 	AR0
+	PUSH 	AR1
+	PUSH 	AR2
+	PUSH 	AR3
+	PUSH 	AR4
+	PUSH 	AR5
+	PUSH 	AR6
+	PUSH 	AR7
+	USING	0
+			; SOURCE LINE # 172
+; {
+;   unsigned char j,k,N=0;
+			; SOURCE LINE # 174
+	MOV  	N?647,#00H
+;      EX0 = 0;   
+			; SOURCE LINE # 175
+	CLR  	EX0
+; 	 delay(15);
+			; SOURCE LINE # 176
+	MOV  	R7,#0FH
+	LCALL	_delay
+; 	 if (IRIN==1) 
+			; SOURCE LINE # 177
+	JNB  	IRIN,?C0019
+;      { EX0 =1;
+			; SOURCE LINE # 178
+	SETB 	EX0
+	LJMP 	?C0018
+; 	   return;
+; 	  } 
+			; SOURCE LINE # 180
+?C0019:
+;                            //确认IR信号出现
+;   while (!IRIN)            //等IR变为高电平，跳过9ms的前导低电平信号。
+			; SOURCE LINE # 182
+	JB   	IRIN,?C0020
+;     {delay(1);}
+			; SOURCE LINE # 183
+	MOV  	R7,#01H
+	LCALL	_delay
+	SJMP 	?C0019
+?C0020:
+; 
+;  for (j=0;j<4;j++)         //收集四组数据
+			; SOURCE LINE # 185
+	MOV  	j?645,#00H
+?C0021:
+;  { 
+			; SOURCE LINE # 186
+;   for (k=0;k<8;k++)        //每组数据有8位
+			; SOURCE LINE # 187
+	MOV  	k?646,#00H
+?C0024:
+;   {
+			; SOURCE LINE # 188
+?C0027:
+;    while (IRIN)            //等 IR 变为低电平，跳过4.5ms的前导高电平信号。
+			; SOURCE LINE # 189
+	JNB  	IRIN,?C0029
+;      {delay(1);}
+			; SOURCE LINE # 190
+	MOV  	R7,#01H
+	LCALL	_delay
+	SJMP 	?C0027
+?C0029:
+;     while (!IRIN)          //等 IR 变为高电平
+			; SOURCE LINE # 191
+	JB   	IRIN,?C0031
+;      {delay(1);}
+			; SOURCE LINE # 192
+	MOV  	R7,#01H
+	LCALL	_delay
+	SJMP 	?C0029
+?C0031:
+;      while (IRIN)           //计算IR高电平时长
+			; SOURCE LINE # 193
+	JNB  	IRIN,?C0032
+;       {
+			; SOURCE LINE # 194
+;     delay(1);
+			; SOURCE LINE # 195
+	MOV  	R7,#01H
+	LCALL	_delay
+;     N++;           
+			; SOURCE LINE # 196
+	INC  	N?647
+;     if (N>=30)
+			; SOURCE LINE # 197
+	MOV  	A,N?647
+	CLR  	C
+	SUBB 	A,#01EH
+	JC   	?C0031
+; 	 { EX0=1;
+			; SOURCE LINE # 198
+	SETB 	EX0
+	LJMP 	?C0018
+; 	 return;}                  //0.14ms计数过长自动离开。
+			; SOURCE LINE # 199
+;       }                        //高电平计数完毕                
+			; SOURCE LINE # 200
+?C0032:
+;      IRCOM[j]=IRCOM[j] >> 1;                  //数据最高位补“0”
+			; SOURCE LINE # 201
+	MOV  	A,#LOW (IRCOM)
+	ADD  	A,j?645
+	MOV  	R0,A
+	PUSH 	AR0
+	MOV  	A,@R0
+	CLR  	C
+	RRC  	A
+	POP  	AR0
+	MOV  	@R0,A
+;      if (N>=8) {IRCOM[j] = IRCOM[j] | 0x80;}  //数据最高位补“1”
+			; SOURCE LINE # 202
+	MOV  	A,N?647
+	CLR  	C
+	SUBB 	A,#08H
+	JC   	?C0034
+	MOV  	A,#LOW (IRCOM)
+	ADD  	A,j?645
+	MOV  	R0,A
+	MOV  	A,@R0
+	ORL  	A,#080H
+	MOV  	@R0,A
+?C0034:
+;      N=0;
+			; SOURCE LINE # 203
+	MOV  	N?647,#00H
+;   }//end for k
+			; SOURCE LINE # 204
+	INC  	k?646
+	MOV  	A,k?646
+	CLR  	C
+	SUBB 	A,#08H
+	JC   	?C0024
+;  }//end for j
+			; SOURCE LINE # 205
+?C0023:
+	INC  	j?645
+	MOV  	A,j?645
+	CLR  	C
+	SUBB 	A,#04H
+	JC   	?C0021
+?C0022:
+;    
+;    if (IRCOM[2]!=~IRCOM[3])
+			; SOURCE LINE # 207
+	MOV  	A,IRCOM+03H
+	CPL  	A
+	XRL  	A,IRCOM+02H
+	JZ   	?C0035
+;    { EX0=1;
+			; SOURCE LINE # 208
+	SETB 	EX0
+	LJMP 	?C0018
+;      return; }
+			; SOURCE LINE # 209
+?C0035:
+; 
+;    IRCOM[5]=IRCOM[2] & 0x0F;     //取键码的低四位
+			; SOURCE LINE # 211
+	MOV  	A,IRCOM+02H
+	ANL  	A,#0FH
+	MOV  	IRCOM+05H,A
+;    IRCOM[6]=IRCOM[2] >> 4;       //右移4次，高四位变为低四位
+			; SOURCE LINE # 212
+	MOV  	A,IRCOM+02H
+	SWAP 	A
+	ANL  	A,#0FH
+	MOV  	IRCOM+06H,A
+; 
+;    if(IRCOM[5]>9)
+			; SOURCE LINE # 214
+	MOV  	A,IRCOM+05H
+	SETB 	C
+	SUBB 	A,#09H
+	JC   	?C0036
+;     { IRCOM[5]=IRCOM[5]+0x37;}
+			; SOURCE LINE # 215
+	MOV  	A,#037H
+	SJMP 	?C0068
+?C0036:
+;    else
+; 	  IRCOM[5]=IRCOM[5]+0x30;
+			; SOURCE LINE # 217
+	MOV  	A,#030H
+?C0068:
+	ADD  	A,IRCOM+05H
+	MOV  	IRCOM+05H,A
+?C0037:
+; 
+;    if(IRCOM[6]>9)
+			; SOURCE LINE # 219
+	MOV  	A,IRCOM+06H
+	SETB 	C
+	SUBB 	A,#09H
+	JC   	?C0038
+;     { IRCOM[6]=IRCOM[6]+0x37;}
+			; SOURCE LINE # 220
+	MOV  	A,#037H
+	SJMP 	?C0069
+?C0038:
+;    else
+; 	  IRCOM[6]=IRCOM[6]+0x30;
+			; SOURCE LINE # 222
+	MOV  	A,#030H
+?C0069:
+	ADD  	A,IRCOM+06H
+	MOV  	IRCOM+06H,A
+?C0039:
+; 
+;      lcd_pos(0x4b);             
+			; SOURCE LINE # 224
+	MOV  	R7,#04BH
+	LCALL	_lcd_pos
+;      lcd_wdat(IRCOM[6]);        //第一位数显示 
+			; SOURCE LINE # 225
+	MOV  	R7,IRCOM+06H
+	LCALL	_lcd_wdat
+;      lcd_pos(0x4c);             
+			; SOURCE LINE # 226
+	MOV  	R7,#04CH
+	LCALL	_lcd_pos
+;      lcd_wdat(IRCOM[5]);        //第二位数显示
+			; SOURCE LINE # 227
+	MOV  	R7,IRCOM+05H
+	LCALL	_lcd_wdat
+; 
+; 	 Y0=0;
+			; SOURCE LINE # 229
+	MOV  	Y0,#00H
+; 	 switch(IRCOM[2])
+			; SOURCE LINE # 230
+	MOV  	A,IRCOM+02H
+	ADD  	A,#0F3H
+	JZ   	?C0044
+	ADD  	A,#0FCH
+	JZ   	?C0047
+	ADD  	A,#0FCH
+	JZ   	?C0048
+	ADD  	A,#0FCH
+	JZ   	?C0045
+	ADD  	A,#0FEH
+	JZ   	?C0046
+	ADD  	A,#0FEH
+	JZ   	?C0042
+	ADD  	A,#0FEH
+	JZ   	?C0043
+	ADD  	A,#0D3H
+	JNZ  	?C0040
+; 	 {
+			; SOURCE LINE # 231
+; 	   case 0x4c: Y0=0x01; break;
+			; SOURCE LINE # 232
+?C0041:
+	MOV  	Y0,#01H
+	SJMP 	?C0040
+; 	   case 0x1D: Y0=0x02; break;
+			; SOURCE LINE # 233
+?C0042:
+	MOV  	Y0,#02H
+	SJMP 	?C0040
+; 	   case 0x1F: Y0=0x04; break;
+			; SOURCE LINE # 234
+?C0043:
+	MOV  	Y0,#04H
+	SJMP 	?C0040
+; 	   case 0x0D: Y0=0x08; break;
+			; SOURCE LINE # 235
+?C0044:
+	MOV  	Y0,#08H
+	SJMP 	?C0040
+; 	   case 0x19: Y0=0x10; break;
+			; SOURCE LINE # 236
+?C0045:
+	MOV  	Y0,#010H
+	SJMP 	?C0040
+; 	   case 0x1B: Y0=0x20; break;
+			; SOURCE LINE # 237
+?C0046:
+	MOV  	Y0,#020H
+	SJMP 	?C0040
+; 	   case 0x11: Y0=0x40; break;
+			; SOURCE LINE # 238
+?C0047:
+	MOV  	Y0,#040H
+	SJMP 	?C0040
+; 	   case 0x15: Y0=0x80; break;
+			; SOURCE LINE # 239
+?C0048:
+	MOV  	Y0,#080H
+; 	 }
+			; SOURCE LINE # 240
+?C0040:
+; 
+; 	if(Y0&0x01)RELAY=0; //打开继电器
+			; SOURCE LINE # 242
+	MOV  	A,Y0
+	JNB  	ACC.0,?C0049
+	CLR  	RELAY
+	SJMP 	?C0050
+?C0049:
+; 	else RELAY=1;       //关闭继电器
+			; SOURCE LINE # 243
+	SETB 	RELAY
+?C0050:
+; 
+;     beep();
+			; SOURCE LINE # 245
+	LCALL	beep
+;     EX0 = 1; 
+			; SOURCE LINE # 246
+	SETB 	EX0
+; } 
+			; SOURCE LINE # 247
+?C0018:
+	POP  	AR7
+	POP  	AR6
+	POP  	AR5
+	POP  	AR4
+	POP  	AR3
+	POP  	AR2
+	POP  	AR1
+	POP  	AR0
+	POP  	PSW
+	POP  	DPL
+	POP  	DPH
+	POP  	B
+	POP  	ACC
+	RETI 	
+; END OF IR_IN
+
+; 
+; /**********************************************************/
+; void beep(void)
+
+	RSEG  ?PR?beep?HC_IRLCD
+beep:
+	USING	0
+			; SOURCE LINE # 250
+; {
+			; SOURCE LINE # 251
+;   unsigned char i;
+;   for (i=0;i<100;i++)
+			; SOURCE LINE # 253
+	CLR  	A
+	MOV  	i?748,A
+?C0051:
+;    {
+			; SOURCE LINE # 254
+;    delay(4);
+			; SOURCE LINE # 255
+	MOV  	R7,#04H
+	LCALL	_delay
+;    BEEP=!BEEP;                 //BEEP取反
+			; SOURCE LINE # 256
+	CPL  	BEEP
+;    } 
+			; SOURCE LINE # 257
+	INC  	i?748
+	MOV  	A,i?748
+	CLR  	C
+	SUBB 	A,#064H
+	JC   	?C0051
+?C0052:
+;   BEEP=1;                      //关闭蜂鸣器
+			; SOURCE LINE # 258
+	SETB 	BEEP
+; }
+			; SOURCE LINE # 259
+	RET  	
+; END OF beep
+
+; /**********************************************************/
+; void delay(unsigned char x)    //x*0.14MS
+
+	RSEG  ?PR?_delay?HC_IRLCD
+_delay:
+	USING	0
+			; SOURCE LINE # 261
+;---- Variable 'i?850' assigned to Register 'R6' ----
+;---- Variable 'x?849' assigned to Register 'R7' ----
+; {
+			; SOURCE LINE # 262
+?C0055:
+;  unsigned char i;
+;   while(x--)
+			; SOURCE LINE # 264
+	MOV  	R5,AR7
+	DEC  	R7
+	MOV  	A,R5
+	JZ   	?C0060
+;  {
+			; SOURCE LINE # 265
+;   for (i = 0; i<13; i++) {}
+			; SOURCE LINE # 266
+	CLR  	A
+	MOV  	R6,A
+?C0057:
+	MOV  	A,R6
+	CLR  	C
+	SUBB 	A,#0DH
+	JNC  	?C0055
+	INC  	R6
+	SJMP 	?C0057
+;  }
+			; SOURCE LINE # 267
+; }
+			; SOURCE LINE # 268
+?C0060:
+	RET  	
+; END OF _delay
+
+; 
+; /**********************************************************/
+; void delay1(int ms)
+
+	RSEG  ?PR?_delay1?HC_IRLCD
+L?0070:
+	USING	0
+L?0071:
+	MOV  	R7,#05H
+	MOV  	R6,#00H
+_delay1:
+	USING	0
+			; SOURCE LINE # 271
+;---- Variable 'y?952' assigned to Register 'R5' ----
+;---- Variable 'ms?951' assigned to Register 'R6/R7' ----
+; {
+			; SOURCE LINE # 272
+?C0061:
+;  unsigned char y;
+;   while(ms--)
+			; SOURCE LINE # 274
+	MOV  	A,R7
+	DEC  	R7
+	MOV  	R2,AR6
+	JNZ  	?C0067
+	DEC  	R6
+?C0067:
+	ORL  	A,R2
+	JZ   	?C0066
+;  {
+			; SOURCE LINE # 275
+;   for(y = 0; y<250; y++)
+			; SOURCE LINE # 276
+	CLR  	A
+	MOV  	R5,A
+?C0063:
+	MOV  	A,R5
+	CLR  	C
+	SUBB 	A,#0FAH
+	JNC  	?C0061
+;   {
+			; SOURCE LINE # 277
+;    _nop_();
+			; SOURCE LINE # 278
+	NOP  	
+;    _nop_();
+			; SOURCE LINE # 279
+	NOP  	
+;    _nop_();
+			; SOURCE LINE # 280
+	NOP  	
+;    _nop_();
+			; SOURCE LINE # 281
+	NOP  	
+;   }
+			; SOURCE LINE # 282
+	INC  	R5
+	SJMP 	?C0063
+;  }
+			; SOURCE LINE # 283
+; }
+			; SOURCE LINE # 284
+?C0066:
+	RET  	
+; END OF _delay1
+
+	END

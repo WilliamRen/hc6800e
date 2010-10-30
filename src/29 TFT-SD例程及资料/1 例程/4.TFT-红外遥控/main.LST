@@ -1,0 +1,223 @@
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:14:38 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************************************************************
+   2          *                                                                     *
+   3          *           TFT液晶红外遥控键值显示程序                               *
+   4          *              （  普中科技  ）                                       *
+   5          *                                                                     *
+   6          * 实验目的：1.掌握TFT彩屏驱动程序的编写、                                                         *
+   7                      2.学会运用取字模软件应用(取字符和汉字数组)                            *
+   8                                  3.学会怎样处理字模数组数据                                *
+   9                      4.掌握红外遥控中断处理                                    *
+  10          *                                                                     *
+  11          *实验现象： 彩屏中显示红外遥控按钮的键值                              *
+  12          *                                                                     *
+  13          ***********************************************************************/
+  14          
+  15          #include <reg52.h>
+  16          #include <intrins.h>
+  17          #include "lcd.h"
+  18          
+  19          unsigned char Val[2];  //初始化数组
+  20          
+  21          #define uchar unsigned char
+  22          #define uint  unsigned int
+  23          #define delayNOP(); {_nop_();_nop_();_nop_();_nop_();};
+  24          
+  25          void delay(uchar x);  //x*0.14MS
+  26          void delay1(int ms);
+  27          void beep();
+  28          void IR_initi();
+  29          
+  30          sbit IRIN = P3^2;         //红外接收器数据线
+  31          sbit BEEP = P1^5;         //蜂鸣器驱动线
+  32          sbit RELAY= P1^4;         //继电器驱动线
+  33          
+  34          uchar IRCOM[7] = {0,0,0,0,0,0,0};
+  35          
+  36          /**********************************************************
+  37          
+  38            主函数
+  39          
+  40          **********************************************************/
+  41          void main(void)
+  42          {  
+  43   1         P2 = 0xff;
+  44   1         P0 = 0xff;
+  45   1         
+  46   1         IR_initi() ; 
+  47   1         LCD_init();
+  48   1         LCD_clear(5);
+  49   1        
+  50   1          ChineseChar(14,10,2,colors[2],colors[7],1);   //普
+  51   1          ChineseChar(38,10,2,colors[2],colors[7],2);   //中
+  52   1          ChineseChar(62,10,2,colors[2],colors[7],3);   //科
+  53   1          ChineseChar(86,10,2,colors[2],colors[7],4);   //技
+  54   1           
+  55   1         
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:14:38 PAGE 2   
+
+  56   1          ChineseChar(32,60,1,colors[4],colors[7],1);   //红
+  57   1              ChineseChar(48,60,1,colors[4],colors[7],2);       //外
+  58   1              ChineseChar(64,60,1,colors[6],colors[7],3);       //遥
+  59   1              ChineseChar(80,60,1,colors[6],colors[7],4);       //控
+  60   1              
+  61   1          ChineseChar(24,80,1,colors[2],colors[7],5);   //键
+  62   1          ChineseChar(40,80,1,colors[2],colors[7],6);   //值
+  63   1              ChineseChar(56,80,1,colors[2],colors[7],7);       //读
+  64   1          ChineseChar(72,80,1,colors[2],colors[7],8);   //取
+  65   1          ChineseChar(88,80,1,colors[2],colors[7],9);   //器
+  66   1          
+  67   1          LCD_ShowString(22,100,colors[7],colors[2],"Value:    H");  //将字符送到彩屏中显示
+  68   1          //LCD_ShowString(102,100,colors[7],colors[2],"");  //将字符送到彩屏中显示
+  69   1         
+  70   1      
+  71   1      
+  72   1         while(1)     
+  73   1        {
+  74   2              Val[0] =  IRCOM[6];
+  75   2              Val[1] =  IRCOM[5];
+  76   2              
+  77   2                  LCD_ShowString(78,100,colors[7],colors[2],Val); //将字符送到彩屏中显示
+  78   2                 
+  79   2        }  
+  80   1      }
+  81          
+  82          /***********************************************************
+  83          *                                                          *
+  84          *                通过外部中断来解码
+  85          ***********************************************************/
+  86          void IR_initi()  
+  87          {
+  88   1         IRIN=1;                    //I/O口初始化
+  89   1         BEEP=1;
+  90   1         RELAY=1; 
+  91   1         delay1(10);                 //延时
+  92   1         IE = 0x81;                 //允许总中断中断,使能 INT0 外部中断
+  93   1         TCON = 0x01;               //触发方式为脉冲负边沿触发
+  94   1      
+  95   1      }
+  96          
+  97          /**********************************************************/
+  98          void IR_IN() interrupt 0 using 0
+  99          {
+ 100   1        unsigned char j,k,N=0;
+ 101   1           EX0 = 0;   
+ 102   1               delay(15);
+ 103   1               if (IRIN==1) 
+ 104   1           { EX0 =1;
+ 105   2                 return;
+ 106   2                } 
+ 107   1                                 //确认IR信号出现
+ 108   1        while (!IRIN)            //等IR变为高电平，跳过9ms的前导低电平信号。
+ 109   1          {delay(1);}
+ 110   1      
+ 111   1       for (j=0;j<4;j++)         //收集四组数据
+ 112   1       { 
+ 113   2        for (k=0;k<8;k++)        //每组数据有8位
+ 114   2        {
+ 115   3         while (IRIN)            //等 IR 变为低电平，跳过4.5ms的前导高电平信号。
+ 116   3           {delay(1);}
+ 117   3          while (!IRIN)          //等 IR 变为高电平
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:14:38 PAGE 3   
+
+ 118   3           {delay(1);}
+ 119   3           while (IRIN)           //计算IR高电平时长
+ 120   3            {
+ 121   4          delay(1);
+ 122   4          N++;           
+ 123   4          if (N>=30)
+ 124   4               { EX0=1;
+ 125   5               return;}                  //0.14ms计数过长自动离开。
+ 126   4            }                        //高电平计数完毕                
+ 127   3           IRCOM[j]=IRCOM[j] >> 1;                  //数据最高位补“0”
+ 128   3           if (N>=8) {IRCOM[j] = IRCOM[j] | 0x80;}  //数据最高位补“1”
+ 129   3           N=0;
+ 130   3        }//end for k
+ 131   2       }//end for j
+ 132   1         
+ 133   1         if (IRCOM[2]!=~IRCOM[3])
+ 134   1         { EX0=1;
+ 135   2           return; }
+ 136   1      
+ 137   1         IRCOM[5]=IRCOM[2] & 0x0F;     //取键码的低四位
+ 138   1         IRCOM[6]=IRCOM[2] >> 4;       //右移4次，高四位变为低四位
+ 139   1      
+ 140   1         if(IRCOM[5]>9)
+ 141   1          { IRCOM[5]=IRCOM[5]+0x37;}    //第二位数显示
+ 142   1         else
+ 143   1                IRCOM[5]=IRCOM[5]+0x30;
+ 144   1      
+ 145   1         if(IRCOM[6]>9)
+ 146   1          { IRCOM[6]=IRCOM[6]+0x37;}    //第一位数显示 
+ 147   1         else
+ 148   1                IRCOM[6]=IRCOM[6]+0x30;
+ 149   1         
+ 150   1      
+ 151   1      
+ 152   1           beep();
+ 153   1           EX0 = 1; 
+ 154   1      } 
+ 155          
+ 156          
+ 157          /**********************************************************/
+ 158          void beep()
+ 159          {
+ 160   1        unsigned char i;
+ 161   1        for (i=0;i<100;i++)
+ 162   1         {
+ 163   2         delay(4);
+ 164   2         BEEP=!BEEP;                 //BEEP取反
+ 165   2         } 
+ 166   1        BEEP=1;                      //关闭蜂鸣器
+ 167   1      }
+ 168          /**********************************************************/
+ 169          void delay(unsigned char x)    //x*0.14MS
+ 170          {
+ 171   1       unsigned char i;
+ 172   1        while(x--)
+ 173   1       {
+ 174   2        for (i = 0; i<13; i++) {}
+ 175   2       }
+ 176   1      }
+ 177          
+ 178          /**********************************************************/
+ 179          void delay1(int ms)
+C51 COMPILER V7.10   MAIN                                                                  10/01/2010 19:14:38 PAGE 4   
+
+ 180          {
+ 181   1       unsigned char y;
+ 182   1        while(ms--)
+ 183   1       {
+ 184   2        for(y = 0; y<250; y++)
+ 185   2        {
+ 186   3         _nop_();
+ 187   3         _nop_();
+ 188   3         _nop_();
+ 189   3         _nop_();
+ 190   3        }
+ 191   2       }
+ 192   1      }
+ 193          
+ 194          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    766    ----
+   CONSTANT SIZE    =     12    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,17 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+G:\HC6800-V2.6\步骤6 单片机例程\25 TFT-SD例程及资料\1 例程\2.TFT-picture\TFT-Photo.uv2
+Project File Date:  08/29/2010
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling TFT-Photo.c...
+compiling LCD-Driver.c...
+linking...
+Program Size: data=51.0 xdata=0 code=7951
+creating hex file from "TFT-Photo"...
+"TFT-Photo" - 0 Error(s), 0 Warning(s).

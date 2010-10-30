@@ -1,0 +1,203 @@
+A51 MACRO ASSEMBLER  S16_3                                                                03/29/2010 23:31:17 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN S16-3.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE S16-3.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;******************************************************************************
+                       2     ; 标题:                  试验数码管上显示数字（译码器位选 共阴极）            *
+                       3     ;                                                                                          
+                                                                                        *
+                       4     ; 连接方法：P0 与J12 用8PIN排线连接                                               *
+                       5     ;******************************************************************************
+                       6     ;                                                                                          
+                                                        *
+                       7     ;请学员认真消化本例程，用573锁存器控制和138译码器控制数码管                   *
+                       8     ;******************************************************************************/ 
+                       9      
+  0020                10                C2  DATA   20H
+                      11             
+  0050                12                First DATA 50H   ;第一个数码管（右边开始）
+  0051                13                Two   DATA 51H       ;第二个数码管
+  0052                14                Three DATA 52H       ;第三个数码管
+  0053                15                Four  DATA 53H       ;第四个数码管
+  0054                16                Five  DATA 54H
+  0055                17                Six   DATA 55H
+  0056                18                Seven DATA 56H
+  0057                19                Eight DATA 57H
+                      20             
+                      21             
+0000                  22                     ORG 0000H
+0000 020030           23                     LJMP INTI
+0030                  24                     ORG 030H
+                      25     
+                      26     ;--------------------------------------------------------------
+                      27     ;初始化程序
+                      28     ;-------------------------------------------------------------- 
+0030 752000           29     INTI:   MOV 20H,#00H
+0033 E520             30                 MOV A,20H
+0035 752008           31                     MOV C2 , #08H
+0038 755000           32                     MOV First , #00H
+003B 755100           33                     MOV Two ,   #00H
+003E 755200           34                     MOV Three , #00H
+0041 755300           35                     MOV Four ,  #00H
+                      36     ;--------------------------------------------------------------
+                      37     ;主程序程序
+                      38     ;-------------------------------------------------------------- 
+0044                  39     MAIN:
+                      40     
+0044 1184             41                     CALL Num_Handle  ;调用子程序 数字的进位处理
+0046 114F             42                 CALL Display         ;调用显示 子程序
+0048 11B5             43                 CALL Code138     ;处理译码器 子程序
+004A 752008           44                     MOV C2 , #08H
+004D 0144             45                     AJMP MAIN
+                      46     
+                      47     ;--------------------------------------------------------------
+                      48     ;数码管数字显示子程序
+                      49     ;-------------------------------------------------------------- 
+004F                  50     Display:        
+004F E550             51                     MOV A , First
+0051 540F             52                     ANL A,#0FH          ;屏蔽累加器的高4位
+0053 900100           53                     MOV DPTR,#TAB   ;将数据表格的首地址 0100H存入16位的数据地址指针DPTR中
+0056 93               54                     MOVC A,@A+DPTR  ;查表
+0057 F560             55                     MOV 60H,A           
+                      56             
+A51 MACRO ASSEMBLER  S16_3                                                                03/29/2010 23:31:17 PAGE     2
+
+0059 E551             57                     MOV A , Two
+005B 540F             58                     ANL A,#0FH          ;屏蔽累加器的高4位
+005D 900100           59                     MOV DPTR,#TAB   ;将数据表格的首地址 0100H存入16位的数据地址指针DPTR中
+0060 93               60                     MOVC A,@A+DPTR  ;查表
+0061 F561             61                     MOV 61H,A           
+                      62             
+                      63             
+0063 E552             64                     MOV A , Three
+0065 540F             65                     ANL A,#0FH          ;屏蔽累加器的高4位
+0067 900100           66                     MOV DPTR,#TAB   ;将数据表格的首地址 0100H存入16位的数据地址指针DPTR中
+006A 93               67                     MOVC A,@A+DPTR  ;查表
+006B F562             68                     MOV 62H,A           
+                      69              
+006D E553             70                     MOV A , Four
+006F 540F             71                     ANL A,#0FH          ;屏蔽累加器的高4位
+0071 900100           72                     MOV DPTR,#TAB   ;将数据表格的首地址 0100H存入16位的数据地址指针DPTR中
+0074 93               73                     MOVC A,@A+DPTR  ;查表
+0075 F563             74                     MOV 63H,A
+                      75                     
+0077 856064           76                     MOV 64H,60H     
+007A 856165           77                     MOV 65H,61H     
+007D 856266           78                     MOV 66H,62H     
+0080 856367           79                     MOV 67H,63H         
+                      80             
+0083 22               81                     RET
+                      82     ;--------------------------------------------------------------
+                      83     ;数字变化子程序
+                      84     ;-------------------------------------------------------------- 
+0084                  85     Num_Handle:
+0084 E550             86                 MOV A , First 
+0086 2401             87                     ADD A , #01H
+0088 F550             88                     MOV First , A
+008A B40A27           89                     CJNE A , #0AH , DONE   ;若A等于10 向下执行 否则跳转
+008D 755000           90                     MOV First , #00H
+                      91             
+0090 E551             92                     MOV A ,Two
+0092 2401             93                     ADD A , #01H
+0094 F551             94                 MOV Two , A
+0096 B40A1B           95                     CJNE A , #0AH   , DONE
+0099 755100           96                     MOV Two , #00H
+                      97             
+009C E552             98                     MOV A , Three
+009E 2401             99                     ADD A , #01H
+00A0 F552            100                     MOV Three , A
+00A2 B40A0F          101                     CJNE A , #0AH , DONE
+00A5 755200          102                     MOV Three , #00H
+                     103             
+00A8 E553            104                     MOV A , Four
+00AA 2401            105                     ADD A , #01H
+00AC F553            106                     MOV  Four , A
+00AE B40A03          107                     CJNE A , #0AH , DONE
+00B1 755300          108                     MOV  Four , #00H
+                     109     
+00B4 22              110     DONE:   RET
+                     111     
+                     112     ;--------------------------------------------------------------
+                     113     ;控制译码器子程序
+                     114     ;--------------------------------------------------------------      
+00B5                 115     Code138:
+00B5 E4              116                       CLR A
+00B6 FD              117     LAB1:     MOV R5 , A
+00B7 2460            118                       ADD A , #60H 
+00B9 F8              119                       MOV R0 , A
+00BA 8680            120                       MOV P0 , @R0    ;60H地址开始的数据送到P0口
+00BC ED              121                       MOV A , R5      ;将累加器的数据暂存在R5中  准备移位
+00BD 900120          122                       MOV DPTR ,#TAB1 ;;将数据表格的首地址 0120H存入16位的数据地址指针DPTR中
+A51 MACRO ASSEMBLER  S16_3                                                                03/29/2010 23:31:17 PAGE     3
+
+00C0 93              123                       MOVC A , @A+DPTR ;查表 (译码器的三个控制脚 P2.3 P2.4 P2.5)
+00C1 F5A0            124                       MOV P2 , A      ;将其移位结果送到P2口
+00C3 ED              125                       MOV A , R5     
+00C4 11CB            126                       CALL DEL1mS 
+00C6 04              127                       INC A
+00C7 D520EC          128                       DJNZ C2 ,LAB1  ;如果为0 向下执行 否则跳转到 CODE138
+00CA 22              129                       RET
+                     130     
+                     131     ;--------------------------------------------------------------
+                     132     ;延时子程序
+                     133     ;-------------------------------------------------------------- 
+00CB 7E02            134     DEL1mS: MOV R6,#02H
+00CD 7FFF            135     DEL1:   MOV R7,#0FFH
+00CF DFFE            136             DJNZ R7,$
+00D1 DEFA            137                 DJNZ R6,DEL1
+00D3 22              138             RET
+                     139     
+                     140     
+0100                 141              ORG 0100H
+0100 3F065B4F        142     TAB: DB 0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40  ;LED字模表
+0104 666D7D07                
+0108 7F6F40                  
+                     143          
+0120                 144             ORG 0120H
+0120 FFFBF7F3        145     TAB1:DB 0xff,0xfb,0xf7,0xf3,0xef,0xeb,0xe7,0xe3        
+0124 EFEBE7E3                
+                     146             
+                     147             END
+                             
+                                     
+A51 MACRO ASSEMBLER  S16_3                                                                03/29/2010 23:31:17 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+C2 . . . . . . . .  D ADDR   0020H   A   
+CODE138. . . . . .  C ADDR   00B5H   A   
+DEL1 . . . . . . .  C ADDR   00CDH   A   
+DEL1MS . . . . . .  C ADDR   00CBH   A   
+DISPLAY. . . . . .  C ADDR   004FH   A   
+DONE . . . . . . .  C ADDR   00B4H   A   
+EIGHT. . . . . . .  D ADDR   0057H   A   
+FIRST. . . . . . .  D ADDR   0050H   A   
+FIVE . . . . . . .  D ADDR   0054H   A   
+FOUR . . . . . . .  D ADDR   0053H   A   
+INTI . . . . . . .  C ADDR   0030H   A   
+LAB1 . . . . . . .  C ADDR   00B6H   A   
+MAIN . . . . . . .  C ADDR   0044H   A   
+NUM_HANDLE . . . .  C ADDR   0084H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+SEVEN. . . . . . .  D ADDR   0056H   A   
+SIX. . . . . . . .  D ADDR   0055H   A   
+TAB. . . . . . . .  C ADDR   0100H   A   
+TAB1 . . . . . . .  C ADDR   0120H   A   
+THREE. . . . . . .  D ADDR   0052H   A   
+TWO. . . . . . . .  D ADDR   0051H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

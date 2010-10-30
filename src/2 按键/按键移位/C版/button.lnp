@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"yiwei.obj" 
+TO "button" 
+RAMSIZE(256) 

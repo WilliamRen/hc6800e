@@ -1,0 +1,108 @@
+C51 COMPILER V7.10   TEMMAIN                                                               07/29/2010 11:37:59 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE TEMMAIN
+OBJECT MODULE PLACED IN TemMain.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE TemMain.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           /*******************************************************************************
+   2          *  标题:                  试验数码管上显示温度                                  *
+   3          *                                                                                                                                                           *
+   4          *********************************************************************************
+   5          *  1.通过本例程了解 DLASS18b20的基本原理和使用 ,理解并掌握18B20驱动程序的编写   *
+   6          *  2.了解掌握I2C总线接口的工作原理及一般编程方法。                                                              *
+   7          *    插上18B20 观察数码管的实际温度显示
+   8          *    用排线将JP10(P0口) 与 J12 连接     在数码管上可以看温度显示                                        *
+   9          *                                                                                                                                                               *
+  10          * 注意：18B20程序只能在12T模式下工作 6T模式自己修改相应时序                     *
+  11          * 请学员认真消化本例程，懂DLASS18b20在C语言中的操作                                 *
+  12          ********************************************************************************/
+  13          #include <reg52.H>
+  14          
+  15          extern GetTemp();                                                                          //声明引用外部函数
+  16          extern unsigned int  idata Temperature;               // 声明引用外部变量
+  17          void delay(unsigned int i);
+  18          
+  19          //else IO
+  20          sbit    LS138A=P2^2;       //管脚定义
+  21          sbit    LS138B=P2^3;
+  22          sbit    LS138C=P2^4; 
+  23          
+  24          
+  25          //此表为 LED 的字模, 共阴数码管 0-9  - 
+  26          unsigned char code Disp_Tab[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40}; 
+  27          unsigned long  LedOut[5],LedNumVal;
+  28          
+  29          
+  30          void system_Ini()
+  31          {
+  32   1          TMOD|= 0x11;
+  33   1          TH1=0xDC; //11.0592M
+  34   1          TL1=0x00;   
+  35   1              IE = 0x8A;      
+  36   1          TR1  = 1;
+  37   1      
+  38   1      }
+  39          
+  40          main()
+  41          { unsigned char i; 
+  42   1        system_Ini();
+  43   1          while(1)
+  44   1         {    
+  45   2                GetTemp();
+  46   2      
+  47   2                /********以下将读18b20的数据送到LED数码管显示*************/
+  48   2             LedNumVal=Temperature;      //把实际温度送到LedNumVal变量中
+  49   2                LedOut[0]=Disp_Tab[LedNumVal%10000/1000];
+  50   2            LedOut[1]=Disp_Tab[LedNumVal%1000/100];
+  51   2            LedOut[2]=Disp_Tab[LedNumVal%100/10];      //十位
+  52   2            LedOut[3]=Disp_Tab[LedNumVal%10];    //个位
+  53   2                
+  54   2          for(i=0; i<4; i++) 
+  55   2                {             
+C51 COMPILER V7.10   TEMMAIN                                                               07/29/2010 11:37:59 PAGE 2   
+
+  56   3                       P0 = LedOut[i] ;
+  57   3                                                              
+  58   3                      switch(i)                                         
+  59   3               {                //138译码
+  60   4                              case 0:LS138A=0; LS138B=0; LS138C=0; break;         
+  61   4                  case 1:LS138A=1; LS138B=0; LS138C=0; break;                 
+  62   4                  case 2:LS138A=0; LS138B=1; LS138C=0; break; 
+  63   4                  case 3:LS138A=1; LS138B=1; LS138C=0; break; 
+  64   4               }
+  65   3                       
+  66   3                      delay(150);
+  67   3                }
+  68   2      
+  69   2                P0 = 0;  
+  70   2        
+  71   2          }
+  72   1      }
+  73          
+  74           //延时程序
+  75          void delay(unsigned int i)
+  76          {
+  77   1          char j;
+  78   1          for(i; i > 0; i--)
+  79   1              for(j = 200; j > 0; j--);
+  80   1      }
+  81          
+  82          
+  83          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    344    ----
+   CONSTANT SIZE    =     11    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

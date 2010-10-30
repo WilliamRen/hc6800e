@@ -1,0 +1,64 @@
+A51 MACRO ASSEMBLER  INT1                                                                 10/29/2009 08:49:50 PAGE     1
+
+
+MACRO ASSEMBLER A51 V7.09
+OBJECT MODULE PLACED IN int1.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE int1.ASM SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;********************************************************************************
+                       2     ;中断控制的P2.0小灯。采用11.0592/12MHZ晶振。                                    *
+                       3     ;连接方法： JP11（P2）和JP1(LED灯) 用8PIN排线连接起来                                      
+                                                                                                                                                  *
+                       4     ;********************************************************************************
+                       5     ;                                                                                          
+                                                                                          *
+                       6     ;********************************************************************************
+0000                   7             ORG     0000h
+0000 0130              8             AJMP    main
+000B                   9             ORG     000bh
+000B 0146             10             AJMP    int_timer
+0030                  11             ORG     0030h
+0030 758901           12     main:   MOV     tmod,#01h               ;设置定时器工作方式寄存器。
+0033 758CD8           13             MOV     th0,#high(65536-10000)  ;
+0036 758AF0           14             MOV     tl0,#low(65536-10000)   ;设10MS初始值。
+0039 75A882           15             MOV     ie,#82h                 ;设置中断允许寄存器
+003C 75300A           16             MOV     30h,#10                 ;
+003F 753106           17             MOV     31h,#6                  ;30H和31H是两个软件计数器。
+0042 D28C             18             SETB    tr0                     ;启动定时
+0044 0144             19             AJMP    $                       ;原地踏步
+                      20     
+0046                  21     int_timer:                              ;定时器0中断服务程序。
+0046 758CD8           22             MOV     th0,#high(65536-10000)  ;
+0049 758AF0           23             MOV     tl0,#low(65536-10000)   ;重设10MS定时。
+004C D5300B           24             DJNZ    30h,l1                  ;
+004F 75300A           25             MOV     30h,#10                 ;
+0052 D53105           26             DJNZ    31h,l1                  ;
+0055 753106           27             MOV     31h,#6                  ;软件计数
+0058 B2A0             28             CPL       p2.0                  ;10*6*10MS=600MS时间到，P1.1取反
+005A 32               29     l1:     RETI                            ;中断返回
+                      30             END
+A51 MACRO ASSEMBLER  INT1                                                                 10/29/2009 08:49:50 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+IE . . . . . . . .  D ADDR   00A8H   A   
+INT_TIMER. . . . .  C ADDR   0046H   A   
+L1 . . . . . . . .  C ADDR   005AH   A   
+MAIN . . . . . . .  C ADDR   0030H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

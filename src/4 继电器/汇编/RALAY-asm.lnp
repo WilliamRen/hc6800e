@@ -1,0 +1,3 @@
+"RALAY-asm.obj" 
+TO "RALAY-asm" 
+RAMSIZE(256) 

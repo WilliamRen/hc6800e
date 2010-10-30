@@ -1,0 +1,63 @@
+C51 COMPILER V7.10   LED3                                                                  10/28/2009 22:57:14 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LED3
+OBJECT MODULE PLACED IN led3.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led3.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**************************************************************************************
+   2          *                             LED闪烁的简单试验                                                                                           *
+   3          *                延时实现p2口LED流水灯效果 （用循环移位指令）                                 *
+   4          *       连接方法： JP11（P2）和JP1(LED灯) 用8PIN排线连接起来                                                      *
+   5          *                                                                                                                                                                         *
+   6          ***************************************************************************************/
+   7          #include <reg51.h>          //此文件中定义了51的一些特殊功能寄存器
+   8          //#include <intrins.h>
+   9          
+  10          void delayms(unsigned char ms)  
+  11          // 延时子程序
+  12          {                                               
+  13   1              unsigned char i;
+  14   1              while(ms--)
+  15   1              {
+  16   2                      for(i = 0; i < 120; i++);
+  17   2              }
+  18   1      }
+  19          
+  20          
+  21          main()
+  22          {
+  23   1              unsigned char LED;
+  24   1              LED = 0xfe;       //0xfe = 1111 1110
+  25   1              while(1)
+  26   1              {
+  27   2               P2 = LED;
+  28   2                       delayms(250);
+  29   2                       LED = LED << 1;    //循环右移1位，点亮下一个LED "<<"为左移位
+  30   2                       if(LED == 0x00 )        {LED = 0xfe;  } // 0xfe = 1111 1110
+  31   2                       
+  32   2                       
+  33   2              }
+  34   1      }
+  35          
+  36          
+  37          
+  38          
+  39          
+  40          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     37    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
