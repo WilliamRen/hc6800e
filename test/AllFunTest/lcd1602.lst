@@ -1,0 +1,159 @@
+C51 COMPILER V7.10   LCD1602                                                               11/04/2010 14:23:12 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN .\lcd1602.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\18B20-1602温度传感\C版\lcd1602.c BROWSE DEBUG OBJECTEXTEND PRINT(.\lcd16
+                    -02.lst) OBJECT(.\lcd1602.obj)
+
+line level    source
+
+   1          #include "main.h"
+*** WARNING C318 IN LINE 1 OF ..\18B20-1602温度传感\C版\lcd1602.c: can't open file 'main.h'
+   2          
+   3          uchar cdis1[ ] = {" REN WEN LONG   "} ;
+*** ERROR C129 IN LINE 3 OF ..\18B20-1602温度传感\C版\LCD1602.C: missing ';' before 'cdis1'
+   4          uchar cdis2[ ] = {" WENDU:    .  C "} ;
+   5          uchar cdis3[ ] = {" DS18B20  ERR0R "} ;
+   6          uchar cdis4[ ] = {"  PLEASE CHECK  "} ;
+   7          
+   8          unsigned char data  display[5]   = {0x00,0x00,0x00,0x00,0x00} ;
+   9          unsigned char code  mytab[8]     = {0x0C,0x12,0x12,0x0C,0x00,0x00,0x00,0x00} ;
+  10          
+  11          #define delayNOP() ; {_nop_() ;_nop_() ;_nop_() ;_nop_() ;} ;
+  12          
+  13          extern void delay1(int ms);
+  14          
+  15          
+  16          
+  17          /******************************************************************/
+  18          /*检查LCD忙状态                                                   */
+  19          /*lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。   */
+  20          /******************************************************************/ 
+  21          bit lcd_busy()
+  22          {                          
+  23              bit result ;
+  24              LCD_RS = 0 ;
+  25              LCD_RW = 1 ;
+  26              LCD_EN = 1 ;
+  27              delayNOP() ;
+  28              result = (bit)(P0&0x80) ;
+  29              LCD_EN = 0 ;
+  30              return(result) ; 
+  31          }
+  32          
+  33          /*写指令数据到LCD                                                  */
+  34          /*RS=L，RW=L，E=高脉冲，D0-D7=指令码。          */
+  35          /*******************************************************************/
+  36          void lcd_wcmd(uchar cmd)
+  37          {                          
+  38             while(lcd_busy()) ;
+  39              LCD_RS = 0 ;
+  40              LCD_RW = 0 ;
+  41              LCD_EN = 0 ;
+  42              _nop_() ;
+  43              _nop_() ; 
+  44              P0 = cmd ;
+  45              delayNOP() ;
+  46              LCD_EN = 1 ;
+  47              delayNOP() ;
+  48              LCD_EN = 0 ;  
+  49          }
+  50          
+  51          /*******************************************************************/
+  52          /*写显示数据到LCD                            */
+C51 COMPILER V7.10   LCD1602                                                               11/04/2010 14:23:12 PAGE 2   
+
+  53          /*RS=H，RW=L，E=高脉冲，D0-D7=数据。       */
+  54          /*******************************************************************/
+  55          void lcd_wdat(uchar dat)
+  56          {                          
+  57             while(lcd_busy()) ;
+  58              LCD_RS = 1 ;
+  59              LCD_RW = 0 ;
+  60              LCD_EN = 0 ;
+  61              P0 = dat ;
+  62              delayNOP() ;
+  63              LCD_EN = 1 ;
+  64              delayNOP() ;
+  65              LCD_EN = 0 ; 
+  66          }
+  67          
+  68          
+  69          /*  LCD初始化设定                                                  */
+  70          /*******************************************************************/
+  71          void lcd_init()
+  72          { 
+  73              delay1(15) ;   
+  74              lcd_wcmd(0x01) ;      //清除LCD的显示内容            
+  75              lcd_wcmd(0x38) ;      //16*2显示，5*7点阵，8位数据
+  76              delay1(5) ;
+  77              lcd_wcmd(0x38) ;         
+  78              delay1(5) ;
+  79              lcd_wcmd(0x38) ;         
+  80              delay1(5) ;
+  81          
+  82              lcd_wcmd(0x0c) ;      //显示开，关光标
+  83              delay1(5) ;
+  84              lcd_wcmd(0x06) ;      //移动光标
+  85              delay1(5) ;
+  86              lcd_wcmd(0x01) ;      //清除LCD的显示内容
+  87              delay1(5) ;
+  88          }
+  89          
+  90          /*  设定显示位置                                    */
+  91          /*******************************************************************/
+  92          void lcd_pos(uchar pos)
+  93          {                          
+  94            lcd_wcmd(pos | 0x80) ;  //数据指针=80+地址变量
+  95          }
+  96          
+  97          /*自定义字符写入CGRAM                                   */
+  98          /*******************************************************************/
+  99          void  writetab()  
+ 100          {  
+ 101              unsigned char i ;
+ 102              lcd_wcmd(0x40) ;            //写CGRAM
+ 103              for (i = 0 ; i< 8 ; i++)       
+ 104              lcd_wdat(mytab[ i ]) ;        
+ 105          }
+ 106          
+ 107          
+ 108          
+ 109          /* 主函数     */
+ 110          /************************************/
+ 111          void test_1602()
+ 112          {
+ 113              uchar  m ;
+ 114              lcd_init() ;                //初始化LCD 
+C51 COMPILER V7.10   LCD1602                                                               11/04/2010 14:23:12 PAGE 3   
+
+ 115                      
+ 116              lcd_pos(0) ;                //设置显示位置为第一行的第1个字符
+ 117              m = 0 ;
+ 118              while(cdis1[m] != '\0')
+ 119              {                         //显示字符
+ 120                 lcd_wdat(cdis1[m]) ;
+ 121                 m++ ;
+ 122              }
+ 123          
+ 124              lcd_pos(0x40) ;             //设置显示位置为第二行第1个字符
+ 125              m = 0 ;
+ 126              while(cdis2[m] != '\0')
+ 127              {
+ 128                 lcd_wdat(cdis2[m]) ;      //显示字符
+ 129                 m++ ;
+ 130              }
+ 131          
+ 132              writetab() ;               //自定义字符写入CGRAM
+ 133              delay1(5) ;
+ 134              lcd_pos(0x4d) ;
+ 135              lcd_wdat(0x00) ;          //显示自定义字符
+ 136                  while(1)
+ 137                  {
+ 138                   ;
+ 139                  }
+ 140          }
+ 141          
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  1 ERROR(S)

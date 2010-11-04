@@ -1,0 +1,86 @@
+C51 COMPILER V7.50   LED_DIODE                                                             11/04/2010 19:49:04 PAGE 1   
+
+
+C51 COMPILER V7.50, COMPILATION OF MODULE LED_DIODE
+OBJECT MODULE PLACED IN led_diode.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE led_diode.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /********************************************************************************
+   2          ;*                      跑马灯实验(二极管LED)                                       *
+   3          ;                                                                                                                                                               *
+   4          ;     延时实现LED流水灯效果   p2口八个灯作跑马灯。采用了寄存器存中间数          *
+   5          ;     连接方法： JP11（P2）和JP1(LED灯) 用8PIN排线连接起来                                          *
+   6          ;********************************************************************************/
+   7          #include "common.h"
+   8          
+   9          void ledflash(void)                             
+  10          {
+  11   1              LED = 0;
+  12   1              do 
+  13   1              {
+  14   2              LED = ~LED;
+  15   2              delay_ms(300) ;
+  16   2              }while( is_quit());
+  17   1      }
+  18          
+  19          void ledon(void)
+  20          {
+  21   1              do 
+  22   1              {
+  23   2              LED = 0;
+  24   2              delay_ms(300) ;
+  25   2              }while( is_quit());
+  26   1      }
+  27          
+  28          void ledoff(void)
+  29          {
+  30   1              do 
+  31   1              {
+  32   2              LED = 1;
+  33   2              delay_ms(300) ;
+  34   2              }while( is_quit());
+  35   1      }
+  36          
+  37          void paomadeng(void)
+  38          {
+  39   1              unsigned char i;
+  40   1              char LED_STATUS = 0xFE;
+  41   1              do 
+  42   1              {
+  43   2                      LED_STATUS = 0xFE;
+  44   2                      for (i = 0 ;i < 8 ; i++)
+  45   2                      { 
+  46   3                              P2  = LED_STATUS;
+  47   3                              delay_ms(100);
+  48   3                              LED_STATUS = LED_STATUS << 1;    // 左移
+  49   3                              LED_STATUS = LED_STATUS | 0x01;  // 移位后，后面的位为高电平
+  50   3                              if (LED_STATUS == 0x7f)  break;  //提前退出 FOR 循环
+  51   3                      }
+  52   2                      for (i = 0 ;i < 8 ; i++)
+  53   2                      {
+  54   3                              P2  = LED_STATUS;
+  55   3                              delay_ms(100);
+C51 COMPILER V7.50   LED_DIODE                                                             11/04/2010 19:49:04 PAGE 2   
+
+  56   3                              LED_STATUS = LED_STATUS >> 1;    // 右移
+  57   3                              LED_STATUS = LED_STATUS | 0x80;  // 移位后，后面的位为高电平
+  58   3                      }
+  59   2              }while(is_quit());
+  60   1      }
+  61          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    132    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

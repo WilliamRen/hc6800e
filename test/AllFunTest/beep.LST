@@ -1,0 +1,39 @@
+C51 COMPILER V7.50   BEEP                                                                  11/04/2010 20:36:41 PAGE 1   
+
+
+C51 COMPILER V7.50, COMPILATION OF MODULE BEEP
+OBJECT MODULE PLACED IN beep.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE beep.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************************/
+   2          /* ·äÃùÆ÷ÏìÒ»Éù                 */
+   3          /*******************************************************************/
+   4          #include "common.h"
+   5          
+   6          void beep()
+   7          {
+   8   1          unsigned int y = 10000 ;
+   9   1          while( (y > 0) && is_quit())
+  10   1          {
+  11   2                      y--;
+  12   2              delay_ms(20) ;
+  13   2              BEEP=!BEEP ;                //BEEPÈ¡·´
+  14   2          } 
+  15   1          BEEP=1 ;                      //¹Ø±Õ·äÃùÆ÷
+  16   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     45    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

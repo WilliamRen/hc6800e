@@ -1,0 +1,11 @@
+"STARTUP.obj",
+"common.obj",
+"main.obj",
+"ir.obj",
+"lcd.obj",
+"led_diode.obj",
+"led_display.obj",
+"temperature.obj",
+"beep.obj" 
+TO "main" 
+RAMSIZE(256) 

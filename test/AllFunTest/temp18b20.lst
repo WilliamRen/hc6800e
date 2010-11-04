@@ -1,0 +1,167 @@
+C51 COMPILER V7.10   TEMP18B20                                                             11/04/2010 14:23:12 PAGE 1   
+
+
+C51 COMPILER V7.10, COMPILATION OF MODULE TEMP18B20
+OBJECT MODULE PLACED IN .\temp18b20.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\18B20-1602温度传感\C版\temp18b20.c BROWSE DEBUG OBJECTEXTEND PRINT(.\tem
+                    -p18b20.lst) OBJECT(.\temp18b20.obj)
+
+line level    source
+
+   1          #include "main.h"
+*** WARNING C318 IN LINE 1 OF ..\18B20-1602温度传感\C版\temp18b20.c: can't open file 'main.h'
+   2          
+   3          bit presence  ;
+   4          
+   5          unsigned char data  temp_data[2]        = {0x00,0x00} ;
+   6          unsigned char data  temp_display[5]     = {0x00,0x00,0x00,0x00,0x00} ;
+   7          unsigned char code  myditab[16]         = {0x00,0x01,0x01,0x02,0x03,0x03,0x04,0x04,
+   8                                                     0x05,0x06,0x06,0x07,0x08,0x08,0x09,0x09} ;
+   9           
+  10          #define delayNOP() ; {_nop_() ;_nop_() ;_nop_() ;_nop_() ;} ;
+  11          extern void beep(void) ;
+  12          extern void Delay(unsigned int num);
+  13          
+  14          
+  15          /*初始化ds1820                                      */
+  16          /*******************************************************************/
+  17          Init_DS18B20(void)
+  18          {  
+  19   1           DQ = 1 ;      //DQ复位
+*** ERROR C202 IN LINE 19 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  20   1           Delay(8) ;    //稍做延时
+  21   1      
+  22   1           DQ = 0 ;      //单片机将DQ拉低
+*** ERROR C202 IN LINE 22 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  23   1           Delay(90) ;   //精确延时 大于 480us
+  24   1      
+  25   1           DQ = 1 ;       //拉高总线
+*** ERROR C202 IN LINE 25 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  26   1           Delay(8) ;
+  27   1      
+  28   1           presence = DQ ;    //如果=0则初始化成功 =1则初始化失败
+*** ERROR C202 IN LINE 28 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  29   1           Delay(100) ;
+  30   1           DQ = 1 ; 
+*** ERROR C202 IN LINE 30 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  31   1           
+  32   1           return(presence) ; //返回信号，0=presence,1= no presence
+  33   1      }
+  34          
+  35          
+  36          /* 读一个字节                     */
+  37          /*******************************************************************/
+  38          ReadOneChar(void)
+  39          {
+  40   1       unsigned char i = 0 ;
+  41   1       unsigned char dat = 0 ;
+  42   1      
+  43   1       for (i = 8 ; i > 0 ; i--)
+  44   1       {
+  45   2          DQ = 0 ; // 给脉冲信号
+*** ERROR C202 IN LINE 45 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  46   2          dat >>= 1 ;
+  47   2          DQ = 1 ; // 给脉冲信号
+C51 COMPILER V7.10   TEMP18B20                                                             11/04/2010 14:23:12 PAGE 2   
+
+*** ERROR C202 IN LINE 47 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  48   2      
+  49   2          if(DQ)
+*** ERROR C202 IN LINE 49 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  50   2           dat |= 0x80 ;
+  51   2          Delay(4) ;
+  52   2       }
+  53   1      
+  54   1       return (dat) ;
+  55   1      }
+  56          
+  57          /* 写一个字节                                         */
+  58          /*******************************************************************/
+  59          WriteOneChar(unsigned char dat)
+  60          {
+  61   1        unsigned char i = 0 ;
+  62   1        for (i = 8 ; i > 0 ; i--)
+  63   1        {
+  64   2          DQ = 0 ;
+*** ERROR C202 IN LINE 64 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  65   2          DQ = dat&0x01 ;
+*** ERROR C202 IN LINE 65 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  66   2          Delay(5) ;
+  67   2      
+  68   2          DQ = 1 ;
+*** ERROR C202 IN LINE 68 OF ..\18B20-1602温度传感\C版\TEMP18B20.C: 'DQ': undefined identifier
+  69   2          dat>>=1 ;
+  70   2        }
+  71   1      }
+  72          
+  73          /* 读取温度                            */
+  74          /*******************************************************************/
+  75          Read_Temperature(void)
+  76          {
+  77   1           Init_DS18B20() ;
+  78   1        
+  79   1           WriteOneChar(0xCC) ;  // 跳过读序号列号的操作
+  80   1           WriteOneChar(0x44) ;  // 启动温度转换
+  81   1      
+  82   1           Init_DS18B20() ;
+  83   1           WriteOneChar(0xCC) ;  //跳过读序号列号的操作
+  84   1           WriteOneChar(0xBE) ;  //读取温度寄存器
+  85   1      
+  86   1           temp_data[0] = ReadOneChar() ;   //温度低8位
+  87   1           temp_data[1] = ReadOneChar() ;   //温度高8位 
+  88   1      }
+  89          
+  90          /* 数据转换与温度显示                                              */
+  91          /*******************************************************************/
+  92          Disp_Temperature()
+  93          {
+  94   1        temp_display[4]=temp_data[0]&0x0f ;
+  95   1        temp_display[0]=myditab[temp_display[4]]+0x30 ;     //查表得小数位的值
+  96   1        
+  97   1        temp_display[4]=((temp_data[0]&0xf0)>>4)|((temp_data[1]&0x0f)<<4) ;
+  98   1        temp_display[3]=temp_display[4]/100+0x30 ;
+  99   1        temp_display[1]=temp_display[4]%100 ;
+ 100   1        temp_display[2]=temp_display[1]/10+0x30 ;
+ 101   1        temp_display[1]=temp_display[1]%10+0x30 ;
+ 102   1      
+ 103   1        if(temp_display[3]==0x30)        //高位为0，不显示
+ 104   1        { 
+C51 COMPILER V7.10   TEMP18B20                                                             11/04/2010 14:23:12 PAGE 3   
+
+ 105   2           temp_display[3]=0x20 ;              
+ 106   2           if(temp_display[2]==0x30)      //次高位为0，不显示
+ 107   2           temp_display[2]=0x20 ;
+ 108   2        }
+ 109   1      
+ 110   1      //  lcd_pos(0x48) ;             
+ 111   1      //  lcd_wdat(temp_display[3]) ;        //百位数显示 
+ 112   1      //  lcd_pos(0x49) ;             
+ 113   1      //  lcd_wdat(temp_display[2]) ;        //十位数显示 
+ 114   1      //  lcd_pos(0x4a) ;             
+ 115   1      //  lcd_wdat(temp_display[1]) ;        //个位数显示 
+ 116   1      //  lcd_pos(0x4c) ;             
+ 117   1      //  lcd_wdat(temp_display[0]) ;        //小数位数显示 
+ 118   1      }  
+ 119          
+ 120          
+ 121          
+ 122          /* 主函数     */
+ 123          /************************************/
+ 124          void test_18b20(void)
+ 125          {
+ 126   1       do
+ 127   1       {
+ 128   2         Read_Temperature() ;
+ 129   2         Disp_Temperature() ;
+ 130   2       }
+ 131   1       while(!presence)  ;
+ 132   1       do
+ 133   1       {  
+ 134   2         Init_DS18B20() ;
+ 135   2         beep() ;
+ 136   2       }
+ 137   1       while(presence) ;
+ 138   1      }
+ 139          
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  11 ERROR(S)

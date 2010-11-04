@@ -1,0 +1,151 @@
+C51 COMPILER V7.50   TEMPERATURE                                                           11/04/2010 19:49:10 PAGE 1   
+
+
+C51 COMPILER V7.50, COMPILATION OF MODULE TEMPERATURE
+OBJECT MODULE PLACED IN temperature.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE temperature.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*************************此部分为18B20的驱动程序*************************************/
+   2          #include "common.h"
+   3          
+   4          bit presence  ;
+   5          unsigned char data  temperture_data[2]        = {0x00,0x00} ;
+   6          unsigned char data  temperture_display[5]     = {0x00,0x00,0x00,0x00,0x00} ;
+   7          unsigned char code  myditab[16]               = {0x00,0x01,0x01,0x02,0x03,0x03,0x04,0x04,
+   8                                                           0x05,0x06,0x06,0x07,0x08,0x08,0x09,0x09} ;
+   9          extern void lcd_pos(uchar pos);
+  10          extern void lcd_wdat(uchar dat);
+  11          /*初始化ds1820                                      */
+  12          /*******************************************************************/
+  13          Init_DS18B20(void)
+  14          {  
+  15   1           DQ = 1 ;           //DQ复位
+  16   1           delay_us(8) ;      //稍做延时
+  17   1           DQ = 0 ;           //单片机将DQ拉低
+  18   1           delay_us(90) ;     //精确延时 大于 480us
+  19   1           DQ = 1 ;           //拉高总线
+  20   1           delay_us(8) ;
+  21   1           presence = DQ ;    //如果=0则初始化成功 =1则初始化失败
+  22   1           delay_us(100) ;
+  23   1           DQ = 1 ; 
+  24   1           return(presence) ; //返回信号，0=presence,1= no presence
+  25   1      }
+  26          
+  27          /* 读一个字节                     */
+  28          /*******************************************************************/
+  29          ReadOneChar(void)
+  30          {
+  31   1              unsigned char i = 0 ;
+  32   1              unsigned char dat = 0 ;
+  33   1              for (i = 8 ; i > 0 ; i--)
+  34   1              {
+  35   2              DQ = 0 ; // 给脉冲信号
+  36   2              dat >>= 1 ;
+  37   2              DQ = 1 ; // 给脉冲信号
+  38   2                      if(DQ)
+  39   2                              dat |= 0x80 ;
+  40   2                      delay_us(4) ;
+  41   2              }
+  42   1          return (dat) ;
+  43   1      }
+  44          
+  45          /* 写一个字节                                         */
+  46          /*******************************************************************/
+  47          WriteOneChar(unsigned char dat)
+  48          {
+  49   1              unsigned char i = 0 ;
+  50   1              for (i = 8 ; i > 0 ; i--)
+  51   1              {
+  52   2              DQ = 0 ;
+  53   2              DQ = dat&0x01 ;
+  54   2              delay_us(5) ;
+  55   2                  DQ = 1 ;
+C51 COMPILER V7.50   TEMPERATURE                                                           11/04/2010 19:49:10 PAGE 2   
+
+  56   2              dat>>=1 ;
+  57   2              }
+  58   1      }
+  59          
+  60          /* 读取温度                            */
+  61          /*******************************************************************/
+  62          Read_Temperature(void)
+  63          {
+  64   1           Init_DS18B20() ;
+  65   1        
+  66   1           WriteOneChar(0xCC) ;  // 跳过读序号列号的操作
+  67   1           WriteOneChar(0x44) ;  // 启动温度转换
+  68   1      
+  69   1           Init_DS18B20() ;
+  70   1           WriteOneChar(0xCC) ;  //跳过读序号列号的操作
+  71   1           WriteOneChar(0xBE) ;  //读取温度寄存器
+  72   1      
+  73   1           temperture_data[0] = ReadOneChar() ;   //温度低8位
+  74   1           temperture_data[1] = ReadOneChar() ;   //温度高8位 
+  75   1      }
+  76          
+  77          /* 数据转换与温度显示                                              */
+  78          /*******************************************************************/
+  79          Disp_Temperature()
+  80          {
+  81   1              temperture_display[4]=temperture_data[0]&0x0f ;
+  82   1              temperture_display[0]=myditab[temperture_display[4]]+0x30 ;     //查表得小数位的值
+  83   1        
+  84   1              temperture_display[4]=((temperture_data[0]&0xf0)>>4)|((temperture_data[1]&0x0f)<<4) ;
+  85   1              temperture_display[3]=temperture_display[4]/100+0x30 ;
+  86   1              temperture_display[1]=temperture_display[4]%100 ;
+  87   1              temperture_display[2]=temperture_display[1]/10+0x30 ;
+  88   1              temperture_display[1]=temperture_display[1]%10+0x30 ;
+  89   1      
+  90   1          if(temperture_display[3]==0x30)        //高位为0，不显示
+  91   1              { 
+  92   2              temperture_display[3]=0x20 ;              
+  93   2              if(temperture_display[2]==0x30)      //次高位为0，不显示
+  94   2              temperture_display[2]=0x20 ;
+  95   2              }
+  96   1      
+  97   1          lcd_pos(0x48) ;             
+  98   1          lcd_wdat(temperture_display[3]) ;        //百位数显示 
+  99   1          lcd_pos(0x49) ;             
+ 100   1          lcd_wdat(temperture_display[2]) ;        //十位数显示 
+ 101   1          lcd_pos(0x4a) ;             
+ 102   1          lcd_wdat(temperture_display[1]) ;        //个位数显示 
+ 103   1          lcd_pos(0x4c) ;             
+ 104   1          lcd_wdat(temperture_display[0]) ;        //小数位数显示 
+ 105   1      }
+ 106          
+ 107          /* 主函数     */
+ 108          /************************************/
+ 109          void test_18B20()
+ 110          {
+ 111   1          lcd_temp_menu();
+ 112   1              do
+ 113   1              {
+ 114   2                      Read_Temperature() ;
+ 115   2                      Disp_Temperature() ;
+ 116   2              }while(is_quit()&&!presence);
+ 117   1              do
+C51 COMPILER V7.50   TEMPERATURE                                                           11/04/2010 19:49:10 PAGE 3   
+
+ 118   1              {
+ 119   2                      Init_DS18B20() ;
+ 120   2              beep() ;
+ 121   2              }while(is_quit()&&presence);
+ 122   1      
+ 123   1      }
+ 124          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    331    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

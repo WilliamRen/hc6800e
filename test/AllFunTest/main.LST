@@ -1,0 +1,87 @@
+C51 COMPILER V7.50   MAIN                                                                  11/04/2010 20:22:38 PAGE 1   
+
+
+C51 COMPILER V7.50, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "common.h"
+   2          
+   3          //内部函数声明
+   4          
+   5          
+   6          //各个子模块中对外函数声明
+   7          extern void beep(void);
+   8          extern void ledflash(void);
+   9          extern void ledon(void);
+  10          extern void ledoff(void);
+  11          extern void test_ir(void);
+  12          extern void paomadeng(void);
+  13          extern void test_1602(void);
+  14          extern void test_18B20(void);
+  15          
+  16          //主程序
+  17          void main(void)
+  18          {
+  19   1              IRInit();
+  20   1              //lcd_init();
+  21   1              lcd_welcome_menu();
+  22   1              while(1)
+  23   1              {
+  24   2                      process_message();
+  25   2              }
+  26   1      }
+  27          
+  28          void process_message(void)
+  29          {
+  30   1              switch (ir_key_value)
+  31   1              {
+  32   2              case  MY_KEY_ESC  : break; 
+  33   2              case  MY_KEY_MODE : lcd_init();break; 
+  34   2              case  MY_KEY_MUTE : break; 
+  35   2              case  MY_KEY_PLAY : break; 
+  36   2              case  MY_KEY_PREV : break; 
+  37   2              case  MY_KEY_NEXT : break; 
+  38   2              case  MY_KEY_EQ   : lcd_welcome_menu();break; 
+  39   2              case  MY_KEY_VOLD : break; 
+  40   2              case  MY_KEY_VOLU : break; 
+  41   2              case  MY_KEY_RPT  : ledon();break; 
+  42   2              case  MY_KEY_RSD  : ledoff();break; 
+  43   2              case  MY_KEY_0    : ledflash();break;
+  44   2              case  MY_KEY_1    : paomadeng();break;
+  45   2              case  MY_KEY_2    : test_ir();break;
+  46   2              case  MY_KEY_3    : test_1602();break; 
+  47   2              case  MY_KEY_4    : test_18B20();break; 
+  48   2              case  MY_KEY_5    : beep();break; 
+  49   2              case  MY_KEY_6    : break; 
+  50   2              case  MY_KEY_7    : break; 
+  51   2              case  MY_KEY_8    : break; 
+  52   2              case  MY_KEY_9    : break;
+  53   2              }
+  54   1              //delay_us(1000);        
+  55   1      }
+C51 COMPILER V7.50   MAIN                                                                  11/04/2010 20:22:38 PAGE 2   
+
+  56          
+  57          
+  58          
+  59          
+  60          
+  61          
+  62          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    139    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,75 @@
+C51 COMPILER V7.50   COMMON                                                                11/04/2010 19:48:51 PAGE 1   
+
+
+C51 COMPILER V7.50, COMPILATION OF MODULE COMMON
+OBJECT MODULE PLACED IN common.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE common.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "common.h"
+   2          
+   3          
+   4          //全局遥控器按键值定义
+   5          unsigned char  ir_key_value = 0x00;
+   6          unsigned char  ir_key_last  = 0x00;
+   7          
+   8          /*ms级延时函数                                        */
+   9          /*******************************************************************/
+  10          void delay_ms(int ms)                //ms*1ms
+  11          {
+  12   1              unsigned char y ;
+  13   1              while(ms--)
+  14   1              {
+  15   2                      for(y = 0 ; y<250 ; y++)
+  16   2                      {
+  17   3                              _nop_() ;
+  18   3                              _nop_() ;
+  19   3                              _nop_() ;
+  20   3                              _nop_() ;
+  21   3                      }
+  22   2              }
+  23   1      }
+  24          
+  25          /*us级延时函数                                        */
+  26          /*******************************************************************/
+  27          void delay_us(unsigned int num)  //num*1us
+  28          {
+  29   1              while( --num ) ;
+  30   1      }
+  31          
+  32          /*0.14ms级延时函数                                        */
+  33          /**********************************************************/
+  34          void IRdelay(unsigned char x)    //x*0.14ms
+  35          {
+  36   1              unsigned char i;
+  37   1              while(x--)
+  38   1              {
+  39   2                      for (i = 0; i<13; i++) {}
+  40   2              }
+  41   1      }
+  42          
+  43          
+  44          
+  45          
+  46           
+  47          
+  48          
+  49          
+  50          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     54    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V7.50   COMMON                                                                11/04/2010 19:48:51 PAGE 2   
+
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
